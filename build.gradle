@@ -1,0 +1,61 @@
+apply plugin: 'groovy'
+apply plugin: 'maven'
+apply plugin: 'java-gradle-plugin'
+
+rootProject.group='com.github.ocroquette'
+rootProject.version='1.3-SNAPSHOT'
+
+dependencies {
+    compile gradleApi()
+
+    testCompile gradleTestKit()
+    testCompile "org.spockframework:spock-core:1.1-groovy-2.4"
+    testCompile "com.github.tomakehurst:wiremock:2.10.1"
+}
+
+repositories {
+    mavenCentral()
+}
+
+configurations.all {
+    resolutionStrategy {
+      // Workaround for version conflict because of Spock:
+      // groovy.lang.GroovyRuntimeException: Conflicting module versions. Module [groovy-all is loaded in version 2.4.12 and you are trying to load version 2.4.9
+      // See https://stackoverflow.com/questions/31099214/tomcat-conflicting-module-versions-module-groovy-all-is-loaded-in-version-2-3/33262366#33262366
+      force 'org.codehaus.groovy:groovy-all:2.4.12'
+    }
+}
+
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: uri('/Users/ocroquette/Desktop/Gradle/mavenrepo'))
+        }
+    }
+}
+
+task(zipDummyTools) {
+    description "Creates the ZIP files for the dummy tools used in the unit tests"
+    final dir = new File(projectDir, "src/test/resources/extools")
+    final toolIds = []
+    dir.eachFileRecurse {
+        if ( it.name == "extools.conf" ) {
+            toolIds += dir.toPath().relativize( it.toPath() ).toFile().parentFile.toString()
+        }
+    }
+    inputs.files(fileTree(dir) {
+        exclude "**/*.ext"
+    })
+    outputs.files( toolIds.collect { new File(dir, it + ".ext") })
+
+    doLast {
+        toolIds.each { toolId ->
+            ant.zip(destfile: new File(dir, "${toolId}.ext")) {
+                fileset(dir: new File(dir, toolId))
+            }
+        }
+    }
+}
+
+test.dependsOn zipDummyTools

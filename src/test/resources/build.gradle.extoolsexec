@@ -1,0 +1,72 @@
+// This build script is called from ExtoolsPluginExtoolsExecTest, please see there for more details
+
+plugins {
+    // We have to use the plugins DSL syntax in our tests because of TestKit, see
+    // https://docs.gradle.org/4.3/userguide/test_kit.html#sub:test-kit-automatic-classpath-injection
+    // "It’s important to note that the mechanism currently only works if the plugin under test is applied using
+    // the plugins DSL. If the target Gradle version is prior to 2.8, automatic plugin classpath injection is
+    // not performed."
+    id 'extools'
+}
+
+import com.github.ocroquette.extools.ExtoolsExec
+
+extools {
+    tool "dummy_1"
+    tool "dummy_2"
+    tool "printenvvars"
+    tool "subdir/dummy_3"
+}
+
+def isWindows = ( System.getProperty("os.name").toLowerCase().contains("windows") ? true : false )
+def scriptExtension = ( isWindows ? "bat" : "sh" )
+
+task execDummy1(type:ExtoolsExec) {
+    usingExtools "dummy_1", "dummy_2"
+
+    commandLine "dummy_1.$scriptExtension"
+}
+
+task execDummy2(type:ExtoolsExec) {
+    usingExtools "dummy_1", "dummy_2"
+
+    commandLine "dummy_2.$scriptExtension"
+}
+
+task execPrintEnvVarsWithInvalidPath(type:ExtoolsExec) {
+    usingExtools "dummy_1"
+
+    commandLine "printenvvars.$scriptExtension", "%dumpFile%"
+}
+
+task execPrintEnvVarsWithImplicitPath(type:ExtoolsExec) {
+    usingExtools "printenvvars"
+
+    commandLine "printenvvars.$scriptExtension", "%dumpFile%"
+}
+
+task execToolInSubdir(type:ExtoolsExec) {
+    usingExtools "subdir/dummy_3"
+
+    commandLine "dummy_3.$scriptExtension"
+}
+
+task execPrintEnvVarsWithEnvironmentVariableSingle(type:ExtoolsExec) {
+    usingExtools "printenvvars", "dummy_2"
+
+    commandLine "printenvvars.$scriptExtension", "%dumpFile%"
+}
+
+task execUseAll(type:ExtoolsExec) {
+    commandLine "printenvvars.$scriptExtension", "%dumpFile%"
+}
+
+
+task execSystemCommand(type:ExtoolsExec) {
+    if ( isWindows ) {
+        commandLine "dir.exe"
+    }
+    else {
+        commandLine "ls"
+    }
+}
