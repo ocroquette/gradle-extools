@@ -48,7 +48,7 @@ task(zipDummyTools) {
     inputs.files(fileTree(resourceDir) {
         exclude "**/*.ext"
     })
-    outputs.files( toolIds.collect { new File(resourceDir, it + ".ext") })
+    outputs.files( toolIds.collect { new File(targetDir, it + ".ext") })
 
     doLast {
         toolIds.each { toolId ->

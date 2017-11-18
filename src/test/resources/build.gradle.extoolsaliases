@@ -36,3 +36,11 @@ task execAlias2(type:ExtoolsExec) {
 
     commandLine "dummy_1.$scriptExtension"
 }
+
+task accessVariable {
+    dependsOn "extoolsLoad"
+
+    doLast {
+        println project.extensions.extools.getValue("alias_1", "DUMMY1_VAR")
+    }
+}

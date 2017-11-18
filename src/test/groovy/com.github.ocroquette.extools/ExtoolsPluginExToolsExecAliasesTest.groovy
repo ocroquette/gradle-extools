@@ -46,6 +46,24 @@ class ExtoolsPluginExToolsExecAliasesTest extends Specification {
         result.output.contains("Output from dummy 1")
     }
 
+    def "Access variable"() {
+        given:
+        def taskName = 'accessVariable'
+
+        when:
+        def result = new GradleRunnerHelper(
+                temporaryRoot: temporaryFolder.newFolder(),
+                buildScript: generateBuildScript(),
+                repositoryUrl: new File(REPO_DIR).toURI().toURL().toString(),
+                taskName: taskName,
+        ).build()
+
+        then:
+        result.task(":$taskName").outcome == SUCCESS
+        result.output.contains("Value of DUMMY1_VAR")
+    }
+
+
     private String generateBuildScript() {
         this.getClass().getResource('/build.gradle.extoolsaliases').text
     }

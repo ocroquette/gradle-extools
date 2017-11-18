@@ -46,6 +46,18 @@ class ExtoolsPluginExtension {
         configurationState.get().localCache = new File(s)
     }
 
+    String getValue(String toolAlias, String variableName) {
+        ExtoolsPluginConfiguration conf = configurationState.get()
+        String realName = conf.tools[toolAlias]
+        if (realName == null)
+            throw new RuntimeException("Unknown tool alias ${toolAlias}, known tools: " + conf.tools.keySet().join(","))
+        ExtoolConfiguration tc = configurationState.get().configurationOfTool[realName]
+        String value = tc.variables[variableName]
+        if (value == null)
+            throw new RuntimeException("Unknown variable ${variableName} for tool alias ${toolAlias}, known variables: " + tc.variables.keySet().join(","))
+        return value
+    }
+
     private File getDefaultExtractDir(Project project) {
         def propertyValue = project.properties["extools.extractDir"]
         if ( propertyValue != null )

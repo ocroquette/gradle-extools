@@ -190,3 +190,28 @@ By default, the plugin will use the global ```.gradle``` directory to store down
 extools.localCache=<localpath>
 extools.extractDir=<localpath>
 ```
+
+### Retrieving extool variable values from other tasks
+
+You can retrieve the values set in the ```extools.conf``` files from Gradle tasks using ```getValue()```:
+
+```
+task accessVariable {
+    dependsOn "extoolsLoad"
+
+    doLast {
+        println project.extensions.extools.getValue("toolalias", "MY_VARIABLE")
+    }
+}
+```
+
+If you need the variable value only within Gradle and not as an environment variables in the child processes, use ```var``` instead of ```env``` in the ```extools.conf``` file:
+
+```
+# ExtoolsExec will set the environment variable MY_VARIABLE to "Value of MY_VARIABLE"
+set;env;string;MY_VARIABLE;Value of MY_VARIABLE
+
+# ExtoolsExec will NOT set the environment variable MYVAR,
+# but you can still access the value with getValue()
+set;var;string;MY_VARIABLE;Value of MY_VARIABLE
+```
