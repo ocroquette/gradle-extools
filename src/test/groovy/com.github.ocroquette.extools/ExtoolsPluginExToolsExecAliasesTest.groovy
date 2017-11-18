@@ -7,7 +7,7 @@ import spock.lang.Specification
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 class ExtoolsPluginExToolsExecAliasesTest extends Specification {
-    static final REPO_DIR = "src/test/resources/extools"
+    static final REPO_DIR = "build/test/repo/"
 
     @Rule
     final TemporaryFolder temporaryFolder = new TemporaryFolder()

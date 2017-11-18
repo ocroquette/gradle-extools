@@ -9,8 +9,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 
 class ExtoolsFetcherTest extends Specification {
-//    WireMockServer wireMockServer = new WireMockServer(options().port(8888))
-//    WireMock wireMock = new WireMock("localhost", 8888)
 
     static final EXTOOL_NAME = "some-tools-2.0"
     static final EXTOOL_FILENAME = EXTOOL_NAME + ".ext"

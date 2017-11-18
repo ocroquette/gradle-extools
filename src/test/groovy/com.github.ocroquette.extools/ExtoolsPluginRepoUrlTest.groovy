@@ -7,7 +7,8 @@ import spock.lang.Specification
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 class ExtoolsPluginRepoUrlTest extends Specification {
-    static final REPO_DIR = "src/test/resources/extools/"
+    static final REPO_DIR = "build/test/repo/"
+
     public static final String TASK_NAME = 'execDummy1'
 
     @Rule

@@ -37,22 +37,23 @@ uploadArchives {
 
 task(zipDummyTools) {
     description "Creates the ZIP files for the dummy tools used in the unit tests"
-    final dir = new File(projectDir, "src/test/resources/extools")
+    final resourceDir = new File(projectDir, "src/test/resources/extools")
+    final targetDir = new File(buildDir, "test/repo")
     final toolIds = []
-    dir.eachFileRecurse {
+    resourceDir.eachFileRecurse {
         if ( it.name == "extools.conf" ) {
-            toolIds += dir.toPath().relativize( it.toPath() ).toFile().parentFile.toString()
+            toolIds += resourceDir.toPath().relativize( it.toPath() ).toFile().parentFile.toString()
         }
     }
-    inputs.files(fileTree(dir) {
+    inputs.files(fileTree(resourceDir) {
         exclude "**/*.ext"
     })
-    outputs.files( toolIds.collect { new File(dir, it + ".ext") })
+    outputs.files( toolIds.collect { new File(resourceDir, it + ".ext") })
 
     doLast {
         toolIds.each { toolId ->
-            ant.zip(destfile: new File(dir, "${toolId}.ext")) {
-                fileset(dir: new File(dir, toolId))
+            ant.zip(destfile: new File(targetDir, "${toolId}.ext")) {
+                fileset(dir: new File(resourceDir, toolId))
             }
         }
     }

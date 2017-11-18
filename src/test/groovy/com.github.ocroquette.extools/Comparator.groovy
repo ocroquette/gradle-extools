@@ -1,7 +1,7 @@
 package com.github.ocroquette.extools
 
 class Comparator {
-    static def compareMaps(def reference, def actual, def excludedKeys) {
+    static String compareMaps(def reference, def actual, def excludedKeys) {
         String differences = ""
 
         Set<String> allKeys = []
@@ -22,7 +22,7 @@ class Comparator {
         return differences
     }
 
-    static def compareAsSets(def reference, def actual) {
+    static String compareAsSets(def reference, def actual) {
         def unexpected = []
         def missing = []
         for(String ref: reference) {

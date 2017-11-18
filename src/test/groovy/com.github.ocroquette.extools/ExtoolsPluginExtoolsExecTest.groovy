@@ -7,7 +7,7 @@ import static org.gradle.testkit.runner.TaskOutcome.*
 
 class ExtoolsPluginExtoolsExecTest extends Specification {
 
-    static final REPO_DIR = "src/test/resources/extools"
+    static final REPO_DIR = "build/test/repo/"
     static final REPO_URL = new File(REPO_DIR).toURI().toURL().toString()
 
     @Rule

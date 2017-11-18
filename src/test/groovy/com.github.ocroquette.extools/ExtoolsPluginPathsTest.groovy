@@ -7,8 +7,6 @@ import spock.lang.Specification
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 class ExtoolsPluginPathsTest extends Specification {
-    static final DIR = "src/test/resources/extools"
-
     @Rule
     final TemporaryFolder temporaryFolder = new TemporaryFolder()
 
