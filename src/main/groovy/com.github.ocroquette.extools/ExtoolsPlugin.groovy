@@ -68,7 +68,7 @@ class ExtoolsPlugin implements Plugin<Project> {
             dependsOn EXTOOLS_EXTRACT
             doLast {
                 ExtoolsPluginConfiguration configuration = project.extensions.extools.configurationState.get()
-                def reader = new ExtoolConfigurationReader()
+                ExtoolConfigurationReader reader = new ExtoolConfigurationReader()
 
                 configuration.tools.each { alias, realName ->
                     File dir = new File(configuration.extractDir, realName)
@@ -77,7 +77,9 @@ class ExtoolsPlugin implements Plugin<Project> {
                     }
                     logger.info("extools: Loading tool configuration from ${dir.absolutePath}")
 
-                    configuration.variablesForTool[realName] = reader.readFromDir(dir)
+                    ExtoolConfiguration conf = reader.readFromDir(dir)
+
+                    configuration.configurationOfTool[realName] = conf
                 }
             }
         }

@@ -75,7 +75,7 @@ dir/extools.conf
 The file "extools.conf" allows to extend the environment of the host when the extool is used. In this simple case, ```extools.conf``` should contain the following line:
 
 ```
-appendPath;PATH;bin
+append;env;path;PATH;bin
 ```
 
 When this extool will be used, the "bin" subdirectory will be added to the PATH variable, allowing to find "myclitools".
@@ -161,19 +161,25 @@ task execMyCliTool(type:Exec) {
 }
 ```
 
-### Setting arbitrary variables
+### Setting and extending environment variables
 
-So far, we only extended the PATH variable in ```extools.conf```, but it is possible to extend any environment variable:
+So far, we only extended the PATH variable in ```extools.conf```, but it is possible to extend any environment variable with a path:
 
 ```
-# Extend the PATH variable with the bin/ sub-directory
-appendPath;PATH;bin
+# Extend the PATH environment variable with the bin/ sub-directory
+append;env;path;PATH;bin
 
-# Extend the CMAKE_PREFIX_PATH variable with the lib/cmake sub-directory
-appendPath;CMAKE_PREFIX_PATH;lib/cmake
+# Extend the CMAKE_PREFIX_PATH environment variable with the lib/cmake sub-directory
+append;env;path;CMAKE_PREFIX_PATH;lib/cmake
+```
 
-# Extend the SOME_VAR variable with the string "Value of SOME_VAR": 
-appendString;SOME_VAR;Value of SOME_VAR
+The separator inserted betweeen the different paths in the variable value is the standard separator used by the operating system for the PATH variable, e.g. ';' on Windows and ':' on Linux, macOS and Unix.
+
+To set an environment variable to a fixed string:
+
+```
+# Set environment variable SOME_VAR with the string "Value of SOME_VAR"
+set;env;string;SOME_VAR;Value of SOME_VAR
 ```
 
 ### Local cache and extract directory

@@ -47,30 +47,45 @@ class ExtoolsExec extends AbstractExecTask {
             realNamesUsed.add(realName)
         }
 
-        Set variablesToExtend = []
+        Set variablesToExtendInEnv = []
 
         realNamesUsed.each { realName ->
-            variablesToExtend.addAll(pluginConfiguration.variablesForTool[realName].keySet())
+            variablesToExtendInEnv.addAll(pluginConfiguration.configurationOfTool[realName].variablesToAppendInEnv)
         }
 
-        variablesToExtend.each { variableName ->
+        variablesToExtendInEnv.each { variableName ->
             def paths = []
 
             realNamesUsed.each { realName ->
-                pluginConfiguration.variablesForTool[realName].each { k, v ->
-                    if ( k == variableName )
+                pluginConfiguration.configurationOfTool[realName].variables.each { k, v ->
+                    if (k == variableName)
                         paths.addAll(v.split(File.pathSeparator))
                 }
             }
 
             def systemValue = System.getenv(variableName)
-            if ( systemValue != null ) {
+            if (systemValue != null) {
                 systemValue.split(File.pathSeparator).each { it ->
                     paths.add(it)
                 }
             }
 
             environment[variableName] = paths.join(File.pathSeparator)
+        }
+
+        Set variablesToSetInEnv = []
+
+        realNamesUsed.each { realName ->
+            variablesToSetInEnv.addAll(pluginConfiguration.configurationOfTool[realName].variablesToSetInEnv)
+        }
+
+        variablesToSetInEnv.each { variableName ->
+            realNamesUsed.each { realName ->
+                def value = pluginConfiguration.configurationOfTool[realName].variables[variableName]
+                if (value != null) {
+                    environment[variableName] = value
+                }
+            }
         }
     }
 

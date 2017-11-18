@@ -10,5 +10,5 @@ class ExtoolsPluginConfiguration {
 
     File localCache
     File extractDir
-    final variablesForTool = [:]
+    final configurationOfTool = [:]
 }

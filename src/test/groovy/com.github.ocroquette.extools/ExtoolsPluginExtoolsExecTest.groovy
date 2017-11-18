@@ -148,9 +148,9 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
         expectedEnv["PRINTENVVARS_BIN"] = new File(extractDir, "printenvvars/bin").canonicalPath
         expectedEnv["CMAKE_PREFIX_PATH"] =
                 new File(extractDir, "dummy_1/cmake").canonicalPath + File.pathSeparator +
+                        new File(extractDir, "dummy_1/cmake_").canonicalPath + File.pathSeparator +
                         new File(extractDir, "dummy_2/cmake2").canonicalPath
-        expectedEnv["DUMMY_STRING"] = "Value of DUMMY_STRING from dummy_1" + File.pathSeparator +
-                "Value of DUMMY_STRING from dummy_2"
+        expectedEnv["DUMMY_STRING"] = "Value of DUMMY_STRING from dummy_2"
         expectedEnv["DUMMY1_STRING"] = "Value of DUMMY1_STRING"
         expectedEnv["DUMMY2_STRING"] = "Value of DUMMY2_STRING"
         expectedEnv["PATH"] =
@@ -159,6 +159,7 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
                         new File(extractDir, "printenvvars/bin").canonicalPath + File.pathSeparator +
                         new File(extractDir, "subdir/dummy_3/bin").canonicalPath + File.pathSeparator +
                         System.getenv("PATH")
+        expectedEnv["DUMMY1_DIR"] = new File(extractDir, "dummy_1/").canonicalPath
 
         when:
         def result = new GradleRunnerHelper(
@@ -201,12 +202,6 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
     }
 
     def compareEnv(def reference, def actual) {
-        String differences = ""
-
-        Set<String> allKeys = []
-        allKeys.addAll(reference.keySet())
-        allKeys.addAll(actual.keySet())
-
         Set<String> excludedKeys = []
         excludedKeys.addAll(
                 ["SHLVL", // Special Unix variables
@@ -216,19 +211,7 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
                  "XPC_SERVICE_NAME" // Not sure what this one is about, sample value: "com.jetbrains.intellij.ce.13020"
                 ]
         )
-
-        allKeys.each { key ->
-            if (excludedKeys.contains(key))
-                return
-            String referenceValueAsString = (reference[key] == null ? "(null)" : "\"${reference[key]}\"")
-            String actualValueAsString = (actual[key] == null ? "(null)" : "\"${actual[key]}\"")
-            if (referenceValueAsString != actualValueAsString) {
-                differences += "For variable \"$key\":\n"
-                differences += "  Reference: $referenceValueAsString\n"
-                differences += "  Actual:    $actualValueAsString\n"
-            }
-        }
-        return differences
+        return Comparator.compareMaps(reference, actual, excludedKeys)
     }
 
     private String generateBuildScript() {
