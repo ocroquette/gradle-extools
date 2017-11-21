@@ -6,7 +6,7 @@ plugins {
     // "It’s important to note that the mechanism currently only works if the plugin under test is applied using
     // the plugins DSL. If the target Gradle version is prior to 2.8, automatic plugin classpath injection is
     // not performed."
-    id 'extools'
+    id 'com.github.ocroquette.extools'
 }
 
 import com.github.ocroquette.extools.ExtoolsExec

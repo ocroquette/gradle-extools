@@ -1,9 +1,27 @@
-apply plugin: 'groovy'
-apply plugin: 'maven'
-apply plugin: 'java-gradle-plugin'
+plugins {
+    id 'groovy'
+    id 'maven'
+    id 'java-gradle-plugin'
+    id 'com.gradle.plugin-publish' version '0.9.9'
+}
 
 rootProject.group='com.github.ocroquette'
-rootProject.version='1.5-SNAPSHOT'
+rootProject.version='1.6'
+
+pluginBundle {
+    website = 'https://github.com/ocroquette/gradle-extools'
+    vcsUrl = 'https://github.com/ocroquette/gradle-extools.git'
+
+    plugins {
+        extoolsPlugin {
+            id = 'com.github.ocroquette.extools'
+            displayName = 'External tools plugin'
+            description = 'A plugin that allows to download and use external tools like compilers or IDE automatically'
+            tags = ["tools", "compilers"]
+            // version = ''
+        }
+    }
+}
 
 dependencies {
     compile gradleApi()
