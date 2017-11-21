@@ -11,7 +11,7 @@ Let's assume you want to call the program "myclitool" in your build, and that "m
 ```
 // Apply the extools plugin
 plugins {
-    id 'extools'
+    id 'com.github.ocroquette.extools'
 }
 
 // Configure the plugin
@@ -40,25 +40,6 @@ or
 
 ```
 extools.repositoryUrl=http://
-```
-
-Currently, the plugin itself is not available in any central repositories, so you need to download the source and build it:
-
-```
-gradlew jar
-```
-
-Then copy the JAR file to the project where you want to use the plugin, and add it to the class path:
-
-```
-buildscript {
-    repositories {
-        flatDir dirs: "gradle/libs"
-    }
-    dependencies {
-        classpath "fr.ocroquette:gradle-extools:1.2-SNAPSHOT"
-    }
-}
 ```
 
 ## Creating extools packages and repositories
