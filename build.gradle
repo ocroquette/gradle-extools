@@ -3,7 +3,7 @@ apply plugin: 'maven'
 apply plugin: 'java-gradle-plugin'
 
 rootProject.group='com.github.ocroquette'
-rootProject.version='1.4-SNAPSHOT'
+rootProject.version='1.5-SNAPSHOT'
 
 dependencies {
     compile gradleApi()
