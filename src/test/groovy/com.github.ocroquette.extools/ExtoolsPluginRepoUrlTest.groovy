@@ -30,7 +30,7 @@ class ExtoolsPluginRepoUrlTest extends Specification {
         when:
         def result = new GradleRunnerHelper(
                 temporaryRoot: temporaryFolder.newFolder(),
-                repositoryUrl: new File(REPO_DIR).toURI().toURL(),
+                repositoryUrl: getAsUrlString(REPO_DIR),
                 buildScript: generateBuildScript(''),
                 taskName: TASK_NAME,
         ).build()
@@ -41,10 +41,10 @@ class ExtoolsPluginRepoUrlTest extends Specification {
 
     def "Build script must run when repo is provided in build script"() {
         when:
-        def statement = "remoteRepositoryUrl '${new File(REPO_DIR).toURI().toURL()}'"
+        def statement = "remoteRepositoryUrl '${getAsUrlString(REPO_DIR)}'"
         def result = new GradleRunnerHelper(
                 temporaryRoot: temporaryFolder.newFolder(),
-                repositoryUrl: new File(REPO_DIR).toURI().toURL(),
+                repositoryUrl: getAsUrlString(REPO_DIR),
                 buildScript: generateBuildScript(statement),
                 taskName: TASK_NAME,
         ).build()
@@ -56,6 +56,13 @@ class ExtoolsPluginRepoUrlTest extends Specification {
     private String generateBuildScript(String remoteRepositoryUrlStatement) {
         return getScriptTemplate().text.replaceAll('%remoteRepositoryUrlStatement%', remoteRepositoryUrlStatement)
 
+    }
+
+    private String getAsUrlString(String directory) {
+        String canonicalPath = new File(directory).canonicalPath
+        String string = new File(canonicalPath).toURI().toURL().toString()
+        // Strip trailing (back)slashes, we want it to work without
+        return string.replaceAll('[/\\\\/]+$', "")
     }
 
     private URL getScriptTemplate() {

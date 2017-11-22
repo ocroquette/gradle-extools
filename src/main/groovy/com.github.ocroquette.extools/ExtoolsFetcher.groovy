@@ -28,9 +28,12 @@ class ExtoolsFetcher {
      * @param toolId the identifier of the tool, for instance "gcc-7.1" or "compilers/gcc-7.1"
      */
     void fetch(String toolId) {
-        String fileName = toolId + ".ext"
+        if (toolId.startsWith("/") || toolId.startsWith("\\")  )
+            throw new RuntimeException("Invalid tool id: " + toolId)
 
-        File targetFile = new File(targetDir, fileName)
+        String relativeFilePath = toolId + ".ext"
+
+        File targetFile = new File(targetDir, relativeFilePath)
 
         if ( targetFile.exists() ) {
             logger.info "Archive for tool ${toolId} is already available at ${targetFile}"
@@ -39,9 +42,10 @@ class ExtoolsFetcher {
 
         targetFile.parentFile.mkdirs()
 
-        URL finalUrl = new URL(remoteRepoUrl, fileName)
+        // See https://stackoverflow.com/a/26787332/1448767
+        URL finalUrl = new URL(remoteRepoUrl.getProtocol(), remoteRepoUrl.getHost(), remoteRepoUrl.getPort(), remoteRepoUrl.getFile() + "/" + relativeFilePath, null)
 
-        File tmpFile = new File(targetDir, fileName + ".part")
+        File tmpFile = new File(targetDir, relativeFilePath + ".part")
 
         logger.lifecycle "Fetching ${toolId} from ${finalUrl} to ${targetFile}"
 
