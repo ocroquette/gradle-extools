@@ -9,9 +9,9 @@ The "extools" plugin for Gradle provides a convenient way to do so.
 Let's assume you want to call the program "myclitool" in your build, and that "myclitool" is provided as part of "mytoolkit", and you want it to be downloaded and used automatically when required. Just add the following lines to your build.gradle:
 
 ```
-// Apply the extools plugin
+// Apply the extools plugin, update the version if required.
 plugins {
-    id 'com.github.ocroquette.extools'
+    id 'com.github.ocroquette.extools' version '1.6'
 }
 
 // Configure the plugin
