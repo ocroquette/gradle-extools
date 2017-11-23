@@ -115,6 +115,7 @@ task execMyCliTool(type:ExtoolsExec) {
 ### Organizing and structuring packages
 
 Structure of packages are supported:
+
 ```
 extools {
     tools "compiler/gcc-v7.1",
@@ -172,6 +173,43 @@ By default, the plugin will use the global ```.gradle``` directory to store down
 extools.localCache=<localpath>
 extools.extractDir=<localpath>
 ```
+
+### Getting current configuration
+
+The plugin adds a task called ```extoolsInfo``` that will dump on the console all global settings like the paths used and all referenced extools, with their variables, in YAML format:
+
+```
+$ gradlew extoolsInfo
+...
+globalconfig:
+  repositoryUrl: http://...
+  localCache: ...
+  extractDir: ...
+tools:
+  -
+    alias: alias_1
+    realname: dummy_1
+    variables:
+      CMAKE_PREFIX_PATH: ...
+      DUMMY1_DIR: ...
+      DUMMY1_STRING: Value of DUMMY1_STRING
+      DUMMY1_VAR: Value of DUMMY1_VAR
+      DUMMY_STRING: Value of DUMMY_STRING from dummy_1
+      PATH: ...
+    variablesToSetInEnv:
+      - DUMMY1_DIR
+      - DUMMY1_STRING
+      - DUMMY_STRING
+    variablesToAppendInEnv:
+      - CMAKE_PREFIX_PATH
+      - PATH
+  -
+    alias: alias_2
+    realname: dummy_1
+    ...
+```
+
+
 
 ### Retrieving extool variable values from other tasks
 
