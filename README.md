@@ -11,7 +11,7 @@ Let's assume you want to call the program "myclitool" in your build, and that "m
 ```
 // Apply the extools plugin, update the version if required.
 plugins {
-    id 'com.github.ocroquette.extools' version '1.6'
+    id 'com.github.ocroquette.extools' version '1.7'
 }
 
 // Configure the plugin
