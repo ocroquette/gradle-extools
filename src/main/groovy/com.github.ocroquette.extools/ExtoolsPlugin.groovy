@@ -59,7 +59,8 @@ class ExtoolsPlugin implements Plugin<Project> {
                         ant.unzip(src: src,
                                 dest: dest,
                                 overwrite: "false")
-                        // Unfortunately, ant.unzip doesn't restore the file permissions
+                        // Unfortunately, ant.unzip doesn't restore the file permissions, so programs and scripts will
+                        // fail to start on OSes like macOS and Linux.
                         // As a workaround, set all files as executables
                         dest.eachFileRecurse(groovy.io.FileType.FILES) {
                             it.setExecutable(true)
