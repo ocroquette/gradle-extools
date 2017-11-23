@@ -14,6 +14,8 @@ class ExtoolsPlugin implements Plugin<Project> {
         addExtension(project)
 
         project.task(EXTOOLS_FETCH) {
+            description "Fetches all referenced extools from the remote repository"
+            group "Extools"
             doLast {
                 ExtoolsPluginConfiguration configuration = project.extensions.extools.configurationState.get()
 
@@ -37,6 +39,8 @@ class ExtoolsPlugin implements Plugin<Project> {
         }
 
         project.task(EXTOOLS_EXTRACT) {
+            description "Extracts all referenced extools that have been fetched previously into the local extraction directory"
+            group "Extools"
             dependsOn EXTOOLS_FETCH
             doLast {
                 ExtoolsPluginConfiguration configuration = project.extensions.extools.configurationState.get()
@@ -65,6 +69,8 @@ class ExtoolsPlugin implements Plugin<Project> {
             }
         }
         project.task(EXTOOLS_LOAD) {
+            description "Loads the meta-information of all referenced extools from the local extraction directory"
+            group "Extools"
             dependsOn EXTOOLS_EXTRACT
             doLast {
                 ExtoolsPluginConfiguration configuration = project.extensions.extools.configurationState.get()
