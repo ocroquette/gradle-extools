@@ -9,6 +9,7 @@ class ExtoolsPlugin implements Plugin<Project> {
     public static final String EXTOOLS_FETCH = 'extoolsFetch'
     public static final String EXTOOLS_EXTRACT = 'extoolsExtract'
     public static final String EXTOOLS_LOAD = 'extoolsLoad'
+    public static final String EXTOOLS_INFO = 'extoolsInfo'
 
     void apply(Project project) {
         addExtension(project)
@@ -87,6 +88,41 @@ class ExtoolsPlugin implements Plugin<Project> {
                     ExtoolConfiguration conf = reader.readFromDir(dir)
 
                     configuration.configurationOfTool[realName] = conf
+                }
+            }
+        }
+
+        project.task(EXTOOLS_INFO) {
+            description "Shows the meta-information of all referenced extools"
+            group "Extools"
+            dependsOn EXTOOLS_LOAD
+            doLast {
+                ExtoolsPluginConfiguration configuration = project.extensions.extools.configurationState.get()
+                ExtoolConfigurationReader reader = new ExtoolConfigurationReader()
+
+                println "globalconfig:"
+                println "  repositoryUrl: " + configuration.remoteRepositoryUrl
+                println "  localCache: " + configuration.localCache
+                println "  extractDir: " + configuration.extractDir
+                println "tools:"
+
+                configuration.tools.each { alias, realName ->
+                    println "  -"
+                    println "    alias: $alias"
+                    println "    realname: $realName"
+                    println "    variables:"
+                    ExtoolConfiguration toolConf = configuration.configurationOfTool[realName]
+                    toolConf.variables.each { variable, value ->
+                        println "      $variable: $value"
+                    }
+                    println "    variablesToSetInEnv:"
+                    toolConf.variablesToSetInEnv.each { variable ->
+                        println "      - $variable"
+                    }
+                    println "    variablesToAppendInEnv:"
+                    toolConf.variablesToAppendInEnv.each { variable ->
+                        println "      - $variable"
+                    }
                 }
             }
         }
