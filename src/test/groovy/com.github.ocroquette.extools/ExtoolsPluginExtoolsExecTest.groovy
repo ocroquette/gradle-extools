@@ -147,8 +147,8 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
         def expectedEnv = getSysEnv()
         expectedEnv["PRINTENVVARS_BIN"] = new File(extractDir, "printenvvars/bin").canonicalPath
         expectedEnv["CMAKE_PREFIX_PATH"] =
-                new File(extractDir, "dummy_1/cmake").canonicalPath + File.pathSeparator +
-                        new File(extractDir, "dummy_1/cmake_").canonicalPath + File.pathSeparator +
+                new File(extractDir, "dummy_1/cmake_").canonicalPath + File.pathSeparator +
+                        new File(extractDir, "dummy_1/cmake").canonicalPath + File.pathSeparator +
                         new File(extractDir, "dummy_2/cmake2").canonicalPath
         expectedEnv["DUMMY_STRING"] = "Value of DUMMY_STRING from dummy_2"
         expectedEnv["DUMMY1_STRING"] = "Value of DUMMY1_STRING"

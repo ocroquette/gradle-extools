@@ -63,9 +63,9 @@ class ExtoolConfigurationReader {
             throw new RuntimeException("Syntax error, expecting ${nExpectedArguments} arguments at ${confFile.absolutePath}:$lineNumber")
 
         def ACTION_SET = "set"
-        def ACTION_APPEND = "append"
+        def ACTION_PREPEND = "prepend"
         def action = fields[0]
-        checkArgument(action, [ACTION_SET, ACTION_APPEND],"action")
+        checkArgument(action, [ACTION_SET, ACTION_PREPEND],"action")
 
         def TYPE_VAR = "var"
         def TYPE_ENV = "env"
@@ -90,26 +90,26 @@ class ExtoolConfigurationReader {
             result.variables.put(varName, value)
             if (varType == TYPE_ENV) {
                 if (result.variablesToAppendInEnv.contains(varName)) {
-                    throw new RuntimeException("TODO")
+                    throw new RuntimeException("Cannot set value for ${varName} at ${confFile.absolutePath}:$lineNumber, it is already used in a ${ACTION_PREPEND} statement")
                 }
                 result.variablesToSetInEnv.add(varName)
             }
         }
-        else if ( action == ACTION_APPEND) {
+        else if ( action == ACTION_PREPEND) {
             String separator = ( valueType == VALUETYPE_PATH ? File.pathSeparator : "")
-            result.variables.put(varName, appendString(result.variables[varName], value, separator))
+            result.variables.put(varName, prependString(result.variables[varName], value, separator))
             if ( result.variablesToSetInEnv.contains(varName)) {
-                throw new RuntimeException("TODO")
+                throw new RuntimeException("Cannot prepend value for ${varName} at ${confFile.absolutePath}:$lineNumber, it is already used in a ${ACTION_SET} statement")
             }
             result.variablesToAppendInEnv.add(varName)
         }
     }
 
-    private String appendString(String previousValue, String newValue, String separator) {
+    private String prependString(String previousValue, String newValue, String separator) {
         if (previousValue == null)
             return newValue
         else {
-            return previousValue + separator + newValue
+            return newValue + separator + previousValue
         }
     }
 
