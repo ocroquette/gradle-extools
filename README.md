@@ -79,7 +79,8 @@ As you can see, the extension ```.ext``` is used for extools packages.
 
 Creating a repository is very easy, just put the file ```mytoolkit.ext``` in a directory in the local file system or on an HTTP server, and set ```extools.repositoryUrl``` accordingly.
 
-Check out also [gradle-extools-recipes](https://github.com/ocroquette/gradle-extools-recipes), where you will find some recipes for some common tools.
+It is recommended to automate the package creation. Gradle itself is the perfect tool since it provides all the required features like unzipping, zipping, file manipulation... See [gradle-extools-recipes](https://github.com/ocroquette/gradle-extools-recipes) for sample recipes.
+
 
 ## Additional features
 ### Explicit tool list
