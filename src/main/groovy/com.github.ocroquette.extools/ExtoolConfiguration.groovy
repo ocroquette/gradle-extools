@@ -15,8 +15,8 @@ class ExtoolConfiguration {
     private Set<String> variablesToSetInEnv = []
 
     /**
-     * Names of the variables to append to the existing environment variables
+     * Names of the variables to prepend to the existing environment variables
      */
-    private Set<String> variablesToAppendInEnv = []
+    private Set<String> variablesToPrependInEnv = []
 
 }

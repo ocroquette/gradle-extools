@@ -89,7 +89,7 @@ class ExtoolConfigurationReader {
         if ( action == ACTION_SET) {
             result.variables.put(varName, value)
             if (varType == TYPE_ENV) {
-                if (result.variablesToAppendInEnv.contains(varName)) {
+                if (result.variablesToPrependInEnv.contains(varName)) {
                     throw new RuntimeException("Cannot set value for ${varName} at ${confFile.absolutePath}:$lineNumber, it is already used in a ${ACTION_PREPEND} statement")
                 }
                 result.variablesToSetInEnv.add(varName)
@@ -101,7 +101,7 @@ class ExtoolConfigurationReader {
             if ( result.variablesToSetInEnv.contains(varName)) {
                 throw new RuntimeException("Cannot prepend value for ${varName} at ${confFile.absolutePath}:$lineNumber, it is already used in a ${ACTION_SET} statement")
             }
-            result.variablesToAppendInEnv.add(varName)
+            result.variablesToPrependInEnv.add(varName)
         }
     }
 

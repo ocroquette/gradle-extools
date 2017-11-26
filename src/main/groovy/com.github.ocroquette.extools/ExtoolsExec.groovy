@@ -47,13 +47,13 @@ class ExtoolsExec extends AbstractExecTask {
             realNamesUsed.add(realName)
         }
 
-        Set variablesToExtendInEnv = []
+        Set variablesToPrependInEnv = []
 
         realNamesUsed.each { realName ->
-            variablesToExtendInEnv.addAll(pluginConfiguration.configurationOfTool[realName].variablesToAppendInEnv)
+            variablesToPrependInEnv.addAll(pluginConfiguration.configurationOfTool[realName].variablesToPrependInEnv)
         }
 
-        variablesToExtendInEnv.each { variableName ->
+        variablesToPrependInEnv.each { variableName ->
             def paths = []
 
             realNamesUsed.each { realName ->

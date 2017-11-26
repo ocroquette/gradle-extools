@@ -99,7 +99,7 @@ tools:
       - DUMMY1_DIR
       - DUMMY1_STRING
       - DUMMY_STRING
-    variablesToAppendInEnv:
+    variablesToPrependInEnv:
       - CMAKE_PREFIX_PATH
       - PATH
   -
@@ -116,7 +116,7 @@ tools:
       - DUMMY1_DIR
       - DUMMY1_STRING
       - DUMMY_STRING
-    variablesToAppendInEnv:
+    variablesToPrependInEnv:
       - CMAKE_PREFIX_PATH
       - PATH
 .*""")

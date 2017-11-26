@@ -119,8 +119,8 @@ class ExtoolsPlugin implements Plugin<Project> {
                     toolConf.variablesToSetInEnv.each { variable ->
                         println "      - $variable"
                     }
-                    println "    variablesToAppendInEnv:"
-                    toolConf.variablesToAppendInEnv.each { variable ->
+                    println "    variablesToPrependInEnv:"
+                    toolConf.variablesToPrependInEnv.each { variable ->
                         println "      - $variable"
                     }
                 }

@@ -1,15 +1,23 @@
 # Extools plugin for Gradle
 ## Introduction
-Groovy and Gradle are very good at downloading JVM based dependencies from jcenter or Maven central, but they come short when it comes to download external tools like compilers.
+Groovy and Gradle are very good at downloading JVM based dependencies from jcenter or Maven central, but they come short when it comes to download external tools (like compilers or installer generator).
 
-The "extools" plugin for Gradle provides a convenient way to do so. 
+The "extools" plugin for Gradle provides a convenient way to do so. It is basically a portable app manager within Gradle. It downloads the tools a Gradle build requires automatically, extracts them and make them available for execution, without any installation or changes to the host system.
+
+## Prerequisites
+
+The extools plugin have no special dependencies apart from:
+* Gradle 4
+* Any Java runtime supported by Gradle
+
+You should also have basic understanding of Gradle. More precisely, you need to be able to start a new Gradle project. The recommended way is to use the wrapper, which provides two major benefits to your users: automatic download of Gradle itself (no local installation required), and consistency of the Gradle version used.
 
 ## Basic usage
 
 Let's assume you want to call the program "myclitool" in your build, and that "myclitool" is provided as part of "mytoolkit", and you want it to be downloaded and used automatically when required. Just add the following lines to your build.gradle:
 
 ```
-// Apply the extools plugin, update the version if required.
+// Apply the extools plugin (please check and use the latest version)
 plugins {
     id 'com.github.ocroquette.extools' version '1.7'
 }
@@ -56,10 +64,10 @@ dir/extools.conf
 The file "extools.conf" allows to extend the environment of the host when the extool is used. In this simple case, ```extools.conf``` should contain the following line:
 
 ```
-append;env;path;PATH;bin
+prepend;env;path;PATH;bin
 ```
 
-When this extool will be used, the "bin" subdirectory will be added to the PATH variable, allowing to find "myclitools".
+When this extool will be used, the "bin" subdirectory will be added at the beginning of the PATH variable, allowing to find "myclitools".
 
 We now need to package the extool. It is very easy, since the ZIP format is used. Just make sure that "extools.conf" is at the root of the content of the ZIP file, and that the level "dir" is not used. For instance, when using zip on the command line on a Unix like system:
 ```
@@ -114,7 +122,7 @@ task execMyCliTool(type:ExtoolsExec) {
 
 ### Organizing and structuring packages
 
-Structure of packages are supported:
+You can structure the extools if you want:
 
 ```
 extools {
@@ -150,10 +158,10 @@ So far, we only extended the PATH variable in ```extools.conf```, but it is poss
 
 ```
 # Extend the PATH environment variable with the bin/ sub-directory
-append;env;path;PATH;bin
+prepend;env;path;PATH;bin
 
 # Extend the CMAKE_PREFIX_PATH environment variable with the lib/cmake sub-directory
-append;env;path;CMAKE_PREFIX_PATH;lib/cmake
+prepend;env;path;CMAKE_PREFIX_PATH;lib/cmake
 ```
 
 The separator inserted betweeen the different paths in the variable value is the standard separator used by the operating system for the PATH variable, e.g. ';' on Windows and ':' on Linux, macOS and Unix.
@@ -200,7 +208,7 @@ tools:
       - DUMMY1_DIR
       - DUMMY1_STRING
       - DUMMY_STRING
-    variablesToAppendInEnv:
+    variablesToPrependInEnv:
       - CMAKE_PREFIX_PATH
       - PATH
   -

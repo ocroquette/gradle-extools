@@ -23,7 +23,7 @@ class ExtoolsConfigurationReaderTest extends Specification {
                 PATH: new File(relativePath, "bin").canonicalPath
         ], result.variables, []) == ""
         Comparator.compareAsSets(["DUMMY1_STRING", "DUMMY_STRING", "DUMMY1_DIR"], result.variablesToSetInEnv) == ""
-        Comparator.compareAsSets(["CMAKE_PREFIX_PATH", "PATH"], result.variablesToAppendInEnv)  == ""
+        Comparator.compareAsSets(["CMAKE_PREFIX_PATH", "PATH"], result.variablesToPrependInEnv)  == ""
     }
 }
 
