@@ -107,7 +107,7 @@ task execMyCliTool(type:ExtoolsExec) {
 ```
 
 ### Tool aliases
-The example above will work, but it is not nice to have the version number specified twice (once in the ```extools {}``` block, and once in the task definition). To avoid this, you can define an alias for the extools in the main configuration:
+The example above will work, but it is not nice to have the version number specified twice (once in the ```extools {}``` block, and once in the task definition). To avoid this, you can define an alias for the extools in the main configuration:
 
 ```
 extools {
@@ -125,7 +125,7 @@ task execMyCliTool(type:ExtoolsExec) {
 
 ### Organizing and structuring packages
 
-You can structure the extools in the repository in subfolders if you want. They must be refered to with the complete relative path in the build script:
+You can structure the extools in the repository in subfolders if you want. In the build script, they must be refered to with their complete relative path:
 
 ```
 extools {
@@ -135,7 +135,16 @@ extools {
 }
 ```
 
-You can use aliases as described above to remove or change the naming structure within a given build. 
+You can use aliases as described above to remove or change the naming structure within a given build:
+
+```
+extools {
+    tools "dev/gcc": "compiler/gcc-v7.1",
+          "misc/perl": "lang/perl-5.26",
+          "misc/python": "lang/python-2.7.14"
+}
+```
+
 
 ### Customizing the execution environment
 
@@ -180,7 +189,7 @@ set;env;string;SOME_VAR;Value of SOME_VAR
 
 ### Local cache and extract directory
 
-By default, the plugin will use the global ```.gradle``` directory to store downloaded packages and extract them, so that they can be reused among workspaces and save time. You can specify other directories if required as properties on the command line or in a ```gradle.properties``` file.
+By default, the plugin will store downloaded packages and extract them in the user directory ```.gradle/extools```, so that they can be reused, saving time and space. You can specify other directories if required as properties on the command line or in a ```gradle.properties``` file.
 
 ```
 extools.localCache=<localpath>
