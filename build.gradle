@@ -5,6 +5,10 @@ plugins {
     id 'com.gradle.plugin-publish' version '0.9.9'
 }
 
+repositories {
+    jcenter() // For grolifant
+}
+
 rootProject.group='com.github.ocroquette'
 rootProject.version='1.8-SNAPSHOT'
 
@@ -25,6 +29,8 @@ pluginBundle {
 
 dependencies {
     compile gradleApi()
+
+    compile 'org.ysb33r.gradle:grolifant:0.5.1'
 
     testCompile gradleTestKit()
     testCompile "org.spockframework:spock-core:1.1-groovy-2.4"

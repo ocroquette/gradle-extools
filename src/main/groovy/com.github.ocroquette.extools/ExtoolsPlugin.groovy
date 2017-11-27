@@ -2,6 +2,8 @@ package com.github.ocroquette.extools
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.ysb33r.grolifant.api.ExtensionUtils
+import org.ysb33r.grolifant.api.exec.ExecSpecInstantiator
 
 
 class ExtoolsPlugin implements Plugin<Project> {
@@ -135,6 +137,12 @@ class ExtoolsPlugin implements Plugin<Project> {
                 }
             }
         }
+
+        println "Here"
+        ExtensionUtils.addExecProjectExtension('extoolsexec', project, { Project p ->
+            new ExtoolsExecSpec(p)
+        } as ExecSpecInstantiator<ExtoolsExecSpec>)
+
     }
 
     void addExtension(Project project) {
