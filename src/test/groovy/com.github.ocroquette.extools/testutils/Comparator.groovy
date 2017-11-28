@@ -1,6 +1,16 @@
-package com.github.ocroquette.extools
+package com.github.ocroquette.extools.testutils
 
+/**
+ * Utility functions to compare structures likes maps or sets
+ */
 class Comparator {
+    /**
+     * Compare the given maps and return a string describing the differences, if any
+     * @param reference the reference map
+     * @param actual the actual map
+     * @param excludedKeys the list of keys to ignore in both maps
+     * @return a description of the differences, or the empty string if there are none
+     */
     static String compareMaps(def reference, def actual, def excludedKeys) {
         String differences = ""
 
@@ -22,6 +32,12 @@ class Comparator {
         return differences
     }
 
+    /**
+     * Compare the given collections as sets and return a string describing the differences, if any
+     * @param reference the reference collection
+     * @param actual the actual collection
+     * @return a description of the differences, or the empty string if there are none
+     */
     static String compareAsSets(def reference, def actual) {
         def unexpected = []
         def missing = []
@@ -42,7 +58,6 @@ class Comparator {
             differences += "Missing: " + missing.join(",")
 
         return differences
-
     }
 }
 

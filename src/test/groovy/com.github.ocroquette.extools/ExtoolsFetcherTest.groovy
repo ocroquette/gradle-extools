@@ -1,6 +1,6 @@
 package com.github.ocroquette.extools
 
-import com.github.ocroquette.extools.ExtoolsFetcher
+import com.github.ocroquette.extools.internal.utils.ExtoolsFetcher
 import com.github.tomakehurst.wiremock.junit.WireMockRule
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder

@@ -9,7 +9,7 @@ plugins {
     id 'com.github.ocroquette.extools'
 }
 
-import com.github.ocroquette.extools.ExtoolsExec
+import com.github.ocroquette.extools.tasks.ExtoolExec
 
 extools {
     tool "dummy_1"
@@ -21,7 +21,7 @@ extools {
 def isWindows = ( System.getProperty("os.name").toLowerCase().contains("windows") ? true : false )
 def scriptExtension = ( isWindows ? "bat" : "sh" )
 
-task execDummy1(type:ExtoolsExec) {
+task execDummy1(type:ExtoolExec) {
     usingExtools "dummy_1", "dummy_2"
 
     commandLine "dummy_1.$scriptExtension"
@@ -30,11 +30,11 @@ task execDummy1(type:ExtoolsExec) {
 task execDummy1ThenDummy2 {
     dependsOn "extoolsLoad"
     doLast {
-        execExtool {
+        extoolexec {
             usingExtools "dummy_1"
             executable "dummy_1.$scriptExtension"
         }
-        execExtool {
+        extoolexec {
             usingExtools "dummy_2"
             executable "dummy_2.$scriptExtension"
         }
@@ -42,42 +42,42 @@ task execDummy1ThenDummy2 {
 }
 
 
-task execDummy2(type:ExtoolsExec) {
+task execDummy2(type:ExtoolExec) {
     usingExtools "dummy_1", "dummy_2"
 
     commandLine "dummy_2.$scriptExtension"
 }
 
-task execPrintEnvVarsWithInvalidPath(type:ExtoolsExec) {
+task execPrintEnvVarsWithInvalidPath(type:ExtoolExec) {
     usingExtools "dummy_1"
 
     commandLine "printenvvars.$scriptExtension", "%dumpFile%"
 }
 
-task execPrintEnvVarsWithImplicitPath(type:ExtoolsExec) {
+task execPrintEnvVarsWithImplicitPath(type:ExtoolExec) {
     usingExtools "printenvvars"
 
     commandLine "printenvvars.$scriptExtension", "%dumpFile%"
 }
 
-task execToolInSubdir(type:ExtoolsExec) {
+task execToolInSubdir(type:ExtoolExec) {
     usingExtools "subdir/dummy_3"
 
     commandLine "dummy_3.$scriptExtension"
 }
 
-task execPrintEnvVarsWithEnvironmentVariableSingle(type:ExtoolsExec) {
+task execPrintEnvVarsWithEnvironmentVariableSingle(type:ExtoolExec) {
     usingExtools "printenvvars", "dummy_2"
 
     commandLine "printenvvars.$scriptExtension", "%dumpFile%"
 }
 
-task execUseAll(type:ExtoolsExec) {
+task execUseAll(type:ExtoolExec) {
     commandLine "printenvvars.$scriptExtension", "%dumpFile%"
 }
 
 
-task execSystemCommand(type:ExtoolsExec) {
+task execSystemCommand(type:ExtoolExec) {
     if ( isWindows ) {
         commandLine "dir.exe"
     }

@@ -1,4 +1,4 @@
-package com.github.ocroquette.extools
+package com.github.ocroquette.extools.internal.utils
 
 /**
  * Finds executable in the PATH
@@ -6,11 +6,11 @@ package com.github.ocroquette.extools
  * Reproduces the native mechanisms that Windows and Unix-like systems use to find executable in the directories
  * specified in the PATH variables.
  *
- * This is necessary because Java doesn't allow to modify the environment variables of the current process, and we
- * actually don't want to do that anyway, since it's a state used for the whole process and the new child processes.
+ * Java doesn't allow to overwrite the PATH variable of the current process, and we  actually don't want to do that
+ * anyway, since it is used for the whole process and any new child processes.
  * Theoretically, we could also use ProcessBuilder to start a CMD.EXE or bash process to force the system to resolve
- * the PATH, but reproducing the system algorithms is probably easier to understand, test and debug.
- *
+ * the PATH, but reproducing the system algorithms is probably easier to understand, test and debug. It also avoids
+ * an unnecessary process.
  */
 class PathResolver {
 

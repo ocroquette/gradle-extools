@@ -1,5 +1,7 @@
 package com.github.ocroquette.extools
 
+import com.github.ocroquette.extools.internal.config.ExtoolConfigurationReader
+import com.github.ocroquette.extools.testutils.Comparator
 import spock.lang.Specification
 
 class ExtoolsConfigurationReaderTest extends Specification {

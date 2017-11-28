@@ -1,4 +1,4 @@
-package com.github.ocroquette.extools
+package com.github.ocroquette.extools.internal.config
 
 import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging

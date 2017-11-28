@@ -22,20 +22,29 @@ plugins {
     id 'com.github.ocroquette.extools' version '1.7'
 }
 
-// Configure the plugin
+// Configure the plugin, assuming a repo URL has already been set as property (see below)
 extools {
     // Define a dependency to the extool called "mytoolkit"
     tool "mytoolkit"
 }
 
-// Import the definition of the custom task type
-import com.github.ocroquette.extools.ExtoolsExec
-
-// Define a task that uses the external tools
-task execMyCliTool(type:ExtoolsExec) {
+// Define a task that uses the external tools, similarly to Gradle's standard "Exec" task
+import com.github.ocroquette.extools.tasks.ExtoolExec
+task execMyCliTool(type:ExtoolExec) {
     commandLine "myclitool"
 }
 
+// You can also execute an extool directly, similarly to Gradle's standard "exec {}" statement
+task doStuff {
+    dolast {
+        extoolexec {
+            commandLine "myclitool" // first run
+        }
+        extoolexec {
+            commandLine "myclitool" // second run
+        }
+    }
+}
 ```
 
 For this to work, you will need to set the URL of the  extool repository a property, typically in gradle.properties:
@@ -83,6 +92,21 @@ It is recommended to automate the package creation. Gradle itself is the perfect
 
 
 ## Additional features
+### Execution options
+
+When executing an extool as ```ExtoolExec``` task or with ```extoolexec```, the following options are supported. Most of them are the same as in Gradle's standard exec mechanism.
+
+
+* ```executable```: the name of the executable
+* ```args```: a list of arguments to provide to the executable 
+* ```environment```: a map containing the environment variables to set in the child process
+* ```standardOutput```: the output stream to use for the error stream of the child process
+* ```errorOutput```: the output stream to use for the error stream
+* ```standardInput```: the input stream to use for the input stream of the child process
+* ```ignoreExitValue```: a boolean that indicates if the non zero exit values from the child process must be ignored
+* ```workingDir```: a file or path to set as working directory for the child process
+* ```usingExtools```: see below
+
 ### Explicit tool list
 
 Let's assume you need too major, incompatible versions of the tool kit and the following script:
@@ -92,15 +116,15 @@ extools {
     tools "mytoolkit-v1.3", "mytoolkit-v2.6"
 }
 
-task execMyCliTool(type:ExtoolsExec) {
+task execMyCliTool(type:ExtoolExec) {
     commandLine "myclitool"
 }
 ```
 
-By default, the ExtoolsExec task will use all extools specified in the ```extools {}``` block, but in this case, you should specify which exact tool to use:
+By default, the ExtoolExec task will use all extools specified in the ```extools {}``` block, but in this case, you should specify which exact tool to use:
 
 ```
-task execMyCliTool(type:ExtoolsExec) {
+task execMyCliTool(type:ExtoolExec) {
     usingExtools "mytoolkit-v1.3"
     commandLine "myclitool"
 }
@@ -117,7 +141,7 @@ extools {
           "mytoolkit-v2" : "mytoolkit-v2.6"
 }
 
-task execMyCliTool(type:ExtoolsExec) {
+task execMyCliTool(type:ExtoolExec) {
     usingExtools "mytoolkit-v1"
     commandLine "myclitool"
 }
@@ -148,7 +172,7 @@ extools {
 
 ### Customizing the execution environment
 
-```ExtoolsExec``` extends the standard ```Exec``` Gradle task, so all the features of the later are available, for instance:
+```ExtoolExec``` extends the standard ```Exec``` Gradle task, so all the features of the later are available, for instance:
 
 ```
 task execMyCliTool(type:Exec) {
@@ -258,10 +282,10 @@ ${->project.extensions.extools.getValue("toolalias", "MY_VARIABLE")}
 If you need the variable value only within Gradle and not as an environment variables in the child processes, use ```var``` instead of ```env``` in the ```extools.conf``` file:
 
 ```
-# ExtoolsExec will set the environment variable MY_VARIABLE to "Value of MY_VARIABLE"
+# ExtoolExec will set the environment variable MY_VARIABLE to "Value of MY_VARIABLE"
 set;env;string;MY_VARIABLE;Value of MY_VARIABLE
 
-# ExtoolsExec will NOT set the environment variable MYVAR,
+# ExtoolExec will NOT set the environment variable MYVAR,
 # but you can still access the value with getValue()
 set;var;string;MY_VARIABLE;Value of MY_VARIABLE
 ```

@@ -9,7 +9,7 @@ plugins {
     id 'com.github.ocroquette.extools'
 }
 
-import com.github.ocroquette.extools.ExtoolsExec
+import com.github.ocroquette.extools.tasks.ExtoolExec
 
 extools {
     %remoteRepositoryUrlStatement%
@@ -19,7 +19,7 @@ extools {
 def isWindows = ( System.getProperty("os.name").toLowerCase().contains("windows") ? true : false )
 def scriptExtension = ( isWindows ? "bat" : "sh" )
 
-task execDummy1(type:ExtoolsExec) {
+task execDummy1(type:ExtoolExec) {
     usingExtools "dummy_1"
 
     commandLine "dummy_1.$scriptExtension"

@@ -1,8 +1,15 @@
-package com.github.ocroquette.extools
+package com.github.ocroquette.extools.internal.config
 
+import com.github.ocroquette.extools.internal.config.ExtoolConfiguration
+import com.github.ocroquette.extools.internal.config.ExtoolsPluginConfiguration
 import org.gradle.api.Project
 import org.gradle.api.provider.PropertyState
 
+/**
+ * Provides the DSL to configure the plugin itself, e.g. repo URL, tools used...
+ *
+ * The configuration is stored as PropertyState<ExtoolsPluginConfiguration> in the project
+ */
 class ExtoolsPluginExtension {
     final PropertyState<ExtoolsPluginConfiguration> configurationState
 

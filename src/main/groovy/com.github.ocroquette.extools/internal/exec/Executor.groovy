@@ -1,9 +1,13 @@
-package com.github.ocroquette.extools
+package com.github.ocroquette.extools.internal.exec
 
+import com.github.ocroquette.extools.internal.utils.PathResolver
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
 
+/**
+ * Interprets and executes extool calls provided as closures
+ */
 class Executor {
     final private Project project
 

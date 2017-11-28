@@ -1,7 +1,10 @@
-package com.github.ocroquette.extools
+package com.github.ocroquette.extools.internal.exec
 
-import org.gradle.api.Project
-
+/**
+ * Provides the DSL to configure a call to an extool
+ *
+ * It mimics the DSL used by Gradle's standard Exec task and exec {} statement
+ */
 class ExecutionConfiguration {
     String executable
     List<String> args = []

@@ -1,5 +1,6 @@
 package com.github.ocroquette.extools
 
+import com.github.ocroquette.extools.testutils.Comparator
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification

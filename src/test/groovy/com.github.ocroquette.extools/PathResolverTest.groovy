@@ -1,6 +1,6 @@
 package com.github.ocroquette.extools
 
-import com.github.ocroquette.extools.PathResolver
+import com.github.ocroquette.extools.internal.utils.PathResolver
 import spock.lang.Specification
 
 class PathResolverTest extends Specification{

@@ -1,5 +1,12 @@
 package com.github.ocroquette.extools
 
+import com.github.ocroquette.extools.internal.config.ExtoolConfiguration
+import com.github.ocroquette.extools.internal.config.ExtoolConfigurationReader
+import com.github.ocroquette.extools.internal.config.ExtoolsPluginConfiguration
+import com.github.ocroquette.extools.internal.config.ExtoolsPluginExtension
+import com.github.ocroquette.extools.internal.exec.Executor
+import com.github.ocroquette.extools.internal.utils.ExtoolsFetcher
+import com.github.ocroquette.extools.tasks.ExtoolExec
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -127,16 +134,16 @@ class ExtoolsPlugin implements Plugin<Project> {
             }
         }
 
-        // Add an implicit dependency to 'extoolsLoad' for all ExtoolsExec tasks
+        // Add an implicit dependency to 'extoolsLoad' for all ExtoolExec tasks
         project.afterEvaluate {
             project.tasks.each { task ->
-                if ( task instanceof ExtoolsExec) {
+                if ( task instanceof ExtoolExec) {
                     task.dependsOn EXTOOLS_LOAD
                 }
             }
         }
 
-        project.extensions.extraProperties.set("execExtool", { Closure c ->
+        project.extensions.extraProperties.set("extoolexec", { Closure c ->
             new Executor(project).executeConfiguration(c)
         })
     }

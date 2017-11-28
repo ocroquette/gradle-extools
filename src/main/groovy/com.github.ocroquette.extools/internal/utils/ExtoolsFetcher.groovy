@@ -1,10 +1,10 @@
-package com.github.ocroquette.extools
+package com.github.ocroquette.extools.internal.utils
 
 import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
 
 /**
- * Fetches extools archives into the provided local directory
+ * Fetches extools archives from the repository into the provided local directory
  */
 class ExtoolsFetcher {
     private URL remoteRepoUrl

@@ -1,4 +1,4 @@
-package com.github.ocroquette.extools
+package com.github.ocroquette.extools.internal.config
 
 /**
  * Configuration of a single tool from the ".extool" file

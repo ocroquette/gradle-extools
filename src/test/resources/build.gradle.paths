@@ -9,13 +9,13 @@ plugins {
     id 'com.github.ocroquette.extools'
 }
 
-import com.github.ocroquette.extools.ExtoolsExec
+import com.github.ocroquette.extools.tasks.ExtoolExec
 
-task printLocalCache(type:ExtoolsExec) {
+task printLocalCache(type:ExtoolExec) {
     commandLine "echo", "localCache=" + "${->project.extensions.extools.configurationState.get().localCache.canonicalPath}"
 }
 
-task printExtractDir(type:ExtoolsExec) {
+task printExtractDir(type:ExtoolExec) {
     commandLine "echo", "extractDir=" + "${->project.extensions.extools.configurationState.get().extractDir.canonicalPath}"
 }
 
