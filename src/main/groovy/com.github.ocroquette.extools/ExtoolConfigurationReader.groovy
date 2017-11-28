@@ -4,7 +4,7 @@ import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
 
 /**
- * Reads and parses the configuration file of an extool
+ * Reads and parses the conf file of an extool
  */
 class ExtoolConfigurationReader {
 
@@ -28,7 +28,7 @@ class ExtoolConfigurationReader {
         if (confFile.isFile()) {
             readFromFile(confFile)
         } else {
-            throw new RuntimeException("Extool configuration file doesn't exist: ${confFile.absolutePath}")
+            throw new RuntimeException("Extool conf file doesn't exist: ${confFile.absolutePath}")
         }
         return result
     }

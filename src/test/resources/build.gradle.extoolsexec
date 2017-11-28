@@ -27,6 +27,21 @@ task execDummy1(type:ExtoolsExec) {
     commandLine "dummy_1.$scriptExtension"
 }
 
+task execDummy1ThenDummy2 {
+    dependsOn "extoolsLoad"
+    doLast {
+        execExtool {
+            usingExtools "dummy_1"
+            executable "dummy_1.$scriptExtension"
+        }
+        execExtool {
+            usingExtools "dummy_2"
+            executable "dummy_2.$scriptExtension"
+        }
+    }
+}
+
+
 task execDummy2(type:ExtoolsExec) {
     usingExtools "dummy_1", "dummy_2"
 

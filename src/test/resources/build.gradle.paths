@@ -12,10 +12,10 @@ plugins {
 import com.github.ocroquette.extools.ExtoolsExec
 
 task printLocalCache(type:ExtoolsExec) {
-    commandLine "echo", "localCache=" + project.extensions.extools.configurationState.get().localCache.canonicalPath
+    commandLine "echo", "localCache=" + "${->project.extensions.extools.configurationState.get().localCache.canonicalPath}"
 }
 
 task printExtractDir(type:ExtoolsExec) {
-    commandLine "echo", "extractDir=" + project.extensions.extools.configurationState.get().extractDir.canonicalPath
+    commandLine "echo", "extractDir=" + "${->project.extensions.extools.configurationState.get().extractDir.canonicalPath}"
 }
 

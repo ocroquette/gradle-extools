@@ -36,6 +36,24 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
         result.output.contains("Output from dummy 1")
     }
 
+    def "execExtool is working twice in a row"() {
+        given:
+        def taskName = 'execDummy1ThenDummy2'
+
+        when:
+        def result = new GradleRunnerHelper(
+                temporaryRoot: temporaryFolder.newFolder(),
+                buildScript: generateBuildScript(),
+                repositoryUrl: REPO_URL,
+                taskName: taskName,
+        ).build()
+
+        then:
+        result.task(":$taskName").outcome == SUCCESS
+        result.output.contains("Output from dummy 1")
+        result.output.contains("Output from dummy 2")
+    }
+
     def "External tools dummy_2 is usable"() {
         given:
         def taskName = 'execDummy2'

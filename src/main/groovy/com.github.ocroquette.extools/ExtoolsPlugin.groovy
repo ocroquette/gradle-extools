@@ -83,7 +83,7 @@ class ExtoolsPlugin implements Plugin<Project> {
                     if (!dir.isDirectory()) {
                         throw new RuntimeException("External tool directory doesn't exist: ${dir.absolutePath}")
                     }
-                    logger.info("extools: Loading tool configuration from ${dir.absolutePath}")
+                    logger.info("extools: Loading tool conf from ${dir.absolutePath}")
 
                     ExtoolConfiguration conf = reader.readFromDir(dir)
 
@@ -135,6 +135,10 @@ class ExtoolsPlugin implements Plugin<Project> {
                 }
             }
         }
+
+        project.extensions.extraProperties.set("execExtool", { Closure c ->
+            new Executor(project).executeConfiguration(c)
+        })
     }
 
     void addExtension(Project project) {
