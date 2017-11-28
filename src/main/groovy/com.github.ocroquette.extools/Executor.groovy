@@ -13,13 +13,21 @@ class Executor {
         this.project = p
     }
 
+    void executeConfiguration(Closure closure) {
+        ExecutionConfiguration conf = ExecutionConfiguration.fromClosure(closure)
+        executeConfiguration(conf)
+    }
 
-    Closure getExecClosure(Closure closure) {
+    void executeConfiguration(ExecutionConfiguration conf) {
+        getExecClosure(conf)()
+    }
+
+    private Closure getExecClosure(Closure closure) {
         ExecutionConfiguration conf = ExecutionConfiguration.fromClosure(closure)
         return getExecClosure(conf)
     }
 
-    Closure getExecClosure(ExecutionConfiguration conf) {
+    private Closure getExecClosure(ExecutionConfiguration conf) {
         extendEnvironment(conf)
 
         resolveExecutable(conf)
@@ -44,14 +52,6 @@ class Executor {
         }
     }
 
-    void executeConfiguration(Closure closure) {
-        ExecutionConfiguration conf = ExecutionConfiguration.fromClosure(closure)
-        executeConfiguration(conf)
-    }
-
-    void executeConfiguration(ExecutionConfiguration conf) {
-        getExecClosure(conf)()
-    }
 
     private getAliasesUsed(ExecutionConfiguration conf) {
         if (conf.usingExtools.size() == 0) {
