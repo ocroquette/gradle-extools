@@ -15,6 +15,7 @@ extools {
     tool "dummy_1"
     tool "dummy_2"
     tool "printenvvars"
+    tool "printargs"
     tool "subdir/dummy_3"
 }
 
@@ -74,6 +75,11 @@ task execPrintEnvVarsWithEnvironmentVariableSingle(type:ExtoolExec) {
 
 task execUseAll(type:ExtoolExec) {
     commandLine "printenvvars.$scriptExtension", "%dumpFile%"
+}
+
+
+task passFileAsArgument(type:ExtoolExec) {
+    commandLine "printargs.$scriptExtension", new File("a_file")
 }
 
 

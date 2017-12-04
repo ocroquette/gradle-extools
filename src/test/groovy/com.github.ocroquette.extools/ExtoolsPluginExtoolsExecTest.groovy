@@ -175,6 +175,7 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
         expectedEnv["PATH"] =
                 new File(extractDir, "dummy_1/bin").canonicalPath + File.pathSeparator +
                         new File(extractDir, "dummy_2/bin").canonicalPath + File.pathSeparator +
+                        new File(extractDir, "printargs/bin").canonicalPath + File.pathSeparator +
                         new File(extractDir, "printenvvars/bin").canonicalPath + File.pathSeparator +
                         new File(extractDir, "subdir/dummy_3/bin").canonicalPath + File.pathSeparator +
                         System.getenv("PATH")
@@ -209,6 +210,23 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
 
         then:
         result.task(":$taskName").outcome == SUCCESS
+    }
+
+    def "Pass Files as arguments"() {
+        given:
+        def taskName = 'passFileAsArgument'
+
+        when:
+        def result = new GradleRunnerHelper(
+                temporaryRoot: temporaryFolder.newFolder(),
+                buildScript: generateBuildScript(),
+                repositoryUrl: REPO_URL,
+                taskName: taskName,
+        ).build()
+
+        then:
+        result.task(":$taskName").outcome == SUCCESS
+        result.output.contains("ARG1=a_file")
     }
 
     def parseEnvVariablesFromStdout(String stdout) {

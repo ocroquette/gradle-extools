@@ -29,8 +29,16 @@ class ExecutionConfiguration {
         this.executable = s
     }
 
-    def args(String... l) {
-        this.args = l
+    def args(Object... l) {
+        this.args = []
+        for (int i = 0 ; i < l.length ; i++) {
+            Object o = l.getAt(i)
+            // String and File make sense, assume other types are a mistake:
+            if (!o instanceof String && !o instanceof File) {
+                throw new RuntimeException("Invalid type for argument $i: " + o.getClass().simpleName)
+            }
+            this.args.push(o.toString())
+        }
     }
 
     def environment(def e) {
@@ -65,11 +73,13 @@ class ExecutionConfiguration {
         usingExtools.addAll(aliases)
     }
 
-    void commandLine(String... components) {
-        this.executable = components[0]
+    void commandLine(Object... components) {
+        this.executable(components[0])
         if (components.size() == 1)
-            args = []
-        else
-            args = components[1..components.size() - 1]
+            this.args = []
+        else {
+            Object[] slice = components[1..components.size() - 1]
+            this.args(slice)
+        }
     }
 }
