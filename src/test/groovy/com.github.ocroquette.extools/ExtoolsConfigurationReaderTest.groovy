@@ -15,7 +15,7 @@ class ExtoolsConfigurationReaderTest extends Specification {
         def result = reader.readFromDir(new File(relativePath))
 
         expect:
-        Comparator.compareMaps([
+        Comparator.compareEnvs([
                 DUMMY_STRING: "Value of DUMMY_STRING from dummy_1",
                 DUMMY1_STRING: "Value of DUMMY1_STRING",
                 DUMMY1_DIR: new File(relativePath, ".").canonicalPath,

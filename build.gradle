@@ -29,6 +29,7 @@ dependencies {
     testCompile gradleTestKit()
     testCompile "org.spockframework:spock-core:1.1-groovy-2.4"
     testCompile "com.github.tomakehurst:wiremock:2.10.1"
+    testCompile "org.apache.commons:commons-text:1.1"
 }
 
 repositories {

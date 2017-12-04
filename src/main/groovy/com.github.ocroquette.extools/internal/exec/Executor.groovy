@@ -1,6 +1,7 @@
 package com.github.ocroquette.extools.internal.exec
 
 import com.github.ocroquette.extools.internal.utils.PathResolver
+import com.github.ocroquette.extools.internal.utils.PathVarUtils
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
@@ -94,14 +95,16 @@ class Executor {
                 }
             }
 
-            def systemValue = System.getenv(variableName)
+            String systemCase = getSystemCase(variableName)
+
+            def systemValue = System.getenv(systemCase)
             if (systemValue != null) {
                 systemValue.split(File.pathSeparator).each { it ->
                     paths.add(it)
                 }
             }
 
-            conf.environment[variableName] = paths.join(File.pathSeparator)
+            conf.environment[systemCase] = paths.join(File.pathSeparator)
         }
 
         Set variablesToSetInEnv = []
@@ -114,10 +117,19 @@ class Executor {
             realNamesUsed.each { realName ->
                 def value = pluginConfiguration.configurationOfTool[realName].variables[variableName]
                 if (value != null) {
-                    conf.environment[variableName] = value
+                    String systemCase = getSystemCase(variableName)
+                    conf.environment[systemCase] = value
                 }
             }
         }
+    }
+
+    private getSystemCase(String variableName) {
+        for ( String systemVar: System.getenv().keySet()) {
+            if (systemVar.toLowerCase() == variableName.toLowerCase())
+                return systemVar
+        }
+        return variableName
     }
 
     private resolveExecutable(ExecutionConfiguration conf) {
@@ -126,7 +138,8 @@ class Executor {
 
         boolean explicitPathProvided = conf.executable.contains("\\") || conf.executable.contains("/")
         if (!explicitPathProvided) {
-            def pathsToSearchForExec = conf.environment["PATH"].split(File.pathSeparator)
+            def systemPathVariableName = PathVarUtils.getSystemPathVariableName()
+            def pathsToSearchForExec = conf.environment[systemPathVariableName].split(File.pathSeparator)
             def searchPaths = pathsToSearchForExec.collect { new File(it) }
             PathResolver resolver = new PathResolver(searchPaths)
             logger.info("Looking for ${conf.executable} in $searchPaths")

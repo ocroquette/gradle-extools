@@ -11,11 +11,21 @@ plugins {
 
 import com.github.ocroquette.extools.tasks.ExtoolExec
 
+def isWindows = ( System.getProperty("os.name").toLowerCase().contains("windows") ? true : false )
+
 task printLocalCache(type:ExtoolExec) {
-    commandLine "echo", "localCache=" + "${->project.extensions.extools.configurationState.get().localCache.canonicalPath}"
+    def lazyString = "${->project.extensions.extools.configurationState.get().localCache.canonicalPath}"
+    if ( ! isWindows )
+        commandLine "echo", "localCache=" + lazyString
+    else
+        commandLine "cmd", "/c", "echo", "localCache=" + lazyString
 }
 
 task printExtractDir(type:ExtoolExec) {
-    commandLine "echo", "extractDir=" + "${->project.extensions.extools.configurationState.get().extractDir.canonicalPath}"
+    def lazyString = "${->project.extensions.extools.configurationState.get().extractDir.canonicalPath}"
+    if ( ! isWindows )
+        commandLine "echo", "extractDir=" + lazyString
+    else
+        commandLine "cmd", "/c", "echo", "extractDir=" + lazyString
 }
 

@@ -110,9 +110,8 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
         def taskName = 'execPrintEnvVarsWithImplicitPath'
         def extractDir = temporaryFolder.newFolder()
         def expectedEnv = getSysEnv()
-        expectedEnv["PATH"] = new File(extractDir, "printenvvars/bin").canonicalPath + File.pathSeparator + System.getenv("PATH")
+        expectedEnv["PATH"] = new File(extractDir, "printenvvars/bin").canonicalPath + File.pathSeparator + getSystemPath()
         expectedEnv["PRINTENVVARS_BIN"] = new File(extractDir, "printenvvars/bin").canonicalPath
-
         when:
         def result = new GradleRunnerHelper(
                 temporaryRoot: temporaryFolder.newFolder(),
@@ -140,7 +139,7 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
         expectedEnv["PATH"] =
                 new File(extractDir, "printenvvars/bin").canonicalPath + File.pathSeparator +
                         new File(extractDir, "dummy_2/bin").canonicalPath + File.pathSeparator +
-                        System.getenv("PATH")
+                        getSystemPath()
 
         when:
         def result = new GradleRunnerHelper(
@@ -178,7 +177,7 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
                         new File(extractDir, "printargs/bin").canonicalPath + File.pathSeparator +
                         new File(extractDir, "printenvvars/bin").canonicalPath + File.pathSeparator +
                         new File(extractDir, "subdir/dummy_3/bin").canonicalPath + File.pathSeparator +
-                        System.getenv("PATH")
+                        getSystemPath()
         expectedEnv["DUMMY1_DIR"] = new File(extractDir, "dummy_1/").canonicalPath
 
         when:
@@ -226,7 +225,7 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
 
         then:
         result.task(":$taskName").outcome == SUCCESS
-        result.output.contains("ARG1=a_file")
+        result.output.matches("(?s).*ARG1=\"?a_file\"?.*")
     }
 
     def parseEnvVariablesFromStdout(String stdout) {
@@ -241,25 +240,43 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
     def compareEnv(def reference, def actual) {
         Set<String> excludedKeys = []
         excludedKeys.addAll(
-                ["SHLVL", // Special Unix variables
-                 "_",
-                 "PWD",
-                 "OLDPWD",
-                 "XPC_SERVICE_NAME" // Not sure what this one is about, sample value: "com.jetbrains.intellij.ce.13020"
+                [
+                        // Special Unix variables
+                        "SHLVL",
+                        "_",
+                        "PWD",
+                        "OLDPWD",
+                        "XPC_SERVICE_NAME", // Not sure what this one is about, sample value: "com.jetbrains.intellij.ce.13020"
+                        // Special Windows variables
+                        "PROMPT",
+                        "=::"
                 ]
         )
-        return Comparator.compareMaps(reference, actual, excludedKeys)
+        return Comparator.compareEnvs(reference, actual, excludedKeys)
     }
 
     private String generateBuildScript() {
-        this.getClass().getResource('/build.gradle.extoolsexec').text.replaceAll(
-                '%dumpFile%',
-                dumpFile.canonicalPath)
+        String template = this.getClass().getResource('/build.gradle.extoolsexec').text
+        String dumpFileEscaped = org.apache.commons.text.StringEscapeUtils.escapeJava(dumpFile.canonicalPath)
+        String result = template.replace('%dumpFile%', dumpFileEscaped)
+        return result
     }
 
     private getSysEnv() {
         def envCopy = [:]
         envCopy.putAll(System.getenv())
         return envCopy
+    }
+
+    private getSystemPath() {
+        return trimPath(System.getenv("PATH"))
+    }
+
+    // Extools removes any leading or trailing separators
+    private trimPath(String s) {
+        String sep = File.pathSeparator
+        s = s.replaceAll("^$sep+", "")
+        s = s.replaceAll("$sep+\$", "")
+        return s
     }
 }

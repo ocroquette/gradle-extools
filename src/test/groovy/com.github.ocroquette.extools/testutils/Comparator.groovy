@@ -1,18 +1,33 @@
 package com.github.ocroquette.extools.testutils
 
+import com.github.ocroquette.extools.internal.utils.Os
+
 /**
  * Utility functions to compare structures likes maps or sets
  */
 class Comparator {
+    private static convertToKeysToLowercase(def map) {
+        def newMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER)
+        newMap.putAll(map)
+        return newMap
+    }
+
     /**
-     * Compare the given maps and return a string describing the differences, if any
+     * Compare the given environments and return a string describing the differences, if any
      * @param reference the reference map
      * @param actual the actual map
      * @param excludedKeys the list of keys to ignore in both maps
+     * @param ignoreKeyCase ignore the case of the map keys
      * @return a description of the differences, or the empty string if there are none
      */
-    static String compareMaps(def reference, def actual, def excludedKeys) {
+    static String compareEnvs(def reference, def actual, def excludedKeys) {
         String differences = ""
+
+        if (Os.isWindows()) {
+            // Ignore case of variable names
+            reference = convertToKeysToLowercase(reference)
+            actual = convertToKeysToLowercase(actual)
+        }
 
         Set<String> allKeys = []
         allKeys.addAll(reference.keySet())

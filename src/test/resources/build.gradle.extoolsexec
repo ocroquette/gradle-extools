@@ -85,7 +85,7 @@ task passFileAsArgument(type:ExtoolExec) {
 
 task execSystemCommand(type:ExtoolExec) {
     if ( isWindows ) {
-        commandLine "dir.exe"
+        commandLine "cmd", "/c", "dir"
     }
     else {
         commandLine "ls"

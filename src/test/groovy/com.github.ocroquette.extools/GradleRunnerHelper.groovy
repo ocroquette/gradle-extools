@@ -43,24 +43,26 @@ class GradleRunnerHelper {
     }
 
     private String generateGradleProperties() {
-        def gradleProperties = []
+        Properties gradleProperties = new Properties()
+
         if ( repositoryUrl != null )
-            gradleProperties.add('extools.repositoryUrl=' + repositoryUrl)
+            gradleProperties.setProperty('extools.repositoryUrl', repositoryUrl)
 
         if ( ! useDefaultLocalCache ) {
             if (localCache != null)
-                gradleProperties.add('extools.localCache=' + localCache)
+                gradleProperties.setProperty('extools.localCache', localCache)
             else
-                gradleProperties.add('extools.localCache=' + new File(temporaryRoot, "localCache").canonicalPath)
+                gradleProperties.setProperty('extools.localCache', new File(temporaryRoot, "localCache").canonicalPath)
         }
 
         if ( ! useDefaultExtractDir ) {
             if (extractDir != null)
-                gradleProperties.add('extools.extractDir=' + extractDir)
+                gradleProperties.setProperty('extools.extractDir', extractDir)
             else
-                gradleProperties.add('extools.extractDir=' + new File(temporaryRoot, "extractDir").canonicalPath)
+                gradleProperties.setProperty('extools.extractDir', new File(temporaryRoot, "extractDir").canonicalPath)
         }
-
-        return gradleProperties.join("\n")
+        StringWriter writer = new StringWriter()
+        gradleProperties.store(writer, null)
+        return writer.getBuffer().toString()
     }
 }
