@@ -52,3 +52,11 @@ task accessHomeDir {
         println "alias_1_home=" + project.extensions.extools.getHomeDir("alias_1").canonicalPath
     }
 }
+
+task resolveAlias {
+    dependsOn "extoolsLoad"
+
+    doLast {
+        println "alias_1=" + project.extensions.extools.resolveAlias("alias_1")
+    }
+}

@@ -64,7 +64,6 @@ class ExtoolsPluginExToolsExecAliasesTest extends Specification {
         result.output.contains("Value of DUMMY1_VAR")
     }
 
-    // accessHome
     def "Access home dir"() {
         given:
         def taskName = 'accessHomeDir'
@@ -82,8 +81,26 @@ class ExtoolsPluginExToolsExecAliasesTest extends Specification {
 
         then:
         result.task(":$taskName").outcome == SUCCESS
-        result.output.contains("alias_1_home=" + new File(extractDir, "dummy_1").canonicalPath)
+        result.output.contains("alias_1_home=" + ( new File(extractDir, "dummy_1").canonicalPath) )
     }
+
+    def "Resolve alias"() {
+        given:
+        def taskName = 'resolveAlias'
+
+        when:
+        def result = new GradleRunnerHelper(
+                temporaryRoot: temporaryFolder.newFolder(),
+                buildScript: generateBuildScript(),
+                repositoryUrl: REPO_URL,
+                taskName: taskName,
+        ).build()
+
+        then:
+        result.task(":$taskName").outcome == SUCCESS
+        result.output.contains("alias_1=dummy_1")
+    }
+
 
     def "Show information about extools"() {
         given:
