@@ -44,3 +44,11 @@ task accessVariable {
         println project.extensions.extools.getValue("alias_1", "DUMMY1_VAR")
     }
 }
+
+task accessHomeDir {
+    dependsOn "extoolsLoad"
+
+    doLast {
+        println "alias_1_home=" + project.extensions.extools.getHomeDir("alias_1").canonicalPath
+    }
+}

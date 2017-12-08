@@ -64,6 +64,27 @@ class ExtoolsPluginExToolsExecAliasesTest extends Specification {
         result.output.contains("Value of DUMMY1_VAR")
     }
 
+    // accessHome
+    def "Access home dir"() {
+        given:
+        def taskName = 'accessHomeDir'
+        def extractDir = temporaryFolder.newFolder()
+
+        when:
+        def result = new GradleRunnerHelper(
+                temporaryRoot: temporaryFolder.newFolder(),
+                buildScript: generateBuildScript(),
+                repositoryUrl: REPO_URL,
+                taskName: taskName,
+                useDefaultExtractDir: false,
+                extractDir: extractDir
+        ).build()
+
+        then:
+        result.task(":$taskName").outcome == SUCCESS
+        result.output.contains("alias_1_home=" + new File(extractDir, "dummy_1").canonicalPath)
+    }
+
     def "Show information about extools"() {
         given:
         def taskName = 'extoolsInfo'
