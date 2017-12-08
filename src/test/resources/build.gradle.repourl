@@ -1,4 +1,4 @@
-// This build script is called from ExtoolsPluginExtoolsExecTest, please see there for more details
+// This build script is called from ExtoolsPluginRepoUrlTest, please see there for more details
 
 plugins {
     // We have to use the plugins DSL syntax in our tests because of TestKit, see
