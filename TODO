@@ -1,0 +1,3 @@
+- add a way to retrieve the home dir of a tool
+- add doFirst and doLast to ExtoolExec
+
