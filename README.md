@@ -7,6 +7,7 @@ The "extools" plugin for Gradle provides a convenient way to do so. It is basica
 ## Prerequisites
 
 The extools plugin have no special dependencies apart from:
+
 * Gradle 4
 * Any Java runtime supported by Gradle
 
@@ -17,9 +18,9 @@ You need also basic understanding of Gradle. More precisely, you need to be able
 Let's assume that you have a Gradle project and you want to call the program ```myclitool``` from your build, and that ```myclitool``` is provided as part of ```mytoolkit```. Just add the following lines to your build.gradle:
 
 ```
-// Apply the extools plugin (please check and use the latest version)
+// Apply the extools plugin (please use the latest version)
 plugins {
-    id 'com.github.ocroquette.extools' version '1.7'
+    id 'com.github.ocroquette.extools' version '1.11'
 }
 
 // Configure the plugin, assuming a repo URL has already been set as property (see below)
@@ -31,6 +32,7 @@ extools {
 // Define a task that uses the external tools, similarly to Gradle's standard "Exec" task
 import com.github.ocroquette.extools.tasks.ExtoolExec
 task execMyCliTool(type:ExtoolExec) {
+    usingExtools "mytoolkit"
     commandLine "myclitool"
 }
 
@@ -38,10 +40,12 @@ task execMyCliTool(type:ExtoolExec) {
 task doStuff {
     dolast {
         extoolexec {
-            commandLine "myclitool" // first run
+            usingExtools "mytoolkit"
+            commandLine "myclitool", "first run"
         }
         extoolexec {
-            commandLine "myclitool" // second run
+            usingExtools "mytoolkit"
+            commandLine "myclitool", "second run"
         }
     }
 }
@@ -63,7 +67,7 @@ extools.repositoryUrl=http://
 
 There is no central, public extools repository, and there will probably never be any, so you will have to create and maintain your own.
 
-Creating an extool package is pretty easy. Just put the put all the content you need in a directory ```dir```, and add a text file called ```extools.conf```. Here is the file structure you should have at this point:
+Creating an extool package is pretty easy. Just put the put all the content you need in a directory ```dir```, and add a text file called ```extools.conf```. Here is an example:
 
 ```
 dir/bin/myclitool
@@ -105,44 +109,36 @@ When executing an extool as ```ExtoolExec``` task or with ```extoolexec```, the 
 * ```standardInput```: the input stream to use for the input stream of the child process
 * ```ignoreExitValue```: a boolean that indicates if the non zero exit values from the child process must be ignored
 * ```workingDir```: a file or path to set as working directory for the child process
-* ```usingExtools```: see below
+* ```usingExtools```: the list of aliases of the extools to use for the execution
 
-### Explicit tool list
+### Using tools implicitly
 
-Let's assume you need too major, incompatible versions of the tool kit and the following script:
+In case you need some tools to be available implicitly in all executions, use the ```usingExtools``` statement in the global configuration:
 
 ```
 extools {
-    tools "mytoolkit-v1.3", "mytoolkit-v2.6"
+    tools "mytoolkit"
+    usingExtools "mytoolkit" // "mytoolkit" will be available in all extools executions
 }
 
 task execMyCliTool(type:ExtoolExec) {
-    commandLine "myclitool"
-}
-```
-
-By default, the ExtoolExec task will use all extools specified in the ```extools {}``` block, but in this case, you should specify which exact tool to use:
-
-```
-task execMyCliTool(type:ExtoolExec) {
-    usingExtools "mytoolkit-v1.3"
     commandLine "myclitool"
 }
 ```
 
 ### Tool aliases
-The example above will work, but it is not nice to have the version number specified twice (once in the ```extools {}``` block, and once in the task definition). To avoid this, you can define an alias for the extools in the main configuration:
+Usually, the real name of the extools will have a version number in it. When you update the tool, you will have to update the name everywhere it is used, in the global ```extools {}``` block and in the task definitions. To avoid this, you can define aliases in the main configuration:
 
 ```
 extools {
     // "mytoolkit-v1.3" will be loaded from the repository, and made available
-    // under the alias "mytoolkit-v1" within the build
-    tools "mytoolkit-v1" : "mytoolkit-v1.3",
-          "mytoolkit-v2" : "mytoolkit-v2.6"
+    // under the alias "mytoolkit" within the build
+    tools "mytoolkit": "mytoolkit-v1.3",
+          "othertoolkit" : "othertoolkit-v2.6-rc3"
 }
 
 task execMyCliTool(type:ExtoolExec) {
-    usingExtools "mytoolkit-v1"
+    usingExtools "mytoolkit"
     commandLine "myclitool"
 }
 ```
@@ -163,8 +159,8 @@ You can use aliases as described above to remove or change the naming structure 
 
 ```
 extools {
-    tools "dev/gcc": "compiler/gcc-v7.1",
-          "misc/perl": "lang/perl-5.26",
+    tools "dev/gcc":     "compiler/gcc-v7.1",
+          "misc/perl":   "lang/perl-5.26",
           "misc/python": "lang/python-2.7.14"
 }
 ```
@@ -285,7 +281,7 @@ If you need the variable value only within Gradle and not as an environment vari
 # ExtoolExec will set the environment variable MY_VARIABLE to "Value of MY_VARIABLE"
 set;env;string;MY_VARIABLE;Value of MY_VARIABLE
 
-# ExtoolExec will NOT set the environment variable MYVAR,
+# The plugin will NOT set the environment variable MYVAR,
 # but you can still access the value with getValue()
 set;var;string;MY_VARIABLE;Value of MY_VARIABLE
 ```
