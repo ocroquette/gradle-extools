@@ -15,7 +15,7 @@ class ExecutionConfiguration {
     OutputStream standardOutput = null
     File workingDir = null
 
-    def usingExtools = []
+    List<String> usingExtools = []
 
     static ExecutionConfiguration fromClosure(Closure c) {
         ExecutionConfiguration conf = new ExecutionConfiguration()

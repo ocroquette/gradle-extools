@@ -110,8 +110,13 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
         def taskName = 'execPrintEnvVarsWithImplicitPath'
         def extractDir = temporaryFolder.newFolder()
         def expectedEnv = getSysEnv()
-        expectedEnv["PATH"] = new File(extractDir, "printenvvars/bin").canonicalPath + File.pathSeparator + getSystemPath()
+        expectedEnv["PATH"] = new File(extractDir, "printenvvars/bin").canonicalPath + File.pathSeparator +
+                new File(extractDir, "dummy_2/bin").canonicalPath + File.pathSeparator +
+                getSystemPath()
         expectedEnv["PRINTENVVARS_BIN"] = new File(extractDir, "printenvvars/bin").canonicalPath
+        expectedEnv["CMAKE_PREFIX_PATH"] = new File(extractDir, "dummy_2/cmake2").canonicalPath
+        expectedEnv["DUMMY_STRING"] = "Value of DUMMY_STRING from dummy_2"
+        expectedEnv["DUMMY2_STRING"] = "Value of DUMMY2_STRING"
         when:
         def result = new GradleRunnerHelper(
                 temporaryRoot: temporaryFolder.newFolder(),
@@ -171,12 +176,12 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
         expectedEnv["DUMMY_STRING"] = "Value of DUMMY_STRING from dummy_2"
         expectedEnv["DUMMY1_STRING"] = "Value of DUMMY1_STRING"
         expectedEnv["DUMMY2_STRING"] = "Value of DUMMY2_STRING"
-        expectedEnv["PATH"] =
+        expectedEnv["PATH"] = // Order must match the one used in the usingExtools statement:
                 new File(extractDir, "dummy_1/bin").canonicalPath + File.pathSeparator +
-                        new File(extractDir, "dummy_2/bin").canonicalPath + File.pathSeparator +
-                        new File(extractDir, "printargs/bin").canonicalPath + File.pathSeparator +
                         new File(extractDir, "printenvvars/bin").canonicalPath + File.pathSeparator +
+                        new File(extractDir, "printargs/bin").canonicalPath + File.pathSeparator +
                         new File(extractDir, "subdir/dummy_3/bin").canonicalPath + File.pathSeparator +
+                        new File(extractDir, "dummy_2/bin").canonicalPath + File.pathSeparator +
                         getSystemPath()
         expectedEnv["DUMMY1_DIR"] = new File(extractDir, "dummy_1/").canonicalPath
 

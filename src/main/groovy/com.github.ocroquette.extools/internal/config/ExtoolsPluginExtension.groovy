@@ -45,6 +45,18 @@ class ExtoolsPluginExtension {
         tool(map)
     }
 
+    void usingExtools(String alias) {
+        // Check we got only valid aliases (will throw exception otherwise):
+        resolveAlias(alias)
+        configurationState.get().aliasesUsedGlobally.add(alias)
+    }
+
+    void usingExtools(List<String> aliases) {
+        aliases.each {
+            usingExtools(it)
+        }
+    }
+
     void extractDir(String s) {
         configurationState.get().extractDir = new File(s)
     }

@@ -24,4 +24,9 @@ class ExtoolsPluginConfiguration {
      * Maps the tool real name (e.g. "mingw-gcc-win32-v7.2.1") to the corresponding ExtoolConfiguration
      */
     final configurationOfTool = [:]
+
+    /**
+     * Aliases to add implicitly when executing
+     */
+    final List<String> aliasesUsedGlobally = []
 }

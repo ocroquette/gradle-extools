@@ -59,11 +59,13 @@ class Executor {
 
 
     private getAliasesUsed(ExecutionConfiguration conf) {
-        if (conf.usingExtools.size() == 0) {
-            def pluginConfiguration = project.extensions.extools.configurationState.get()
-            return pluginConfiguration.tools.keySet().sort()
-        } else
-            return conf.usingExtools
+        List<String> aliasesUsed = []
+
+        aliasesUsed.addAll(conf.usingExtools)
+        aliasesUsed.addAll(project.extensions.extools.configurationState.get().aliasesUsedGlobally)
+        aliasesUsed.unique(true)
+
+        return aliasesUsed
     }
 
 
@@ -125,7 +127,7 @@ class Executor {
     }
 
     private getSystemCase(String variableName) {
-        for ( String systemVar: System.getenv().keySet()) {
+        for (String systemVar : System.getenv().keySet()) {
             if (systemVar.toLowerCase() == variableName.toLowerCase())
                 return systemVar
         }

@@ -17,13 +17,15 @@ extools {
     tool "printenvvars"
     tool "printargs"
     tool "subdir/dummy_3"
+
+    usingExtools "dummy_2"
 }
 
 def isWindows = ( System.getProperty("os.name").toLowerCase().contains("windows") ? true : false )
 def scriptExtension = ( isWindows ? "bat" : "sh" )
 
 task execDummy1(type:ExtoolExec) {
-    usingExtools "dummy_1", "dummy_2"
+    usingExtools "dummy_1"
 
     commandLine "dummy_1.$scriptExtension"
 }
@@ -36,7 +38,6 @@ task execDummy1ThenDummy2 {
             executable "dummy_1.$scriptExtension"
         }
         extoolexec {
-            usingExtools "dummy_2"
             executable "dummy_2.$scriptExtension"
         }
     }
@@ -44,8 +45,6 @@ task execDummy1ThenDummy2 {
 
 
 task execDummy2(type:ExtoolExec) {
-    usingExtools "dummy_1", "dummy_2"
-
     commandLine "dummy_2.$scriptExtension"
 }
 
@@ -68,17 +67,20 @@ task execToolInSubdir(type:ExtoolExec) {
 }
 
 task execPrintEnvVarsWithEnvironmentVariableSingle(type:ExtoolExec) {
-    usingExtools "printenvvars", "dummy_2"
+    usingExtools "printenvvars"
 
     commandLine "printenvvars.$scriptExtension", "%dumpFile%"
 }
 
 task execUseAll(type:ExtoolExec) {
+    // Unorder the list, we check if the variables are set in the right order in the test
+    usingExtools "dummy_1", "printenvvars", "printargs", "subdir/dummy_3"
     commandLine "printenvvars.$scriptExtension", "%dumpFile%"
 }
 
 
 task passFileAsArgument(type:ExtoolExec) {
+    usingExtools "printargs"
     commandLine "printargs.$scriptExtension", new File("a_file")
 }
 
