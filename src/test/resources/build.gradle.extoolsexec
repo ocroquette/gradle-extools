@@ -48,6 +48,13 @@ task execDummy2(type:ExtoolExec) {
     commandLine "dummy_2.$scriptExtension"
 }
 
+task prependEnvPath(type:ExtoolExec) {
+    usingExtools "printenvvars"
+    prependEnvPaths "PATH": new File("."), // Test with file
+        "NEW_PATH": ["new_path", "new_path2"] // Test with strings
+    commandLine "printenvvars.$scriptExtension", "%dumpFile%"
+}
+
 task execPrintEnvVarsWithInvalidPath(type:ExtoolExec) {
     usingExtools "dummy_1"
 

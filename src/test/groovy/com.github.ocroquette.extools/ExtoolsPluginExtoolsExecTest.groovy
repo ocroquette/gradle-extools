@@ -72,6 +72,35 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
         result.output.contains("Output from dummy 2")
     }
 
+    def "Paths can be extended"() {
+        def taskName = 'prependEnvPath'
+        def extractDir = temporaryFolder.newFolder()
+        def expectedEnv = getSysEnv()
+        expectedEnv["PATH"] = new File(".").canonicalPath + File.pathSeparator +
+                new File(extractDir, "printenvvars/bin").canonicalPath + File.pathSeparator +
+                new File(extractDir, "dummy_2/bin").canonicalPath + File.pathSeparator +
+                getSystemPath()
+        expectedEnv["PRINTENVVARS_BIN"] = new File(extractDir, "printenvvars/bin").canonicalPath
+        expectedEnv["CMAKE_PREFIX_PATH"] = new File(extractDir, "dummy_2/cmake2").canonicalPath
+        expectedEnv["DUMMY_STRING"] = "Value of DUMMY_STRING from dummy_2"
+        expectedEnv["DUMMY2_STRING"] = "Value of DUMMY2_STRING"
+        expectedEnv["NEW_PATH"] = "new_path" + File.pathSeparator + "new_path2"
+        when:
+        def result = new GradleRunnerHelper(
+                temporaryRoot: temporaryFolder.newFolder(),
+                buildScript: generateBuildScript(),
+                repositoryUrl: REPO_URL,
+                extractDir: extractDir.canonicalPath,
+                taskName: taskName,
+        ).build()
+        def actualEnv = parseEnvVariablesFromStdout(dumpFile.text)
+
+        then:
+        result.task(":$taskName").outcome == SUCCESS
+        compareEnv(expectedEnv, actualEnv) == ""
+    }
+
+
     def "External tool in sub-directory is usable"() {
         given:
         def taskName = 'execToolInSubdir'
@@ -219,6 +248,7 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
     def "Pass Files as arguments"() {
         given:
         def taskName = 'passFileAsArgument'
+        def expected = new File("a_file").canonicalPath
 
         when:
         def result = new GradleRunnerHelper(
@@ -230,7 +260,7 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
 
         then:
         result.task(":$taskName").outcome == SUCCESS
-        result.output.matches("(?s).*ARG1=\"?a_file\"?.*")
+        result.output.matches("(?s).*ARG1=\"?$expected\"?.*")
     }
 
     def parseEnvVariablesFromStdout(String stdout) {

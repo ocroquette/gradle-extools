@@ -14,6 +14,7 @@ class ExecutionConfiguration {
     InputStream standardInput = null
     OutputStream standardOutput = null
     File workingDir = null
+    Map<String, String> prependEnvPath = [:]
 
     List<String> usingExtools = []
 
@@ -29,15 +30,39 @@ class ExecutionConfiguration {
         this.executable = s
     }
 
+    private stringify(Object o, String what) {
+        // String and File make sense, assume other types are a mistake:
+        if (o instanceof  String)
+            return o
+        else if (o instanceof File) {
+            return o.canonicalPath
+        }
+        else {
+            throw new RuntimeException("Invalid type for $what: " + o.getClass().simpleName)
+        }
+    }
+
+    def prependEnvPaths(def map) {
+        map.each { name,  value ->
+            def values = []
+            if ( isCollectionOrArray(value) ) {
+                values.addAll(value)
+            }
+            else {
+                values.add(value)
+            }
+            def strings = values.collect { o ->
+                stringify(o, "prependEnvPaths argument for \"$name\"")
+            }
+            prependEnvPath[name] = strings.join(File.pathSeparator)
+        }
+    }
+
     def args(Object... l) {
         this.args = []
         for (int i = 0 ; i < l.length ; i++) {
             Object o = l.getAt(i)
-            // String and File make sense, assume other types are a mistake:
-            if (!o instanceof String && !o instanceof File) {
-                throw new RuntimeException("Invalid type for argument $i: " + o.getClass().simpleName)
-            }
-            this.args.push(o.toString())
+            this.args.push(stringify(o, "argument $i"))
         }
     }
 
@@ -81,5 +106,9 @@ class ExecutionConfiguration {
             Object[] slice = components[1..components.size() - 1]
             this.args(slice)
         }
+    }
+
+    private boolean isCollectionOrArray(object) {
+        [Collection, Object[]].any { it.isAssignableFrom(object.getClass()) }
     }
 }

@@ -168,13 +168,15 @@ extools {
 
 ### Customizing the execution environment
 
-```ExtoolExec``` extends the standard ```Exec``` Gradle task, so all the features of the later are available, for instance:
+```ExtoolExec``` and ```extoolext``` extend the standard ```Exec``` Gradle task, so all the features of the later are available. Additionally, you can prepend paths to environment variables using prependEnvPaths:
+
 
 ```
 task execMyCliTool(type:Exec) {
 	workingDir "../some/folder"
 
 	environment "VAR": "VALUE"
+	prependEnvPaths "PATH": new File(workingDir, "subdir")
 
 	commandLine 'myclitool'
 
@@ -185,6 +187,7 @@ task execMyCliTool(type:Exec) {
 	}
 }
 ```
+
 
 ### Setting and extending environment variables
 

@@ -83,12 +83,17 @@ class Executor {
 
         Set<String> variablesToPrependInEnv = []
 
+        variablesToPrependInEnv.addAll(conf.prependEnvPath.keySet())
         realNamesUsed.each { realName ->
             variablesToPrependInEnv.addAll(pluginConfiguration.configurationOfTool[realName].variablesToPrependInEnv)
         }
 
         variablesToPrependInEnv.each { variableName ->
             def paths = []
+
+            if ( conf.prependEnvPath[variableName] != null ) {
+                paths.addAll(conf.prependEnvPath[variableName].split(File.pathSeparator))
+            }
 
             realNamesUsed.each { realName ->
                 pluginConfiguration.configurationOfTool[realName].variables.each { k, v ->
