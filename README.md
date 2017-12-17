@@ -1,24 +1,24 @@
 # Extools plugin for Gradle
 ## Introduction
-Groovy and Gradle are very good at downloading JVM based dependencies from jcenter or Maven central, but they come short when it comes to download external tools (like compilers or installer generators).
+Groovy and Gradle are very good at downloading Java based dependencies from jcenter or Maven central, but they come short when it comes to download external tools (like compilers or installer generators).
 
-The "extools" plugin for Gradle provides a convenient way to do so. It is basically a portable app manager within Gradle. It automatically downloads the tools requires by a Gradle build, extracts them and make them available for execution, without any installation or changes to the host system.
+The "extools" plugin for Gradle provides a convenient way to do so. It is basically a portable app manager within Gradle. It automatically downloads the tools requires by a Gradle build, extracts them and make them available for execution on the fly, without any installation or changes to the host system.
 
 ## Prerequisites
 
 The extools plugin have no special dependencies apart from:
 
 * Gradle 4
-* Any Java runtime supported by Gradle
+* Any Java runtime supported by Gradle. The Java 9 is not recommended because it displays warnings with Groovy code.
 
 You need also basic understanding of Gradle. More precisely, you need to be able to start a new Gradle project. The recommended way is to use the wrapper, which provides two major benefits to your users: automatic download of Gradle itself (no local installation required), and consistency of the Gradle version used.
 
 ## Basic usage
 
-Let's assume that you have a Gradle project and you want to call the program ```myclitool``` from your build, and that ```myclitool``` is provided as part of ```mytoolkit```. Just add the following lines to your build.gradle:
+Let's assume that you have a Gradle project and you want to call the program ```myclitool``` from your build, and that ```myclitool``` is provided as part of ```mytoolkit```. Just [check for the lastest version available](https://plugins.gradle.org/plugin/com.github.ocroquette.extools	), and add the following lines to your build.gradle:
 
 ```
-// Apply the extools plugin (please use the latest version)
+// Apply the extools plugin (using the plugin syntax introduced in Gradle 2.1)
 plugins {
     id 'com.github.ocroquette.extools' version '1.11'
 }
@@ -29,7 +29,7 @@ extools {
     tool "mytoolkit"
 }
 
-// Define a task that uses the external tools, similarly to Gradle's standard "Exec" task
+// Define a task similar similar to Gradle's standard "Exec" task, but that uses some external tools
 import com.github.ocroquette.extools.tasks.ExtoolExec
 task execMyCliTool(type:ExtoolExec) {
     usingExtools "mytoolkit"
@@ -41,11 +41,11 @@ task doStuff {
     dolast {
         extoolexec {
             usingExtools "mytoolkit"
-            commandLine "myclitool", "first run"
+            commandLine "myclitool", "CLI parameter for first run"
         }
         extoolexec {
             usingExtools "mytoolkit"
-            commandLine "myclitool", "second run"
+            commandLine "myclitool", "CLI parameter for the second run"
         }
     }
 }
@@ -65,7 +65,7 @@ extools.repositoryUrl=http://
 
 ## Creating extools packages and repositories
 
-There is no central, public extools repository, and there will probably never be any, so you will have to create and maintain your own.
+There is no central, public extools repository, and there will probably never be any, so you have to create and maintain your own.
 
 Creating an extool package is pretty easy. Just put the put all the content you need in a directory ```dir```, and add a text file called ```extools.conf```. Here is an example:
 
@@ -90,17 +90,25 @@ zip -r ../mytoolkit.ext .
 
 As you can see, the extension ```.ext``` is used for extools packages.
 
+Whithin the ZIP file, the file structure should like this:
+
+```
+bin/myclitool
+extools.conf
+```
+
 Creating a repository is very easy, just put the file ```mytoolkit.ext``` in a directory in the local file system or on an HTTP server, and set ```extools.repositoryUrl``` accordingly.
 
-It is recommended to automate the package creation. Gradle itself is the perfect tool since it provides all the required features like unzipping, zipping, file manipulation... See [gradle-extools-recipes](https://github.com/ocroquette/gradle-extools-recipes) for sample recipes.
+It is recommended to automate the generation of the packages. Gradle itself is the perfect tool since it provides all the required features like unzipping, zipping, file manipulation... See [gradle-extools-recipes](https://github.com/ocroquette/gradle-extools-recipes) for sample recipes.
 
 
 ## Additional features
 ### Execution options
 
-When executing an extool as ```ExtoolExec``` task or with ```extoolexec```, the following options are supported. Most of them are the same as in Gradle's standard exec mechanism.
+When executing an extool as ```ExtoolExec``` task or with the ```extoolexec``` statement, the following options are supported. Most of them are the same as in Gradle's standard exec mechanism.
 
 
+* ```commandLine```: the full command line with parameters, as a list
 * ```executable```: the name of the executable
 * ```args```: a list of arguments to provide to the executable 
 * ```environment```: a map containing the environment variables to set in the child process
@@ -122,6 +130,7 @@ extools {
 }
 
 task execMyCliTool(type:ExtoolExec) {
+    // No need to specify a dependency to "mytoolkit"
     commandLine "myclitool"
 }
 ```
@@ -168,7 +177,7 @@ extools {
 
 ### Customizing the execution environment
 
-```ExtoolExec``` and ```extoolext``` extend the standard ```Exec``` Gradle task, so all the features of the later are available. Additionally, you can prepend paths to environment variables using prependEnvPaths:
+```ExtoolExec``` and ```extoolexec``` extend the standard ```Exec``` Gradle task, so all the features of the later are available. Additionally, you can prepend paths to environment variables using prependEnvPaths:
 
 
 ```
@@ -210,9 +219,24 @@ To set an environment variable to a fixed string:
 set;env;string;SOME_VAR;Value of SOME_VAR
 ```
 
+
+### Using internal variables, not exported to the environment
+
+If you need the variable value only within Gradle and not as an environment variables in the child processes, use ```var``` instead of ```env``` in the ```extools.conf``` file:
+
+```
+# ExtoolExec will set the environment variable MY_VARIABLE to "Value of MY_VARIABLE"
+set;env;string;MY_VARIABLE;Value of MY_VARIABLE
+
+# The plugin will NOT set the environment variable MYVAR,
+# but you can still access the value with getValue()
+set;var;string;MY_VARIABLE;Value of MY_VARIABLE
+```
+
+
 ### Local cache and extract directory
 
-By default, the plugin will store downloaded packages and extract them in the user directory ```.gradle/extools```, so that they can be reused, saving time and space. You can specify other directories if required as properties on the command line or in a ```gradle.properties``` file.
+By default, the plugin will store downloaded packages and extract them in the user directory ```.gradle/extools```, so that they can be reused, saving time and space. This also allows for offline work. You can specify other directories if required as properties on the command line or in a ```gradle.properties``` file.
 
 ```
 extools.localCache=<localpath>
@@ -276,15 +300,17 @@ Be aware of the build phases, the task definition will be executed by Gradle dur
 ${->project.extensions.extools.getValue("toolalias", "MY_VARIABLE")}
 ```
 
-### Using internal variables, not exported to the environment
+### Resolving aliases
 
-If you need the variable value only within Gradle and not as an environment variables in the child processes, use ```var``` instead of ```env``` in the ```extools.conf``` file:
+You can resolve an alias by using the ```resolvealias()``` function:
 
 ```
-# ExtoolExec will set the environment variable MY_VARIABLE to "Value of MY_VARIABLE"
-set;env;string;MY_VARIABLE;Value of MY_VARIABLE
+task resolveAlias {
+    dependsOn "extoolsLoad"
 
-# The plugin will NOT set the environment variable MYVAR,
-# but you can still access the value with getValue()
-set;var;string;MY_VARIABLE;Value of MY_VARIABLE
+    doLast {
+        println project.extensions.extools.resolveAlias("toolalias")
+    }
+}
 ```
+
