@@ -6,6 +6,10 @@ import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
 
+import java.util.concurrent.Callable
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+
 /**
  * Interprets and executes extool calls provided as closures
  */
@@ -24,7 +28,13 @@ class Executor {
     }
 
     void executeConfiguration(ExecutionConfiguration conf) {
-        getExecClosure(conf)()
+        Closure c = getExecClosure(conf)
+        if ( conf.runInBackground() ) {
+            Executors.newSingleThreadExecutor().submit(c)
+        }
+        else {
+            c()
+        }
     }
 
     private Closure getExecClosure(Closure closure) {

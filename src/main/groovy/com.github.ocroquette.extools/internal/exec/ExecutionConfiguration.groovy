@@ -15,6 +15,7 @@ class ExecutionConfiguration {
     OutputStream standardOutput = null
     File workingDir = null
     Map<String, String> prependEnvPath = [:]
+    boolean runInBackground = false
 
     List<String> usingExtools = []
 
@@ -96,6 +97,14 @@ class ExecutionConfiguration {
 
     void usingExtools(String... aliases) {
         usingExtools.addAll(aliases)
+    }
+
+    void runInBackground(boolean b) {
+        this.runInBackground = b
+    }
+
+    boolean runInBackground() {
+        return this.runInBackground
     }
 
     void commandLine(Object... components) {

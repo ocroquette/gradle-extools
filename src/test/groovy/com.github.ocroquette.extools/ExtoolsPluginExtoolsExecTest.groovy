@@ -5,6 +5,7 @@ import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 import static org.gradle.testkit.runner.TaskOutcome.*
+import static org.apache.commons.text.StringEscapeUtils.escapeJava
 
 class ExtoolsPluginExtoolsExecTest extends Specification {
 
@@ -15,9 +16,13 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
     final TemporaryFolder temporaryFolder = new TemporaryFolder()
 
     def dumpFile
+    def tempFile1
+    def tempFile2
 
     def setup() {
         dumpFile = temporaryFolder.newFile()
+        tempFile1 = temporaryFolder.newFile()
+        tempFile2 = temporaryFolder.newFile()
     }
 
     def "External tools dummy_1 is usable"() {
@@ -70,6 +75,34 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
         then:
         result.task(":$taskName").outcome == SUCCESS
         result.output.contains("Output from dummy 2")
+    }
+
+    def "Can execute in the background"() {
+        given:
+        def taskName = 'execBackground'
+        def startTime = System.currentTimeMillis()
+        tempFile1.delete()
+        tempFile2.delete()
+
+        when:
+        def result = new GradleRunnerHelper(
+                temporaryRoot: temporaryFolder.newFolder(),
+                buildScript: generateBuildScript(),
+                repositoryUrl: REPO_URL,
+                taskName: taskName,
+        ).build()
+        def endTime = System.currentTimeMillis()
+        boolean file2ExistsBefore = tempFile2.exists()
+        tempFile1.text = ""
+        for ( int n=0 ; n < 10 && ! tempFile2.exists() ; n++) {
+            Thread.sleep(1000)
+        }
+        boolean file2ExistsAfter = tempFile2.exists()
+
+        then:
+        result.task(":$taskName").outcome == SUCCESS
+        !file2ExistsBefore
+        file2ExistsAfter
     }
 
     def "Paths can be extended"() {
@@ -292,9 +325,10 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
 
     private String generateBuildScript() {
         String template = this.getClass().getResource('/build.gradle.extoolsexec').text
-        String dumpFileEscaped = org.apache.commons.text.StringEscapeUtils.escapeJava(dumpFile.canonicalPath)
-        String result = template.replace('%dumpFile%', dumpFileEscaped)
-        return result
+        return template.
+                replace('%dumpFile%', escapeJava(dumpFile.canonicalPath)).
+                replace('%tempFile1%', escapeJava(tempFile1.canonicalPath)).
+                replace('%tempFile2%', escapeJava(tempFile2.canonicalPath))
     }
 
     private getSysEnv() {

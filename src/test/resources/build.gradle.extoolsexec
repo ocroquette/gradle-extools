@@ -43,9 +43,13 @@ task execDummy1ThenDummy2 {
     }
 }
 
-
 task execDummy2(type:ExtoolExec) {
     commandLine "dummy_2.$scriptExtension"
+}
+
+task execBackground(type:ExtoolExec) {
+    commandLine "background.$scriptExtension", "%tempFile1%", "%tempFile2%"
+    runInBackground true
 }
 
 task prependEnvPath(type:ExtoolExec) {

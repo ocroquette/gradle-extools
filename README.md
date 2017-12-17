@@ -105,8 +105,9 @@ It is recommended to automate the generation of the packages. Gradle itself is t
 ## Additional features
 ### Execution options
 
-When executing an extool as ```ExtoolExec``` task or with the ```extoolexec``` statement, the following options are supported. Most of them are the same as in Gradle's standard exec mechanism.
+When executing an extool as ```ExtoolExec``` task or with the ```extoolexec``` statement, the following options are supported.
 
+Options common to Gradle's standard ```exec``` mechanism:
 
 * ```commandLine```: the full command line with parameters, as a list
 * ```executable```: the name of the executable
@@ -117,7 +118,11 @@ When executing an extool as ```ExtoolExec``` task or with the ```extoolexec``` s
 * ```standardInput```: the input stream to use for the input stream of the child process
 * ```ignoreExitValue```: a boolean that indicates if the non zero exit values from the child process must be ignored
 * ```workingDir```: a file or path to set as working directory for the child process
+
+Additional options:
+
 * ```usingExtools```: the list of aliases of the extools to use for the execution
+* ```runInBackground```: a boolean to indicate if the tool should be run synchronously (false, default) or asynchronously in the background (true)
 
 ### Using tools implicitly
 

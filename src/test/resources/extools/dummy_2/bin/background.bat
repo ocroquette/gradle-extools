@@ -1,0 +1,13 @@
+@ECHO OFF
+SET TEMPFILE1=%1
+SET TEMPFILE2=%2
+
+:WaitForFile
+IF EXIST %TEMPFILE1% GOTO FoundIt
+echo Waiting for %TEMPFILE1%
+TIMEOUT /T 1 >nul
+GOTO WaitForFile
+
+:FoundIt
+ECHO Found: "%TEMPFILE1%"
+echo > "%TEMPFILE2%"
