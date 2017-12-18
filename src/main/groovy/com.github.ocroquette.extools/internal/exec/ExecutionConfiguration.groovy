@@ -32,9 +32,13 @@ class ExecutionConfiguration {
     }
 
     private stringify(Object o, String what) {
-        // String and File make sense, assume other types are a mistake:
-        if (o instanceof  String)
+        // String, GString and File make sense, assume other types are a mistake:
+        if (o instanceof String) {
             return o
+        }
+        else if (o instanceof GString) {
+            return o.toString()
+        }
         else if (o instanceof File) {
             return o.canonicalPath
         }

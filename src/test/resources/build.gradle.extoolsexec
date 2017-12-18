@@ -44,7 +44,9 @@ task execDummy1ThenDummy2 {
 }
 
 task execDummy2(type:ExtoolExec) {
-    commandLine "dummy_2.$scriptExtension"
+    String myString = "string"
+    def myGString = "$myString" // Make sure the plugin can cope with GString's
+    commandLine "dummy_2.$scriptExtension", myGString
 }
 
 task execBackground(type:ExtoolExec) {
