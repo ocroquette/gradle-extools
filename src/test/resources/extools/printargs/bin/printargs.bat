@@ -9,4 +9,4 @@ for %%x in (%*) do (
 
 echo Number of processed arguments: %argCount%
 
-for /L %%i in (1,1,%argCount%) do echo ARG%%i="!argVec[%%i]!"
+for /L %%i in (1,1,%argCount%) do echo ARG%%i=!argVec[%%i]!

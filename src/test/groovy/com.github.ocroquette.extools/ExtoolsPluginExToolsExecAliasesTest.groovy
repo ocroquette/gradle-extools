@@ -117,7 +117,8 @@ class ExtoolsPluginExToolsExecAliasesTest extends Specification {
 
         then:
         result.task(":$taskName").outcome == SUCCESS
-        result.output.matches("""(?s).*
+        // Normalize all strings, otherwise strings may not match due do different line endings
+        result.output.normalize().matches("""(?s).*
 globalconfig:
   repositoryUrl: .+
   localCache: .+
@@ -157,7 +158,7 @@ tools:
     variablesToPrependInEnv:
       - CMAKE_PREFIX_PATH
       - PATH
-.*""")
+.*""".normalize())
     }
 
 

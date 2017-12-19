@@ -1,11 +1,15 @@
 package com.github.ocroquette.extools
 
 import com.github.ocroquette.extools.internal.utils.PathResolver
+import com.github.ocroquette.extools.testutils.Os
+import spock.lang.IgnoreIf
 import spock.lang.Specification
 
 class PathResolverTest extends Specification{
     static final DIR = new File("src/test/resources/pathresolver")
 
+    // Skip the Unix test on Windows, because canExecute() is broken and PathResolver will therefore find "not_executable"
+    @IgnoreIf({ Os.isWindows() })
     def "find the proper file in a single directory on Unix"() {
         given:
         def list = ["unix/dir1"].collect {new File(DIR, it)}
@@ -24,6 +28,8 @@ class PathResolverTest extends Specification{
         "file"              | null                      // wrong name
     }
 
+    // Skip the Unix test on Windows, because canExecute() is broken and PathResolver will therefore find "not_executable"
+    @IgnoreIf({ Os.isWindows() })
     def "find the proper file in multiple directories on Unix"() {
         given:
         def list = ["unix/dir1", "unix/dir2"].collect {new File(DIR, it)}

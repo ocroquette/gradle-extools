@@ -293,7 +293,7 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
 
         then:
         result.task(":$taskName").outcome == SUCCESS
-        result.output.matches("(?s).*ARG1=\"?$expected\"?.*")
+        result.output.contains("ARG1=$expected")
     }
 
     def parseEnvVariablesFromStdout(String stdout) {
