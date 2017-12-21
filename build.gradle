@@ -46,14 +46,6 @@ configurations.all {
 }
 
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: uri('/Users/ocroquette/Desktop/Gradle/mavenrepo'))
-        }
-    }
-}
-
 task(zipDummyTools) {
     description "Creates the ZIP files for the dummy tools used in the unit tests"
     final resourceDir = new File(projectDir, "src/test/resources/extools")
