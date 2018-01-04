@@ -2,16 +2,16 @@
 ## Introduction
 Groovy and Gradle are very good at downloading Java based dependencies from jcenter or Maven central, but they come short when it comes to download external tools (like compilers or installer generators).
 
-The "extools" plugin for Gradle provides a convenient way to do so. It is basically a portable app manager within Gradle. It automatically downloads the tools requires by a Gradle build, extracts them and make them available for execution on the fly, without any installation or changes to the host system.
+The "extools" plugin for Gradle provides a convenient way to do so. It is basically a portable app manager within Gradle. It automatically downloads the tools required by a Gradle build, extracts them and makes them available for execution on the fly, without any installation or changes to the host system.
 
 ## Prerequisites
 
-The extools plugin have no special dependencies apart from:
+The extools plugin has no special dependencies apart from:
 
 * Gradle 4
 * Any Java runtime supported by Gradle. The Java 9 is not recommended because it displays warnings with Groovy code.
 
-You need also basic understanding of Gradle. More precisely, you need to be able to start a new Gradle project. The recommended way is to use the wrapper, which provides two major benefits to your users: automatic download of Gradle itself (no local installation required), and consistency of the Gradle version used.
+You also need a basic understanding of Gradle. More precisely, you need to be able to start a new Gradle project. The recommended way is to use the wrapper, which provides two major benefits to your users: automatic download of Gradle itself (no local installation required), and consistency of the Gradle version used.
 
 ## Basic usage
 
@@ -23,13 +23,13 @@ plugins {
     id 'com.github.ocroquette.extools' version '1.11'
 }
 
-// Configure the plugin, assuming a repo URL has already been set as property (see below)
+// Configure the plugin, assuming a repo URL has already been set as a property (see below)
 extools {
     // Define a dependency to the extool called "mytoolkit"
     tool "mytoolkit"
 }
 
-// Define a task similar similar to Gradle's standard "Exec" task, but that uses some external tools
+// Define a task similar to Gradle's standard "Exec" task, but that one uses some external tools
 import com.github.ocroquette.extools.tasks.ExtoolExec
 task execMyCliTool(type:ExtoolExec) {
     usingExtools "mytoolkit"
@@ -51,7 +51,7 @@ task doStuff {
 }
 ```
 
-For this to work, you will need to set the URL of the  extool repository a property, typically in gradle.properties:
+For this to work, you will need to set the URL of the extool repository a property, typically in gradle.properties:
 
 ```
 extools.repositoryUrl=file:/...
@@ -67,7 +67,7 @@ extools.repositoryUrl=http://
 
 There is no central, public extools repository, and there will probably never be any, so you have to create and maintain your own.
 
-Creating an extool package is pretty easy. Just put the put all the content you need in a directory ```dir```, and add a text file called ```extools.conf```. Here is an example:
+Creating an extool package is pretty easy. Just put all the content you need in a directory ```dir```, and add a text file called ```extools.conf```. Here is an example:
 
 ```
 dir/bin/myclitool
@@ -159,7 +159,7 @@ task execMyCliTool(type:ExtoolExec) {
 
 ### Organizing and structuring packages
 
-You can structure the extools in the repository in subfolders if you want. In the build script, they must be refered to with their complete relative path:
+You can structure the extools in the repository into subfolders if you want. In the build script, they must be refered to with their complete relative path:
 
 ```
 extools {
@@ -182,7 +182,7 @@ extools {
 
 ### Customizing the execution environment
 
-```ExtoolExec``` and ```extoolexec``` extend the standard ```Exec``` Gradle task, so all the features of the later are available. Additionally, you can prepend paths to environment variables using prependEnvPaths:
+```ExtoolExec``` and ```extoolexec``` extend the standard ```Exec``` Gradle task, so all the features of the latter are available. Additionally, you can prepend paths to environment variables using prependEnvPaths:
 
 
 ```
