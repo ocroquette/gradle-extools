@@ -38,7 +38,7 @@ task execMyCliTool(type:ExtoolExec) {
 
 // You can also execute an extool directly, similarly to Gradle's standard "exec {}" statement
 task doStuff {
-    dolast {
+    doLast {
         extoolexec {
             usingExtools "mytoolkit"
             commandLine "myclitool", "CLI parameter for first run"
