@@ -1,6 +1,7 @@
 package com.github.ocroquette.extools
 
 import com.github.ocroquette.extools.testutils.Comparator
+import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
@@ -75,6 +76,23 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
         then:
         result.task(":$taskName").outcome == SUCCESS
         result.output.contains("Output from dummy 2")
+    }
+
+    def "Throw useful exception when dependency on extoolsLoad is missing"() {
+        given:
+        def taskName = 'execMissingDependency'
+
+        when:
+        def result = new GradleRunnerHelper(
+                temporaryRoot: temporaryFolder.newFolder(),
+                buildScript: generateBuildScript(),
+                repositoryUrl: REPO_URL,
+                taskName: taskName,
+        ).build()
+
+        then:
+        UnexpectedBuildFailure ex = thrown()
+        ex.getBuildResult().getOutput().contains("The extools are not loaded yet. Missing dependency on extoolsLoad?")
     }
 
     def "Can execute in the background"() {

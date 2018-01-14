@@ -43,6 +43,17 @@ task execDummy1ThenDummy2 {
     }
 }
 
+task execMissingDependency {
+    // The following line is missing, expect a useful exception:
+    // dependsOn "extoolsLoad"
+    doLast {
+        extoolexec {
+            usingExtools "dummy_1"
+            executable "dummy_1.$scriptExtension"
+        }
+    }
+}
+
 task execDummy2(type:ExtoolExec) {
     String myString = "string"
     def myGString = "$myString" // Make sure the plugin can cope with GString's

@@ -95,7 +95,10 @@ class ExtoolsPlugin implements Plugin<Project> {
                     ExtoolConfiguration conf = reader.readFromDir(dir)
 
                     configuration.configurationOfTool[realName] = conf
+
                 }
+
+                configuration.areToolsLoaded = true
             }
         }
 

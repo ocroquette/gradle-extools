@@ -1,5 +1,6 @@
 package com.github.ocroquette.extools.internal.exec
 
+import com.github.ocroquette.extools.ExtoolsPlugin
 import com.github.ocroquette.extools.internal.utils.PathResolver
 import com.github.ocroquette.extools.internal.utils.PathVarUtils
 import org.gradle.api.Project
@@ -81,6 +82,9 @@ class Executor {
 
     private extendEnvironment(ExecutionConfiguration conf) {
         def pluginConfiguration = project.extensions.extools.configurationState.get()
+
+        if ( ! pluginConfiguration.areToolsLoaded)
+            throw new RuntimeException("The extools are not loaded yet. Missing dependency on ${ExtoolsPlugin.EXTOOLS_LOAD}?")
 
         def realNamesUsed = []
 

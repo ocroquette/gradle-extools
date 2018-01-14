@@ -10,6 +10,8 @@ class ExtoolsPluginConfiguration {
      */
     final tools = [:]
 
+    boolean areToolsLoaded = false
+
     /**
      * Directory to store the downloaded extools archive to
      */
