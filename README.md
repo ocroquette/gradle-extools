@@ -36,8 +36,11 @@ task execMyCliTool(type:ExtoolExec) {
     commandLine "myclitool"
 }
 
-// You can also execute an extool directly, similarly to Gradle's standard "exec {}" statement
+// You can also execute an extool from any task, similarly to Gradle's standard "exec {}" statement,
+// but in this case, you need to define a dependency to the task "extoolsLoad", which
+// loads the required tools metadata
 task doStuff {
+    dependsOn "extoolsLoad"
     dolast {
         extoolexec {
             usingExtools "mytoolkit"
@@ -51,7 +54,7 @@ task doStuff {
 }
 ```
 
-For this to work, you will need to set the URL of the extool repository a property, typically in gradle.properties:
+For this to work, you will need to set the URL of the extools repository a property, typically in gradle.properties:
 
 ```
 extools.repositoryUrl=file:/...
@@ -215,7 +218,7 @@ prepend;env;path;PATH;bin
 prepend;env;path;CMAKE_PREFIX_PATH;lib/cmake
 ```
 
-The separator inserted betweeen the different paths in the variable value is the standard separator used by the operating system for the PATH variable, e.g. ';' on Windows and ':' on Linux, macOS and Unix.
+The separator inserted between the different paths in the variable value is the standard separator used by the operating system for the PATH variable, e.g. ';' on Windows and ':' on Linux, macOS and Unix.
 
 To set an environment variable to a fixed string:
 
