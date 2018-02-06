@@ -330,7 +330,7 @@ It is possible to run commands using extools without modifying the build script.
 gradlew extoolsExec "-PcommandLine=..." "-PusingExtools=..."
 ```
 
-The command line parameters are separated by spaces. If you need spaces within the arguments, use an file based script.
+The command line parameters are separated by spaces. If you need spaces within the arguments, use a file based script.
 
 The list of extools is comma separated.
 
@@ -341,7 +341,6 @@ task someTaskName(type:ExtoolExec) {
     usingExtools ...
     commandLine ...
 }
-
 ```
 
 
