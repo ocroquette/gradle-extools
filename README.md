@@ -322,3 +322,27 @@ task resolveAlias {
 }
 ```
 
+### Interactive use
+
+It is possible to run commands using extools without modifying the build script. The task called "extoolsExec" can be used for that:
+
+```
+gradlew extoolsExec "-PcommandLine=..." "-PusingExtools=..."
+```
+
+The command line parameters are separated by spaces. If you need spaces within the arguments, use an file based script.
+
+The list of extools is comma separated.
+
+The result is equivalent to the following task in the build script:
+
+```
+task someTaskName(type:ExtoolExec) {
+    usingExtools ...
+    commandLine ...
+}
+
+```
+
+
+

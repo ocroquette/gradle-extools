@@ -314,6 +314,46 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
         result.output.contains("ARG1=$expected")
     }
 
+    def "extoolsExec with usingExtools using default tools"() {
+        given:
+        def taskName = 'extoolsExec'
+        def commandLine = ( System.getProperty("os.name").toLowerCase().contains("windows") ? "cmd /c set" : "env" )
+
+        when:
+        def result = new GradleRunnerHelper(
+                temporaryRoot: temporaryFolder.newFolder(),
+                buildScript: generateBuildScript(),
+                repositoryUrl: REPO_URL,
+                taskName: taskName,
+                additionalArguments: ["-PcommandLine=${commandLine}"]
+        ).build()
+
+        then:
+        result.task(":$taskName").outcome == SUCCESS
+        result.output.contains("DUMMY2_STRING=Value of DUMMY2_STRING")
+    }
+
+    def "extoolsExec with usingExtools using explicit tools"() {
+        given:
+        def taskName = 'extoolsExec'
+        def commandLine = ( System.getProperty("os.name").toLowerCase().contains("windows") ? "cmd /c set" : "env" )
+
+        when:
+        def result = new GradleRunnerHelper(
+                temporaryRoot: temporaryFolder.newFolder(),
+                buildScript: generateBuildScript(),
+                repositoryUrl: REPO_URL,
+                taskName: taskName,
+                additionalArguments: ["-PcommandLine=${commandLine}", "-PusingExtools=dummy_1"]
+        ).build()
+
+        then:
+        result.task(":$taskName").outcome == SUCCESS
+        result.output.contains("DUMMY1_STRING=Value of DUMMY1_STRING")
+        result.output.contains("DUMMY2_STRING=Value of DUMMY2_STRING")
+    }
+
+
     def parseEnvVariablesFromStdout(String stdout) {
         def variables = [:]
         stdout.eachLine { line ->

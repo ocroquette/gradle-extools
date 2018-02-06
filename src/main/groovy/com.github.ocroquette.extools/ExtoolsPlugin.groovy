@@ -17,6 +17,7 @@ class ExtoolsPlugin implements Plugin<Project> {
     public static final String EXTOOLS_EXTRACT = 'extoolsExtract'
     public static final String EXTOOLS_LOAD = 'extoolsLoad'
     public static final String EXTOOLS_INFO = 'extoolsInfo'
+    public static final String EXTOOLS_EXEC = 'extoolsExec'
 
     void apply(Project project) {
         addExtension(project)
@@ -133,6 +134,19 @@ class ExtoolsPlugin implements Plugin<Project> {
                     toolConf.variablesToPrependInEnv.each { variable ->
                         println "      - $variable"
                     }
+                }
+            }
+        }
+
+        project.task(EXTOOLS_EXEC) {
+            description "Executes the command line specified with -PcommandLine=..."
+            group "Extools"
+            dependsOn EXTOOLS_LOAD
+            doLast {
+                project.extoolexec {
+                    if ( project.hasProperty("usingExtools"))
+                        usingExtools project.property("usingExtools").split(",")
+                    commandLine project.property("commandLine").split(/\s+/)
                 }
             }
         }

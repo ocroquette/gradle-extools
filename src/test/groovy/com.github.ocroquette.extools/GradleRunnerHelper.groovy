@@ -14,7 +14,7 @@ class GradleRunnerHelper {
     String extractDir
 
     String buildScript
-    List<String> additionalArguments = []
+    List<Object> additionalArguments = []
 
     def build() {
         return createRunner().build()
@@ -27,7 +27,7 @@ class GradleRunnerHelper {
     GradleRunner createRunner() {
 
         List<String> arguments = [taskName, '--stacktrace']
-        arguments.addAll(additionalArguments)
+        additionalArguments.each { arguments.add(it.toString()) }
 
         def buildDir = new File(temporaryRoot, "buildDir")
         buildDir.mkdirs()
