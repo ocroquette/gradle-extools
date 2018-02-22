@@ -108,6 +108,11 @@ task passFileAsArgument(type:ExtoolExec) {
     commandLine "printargs.$scriptExtension", new File("a_file")
 }
 
+task unexistingWorkingDir(type: ExtoolExec) {
+    workingDir "non-existing-dir"
+    usingExtools "dummy_1"
+    commandLine "dummy_1.$scriptExtension"
+}
 
 task execSystemCommand(type:ExtoolExec) {
     if ( isWindows ) {

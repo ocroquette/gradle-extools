@@ -62,8 +62,12 @@ class Executor {
                     standardInput conf.standardInput
                 if (conf.standardOutput != null)
                     standardOutput conf.standardOutput
-                if (conf.workingDir != null)
+                if (conf.workingDir != null) {
+                    if (!conf.workingDir.isDirectory()) {
+                        throw new RuntimeException("Invalid working directory: \"" + conf.workingDir +"\" for: \"" + conf.executable + "\"")
+                    }
                     workingDir conf.workingDir
+                }
             }
         }
     }

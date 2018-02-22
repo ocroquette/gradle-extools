@@ -353,6 +353,23 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
         result.output.contains("DUMMY2_STRING=Value of DUMMY2_STRING")
     }
 
+    def "extoolsExec with unexisting working dir"() {
+        given:
+        def taskName = 'unexistingWorkingDir'
+
+        when:
+        def result = new GradleRunnerHelper(
+                temporaryRoot: temporaryFolder.newFolder(),
+                buildScript: generateBuildScript(),
+                repositoryUrl: REPO_URL,
+                taskName: taskName,
+        ).build()
+
+        then:
+        UnexpectedBuildFailure ex = thrown()
+        ex.getBuildResult().getOutput().contains("Invalid working directory")
+    }
+
 
     def parseEnvVariablesFromStdout(String stdout) {
         def variables = [:]
