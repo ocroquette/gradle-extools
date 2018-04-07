@@ -4,6 +4,7 @@ import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 
+import static org.gradle.testkit.runner.TaskOutcome.FAILED
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 class ExtoolsPluginExToolsExecAliasesTest extends Specification {
@@ -47,9 +48,9 @@ class ExtoolsPluginExToolsExecAliasesTest extends Specification {
         result.output.contains("Output from dummy 1")
     }
 
-    def "Access variable"() {
+    def "Access existing variable with getValue"() {
         given:
-        def taskName = 'accessVariable'
+        def taskName = 'getValueExisting'
 
         when:
         def result = new GradleRunnerHelper(
@@ -61,7 +62,57 @@ class ExtoolsPluginExToolsExecAliasesTest extends Specification {
 
         then:
         result.task(":$taskName").outcome == SUCCESS
-        result.output.contains("Value of DUMMY1_VAR")
+        result.output.find("(?m)^Value of PATH for alias_1: .*bin2" + File.pathSeparator + ".*bin\$" )
+    }
+
+    def "Access undefined variable with getValue"() {
+        given:
+        def taskName = 'getValueMissing'
+
+        when:
+        def result = new GradleRunnerHelper(
+                temporaryRoot: temporaryFolder.newFolder(),
+                buildScript: generateBuildScript(),
+                repositoryUrl: REPO_URL,
+                taskName: taskName,
+        ).buildAndFail()
+
+        then:
+        result.task(":$taskName").outcome == FAILED
+    }
+
+    def "Access existing variable with getValueWithDefault"() {
+        given:
+        def taskName = 'getValueWithDefaultExisting'
+
+        when:
+        def result = new GradleRunnerHelper(
+                temporaryRoot: temporaryFolder.newFolder(),
+                buildScript: generateBuildScript(),
+                repositoryUrl: REPO_URL,
+                taskName: taskName,
+        ).build()
+
+        then:
+        result.task(":$taskName").outcome == SUCCESS
+        result.output.find("(?m)^Value of PATH for alias_1: .*bin2" + File.pathSeparator + ".*bin\$" )
+    }
+
+    def "Access undefined variable with getValueWithDefault"() {
+        given:
+        def taskName = 'getValueWithDefaultMissing'
+
+        when:
+        def result = new GradleRunnerHelper(
+                temporaryRoot: temporaryFolder.newFolder(),
+                buildScript: generateBuildScript(),
+                repositoryUrl: REPO_URL,
+                taskName: taskName,
+        ).build()
+
+        then:
+        result.task(":$taskName").outcome == SUCCESS
+        result.output.find("(?m)^Value of DUMMY1_VAR_MISSING for alias_1: Default value for DUMMY1_VAR_MISSING\$" )
     }
 
     def "Access home dir"() {

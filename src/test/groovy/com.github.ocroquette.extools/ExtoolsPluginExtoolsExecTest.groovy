@@ -112,7 +112,7 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
         def endTime = System.currentTimeMillis()
         boolean file2ExistsBefore = tempFile2.exists()
         tempFile1.text = ""
-        for ( int n=0 ; n < 10 && ! tempFile2.exists() ; n++) {
+        for (int n = 0; n < 10 && !tempFile2.exists(); n++) {
             Thread.sleep(1000)
         }
         boolean file2ExistsAfter = tempFile2.exists()
@@ -257,7 +257,8 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
         expectedEnv["DUMMY1_STRING"] = "Value of DUMMY1_STRING"
         expectedEnv["DUMMY2_STRING"] = "Value of DUMMY2_STRING"
         expectedEnv["PATH"] = // Order must match the one used in the usingExtools statement:
-                new File(extractDir, "dummy_1/bin").canonicalPath + File.pathSeparator +
+                new File(extractDir, "dummy_1/bin2").canonicalPath + File.pathSeparator +
+                        new File(extractDir, "dummy_1/bin").canonicalPath + File.pathSeparator +
                         new File(extractDir, "printenvvars/bin").canonicalPath + File.pathSeparator +
                         new File(extractDir, "printargs/bin").canonicalPath + File.pathSeparator +
                         new File(extractDir, "subdir/dummy_3/bin").canonicalPath + File.pathSeparator +
@@ -317,7 +318,7 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
     def "extoolsExec with usingExtools using default tools"() {
         given:
         def taskName = 'extoolsExec'
-        def commandLine = ( System.getProperty("os.name").toLowerCase().contains("windows") ? "cmd /c set" : "env" )
+        def commandLine = (System.getProperty("os.name").toLowerCase().contains("windows") ? "cmd /c set" : "env")
 
         when:
         def result = new GradleRunnerHelper(
@@ -336,7 +337,7 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
     def "extoolsExec with usingExtools using explicit tools"() {
         given:
         def taskName = 'extoolsExec'
-        def commandLine = ( System.getProperty("os.name").toLowerCase().contains("windows") ? "cmd /c set" : "env" )
+        def commandLine = (System.getProperty("os.name").toLowerCase().contains("windows") ? "cmd /c set" : "env")
 
         when:
         def result = new GradleRunnerHelper(

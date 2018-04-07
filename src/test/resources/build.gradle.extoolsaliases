@@ -37,13 +37,38 @@ task execAlias2(type:ExtoolExec) {
     commandLine "dummy_1.$scriptExtension"
 }
 
-task accessVariable {
+task getValueExisting {
     dependsOn "extoolsLoad"
 
     doLast {
-        println project.extensions.extools.getValue("alias_1", "DUMMY1_VAR")
+        println "Value of PATH for alias_1: " + project.extensions.extools.getValue("alias_1", "PATH")
     }
 }
+
+task getValueMissing {
+    dependsOn "extoolsLoad"
+
+    doLast {
+        println "Value of DUMMY1_VAR_MISSING for alias_1: " + println project.extensions.extools.getValue("alias_1", "DUMMY1_VAR_MISSING")
+    }
+}
+
+task getValueWithDefaultExisting {
+    dependsOn "extoolsLoad"
+
+    doLast {
+        println "Value of PATH for alias_1: " + project.extensions.extools.getValueWithDefault("alias_1", "PATH", "Default value for PATH")
+    }
+}
+
+task getValueWithDefaultMissing {
+    dependsOn "extoolsLoad"
+
+    doLast {
+        println "Value of DUMMY1_VAR_MISSING for alias_1: " + project.extensions.extools.getValueWithDefault("alias_1", "DUMMY1_VAR_MISSING", "Default value for DUMMY1_VAR_MISSING")
+    }
+}
+
 
 task accessHomeDir {
     dependsOn "extoolsLoad"

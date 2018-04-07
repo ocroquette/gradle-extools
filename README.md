@@ -298,6 +298,7 @@ task accessVariable {
 
     doLast {
         println project.extensions.extools.getValue("toolalias", "MY_VARIABLE")
+        println project.extensions.extools.getValueWithDefault("toolalias", "MY_VARIABLE", "Default value")
     }
 }
 ```
