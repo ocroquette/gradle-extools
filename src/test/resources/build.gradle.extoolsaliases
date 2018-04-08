@@ -85,3 +85,11 @@ task resolveAlias {
         println "alias_1=" + project.extensions.extools.resolveAlias("alias_1")
     }
 }
+
+task getLoadedAliases {
+    dependsOn "extoolsLoad"
+
+    doLast {
+        println "aliases=" + project.extensions.extools.getLoadedAliases().join(",")
+    }
+}

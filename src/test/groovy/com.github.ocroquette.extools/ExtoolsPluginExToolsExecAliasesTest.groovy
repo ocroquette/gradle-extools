@@ -149,7 +149,24 @@ class ExtoolsPluginExToolsExecAliasesTest extends Specification {
 
         then:
         result.task(":$taskName").outcome == SUCCESS
-        result.output.contains("alias_1=dummy_1")
+        result.output.find("(?m)^alias_1=dummy_1\$")
+    }
+
+    def "Get loaded aliases"() {
+        given:
+        def taskName = 'getLoadedAliases'
+
+        when:
+        def result = new GradleRunnerHelper(
+                temporaryRoot: temporaryFolder.newFolder(),
+                buildScript: generateBuildScript(),
+                repositoryUrl: REPO_URL,
+                taskName: taskName,
+        ).build()
+
+        then:
+        result.task(":$taskName").outcome == SUCCESS
+        result.output.find("(?m)^aliases=alias_1,alias_2\$")
     }
 
 

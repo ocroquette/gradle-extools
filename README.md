@@ -309,6 +309,22 @@ Be aware of the build phases, the task definition will be executed by Gradle dur
 ${->project.extensions.extools.getValue("toolalias", "MY_VARIABLE")}
 ```
 
+### Getting the list of loaded aliases
+
+The ```getLoadedAliases()``` returns a sorted array containing the aliases of all loaded tools:
+
+```
+task getLoadedAliases {
+    dependsOn "extoolsLoad"
+
+    doLast {
+        println project.extensions.extools.getLoadedAliases()
+    }
+}
+```
+
+getLoadedAliases
+
 ### Resolving aliases
 
 You can resolve an alias by using the ```resolvealias()``` function:

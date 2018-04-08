@@ -76,7 +76,7 @@ class ExtoolsPluginExtension {
         String realName = resolveAlias(toolAlias)
         ExtoolConfiguration tc = configurationState.get().configurationOfTool[realName]
         String value = tc.variables[variableName]
-        if ( value == null )
+        if (value == null)
             return defaultValue
         return value
     }
@@ -94,9 +94,13 @@ class ExtoolsPluginExtension {
         return realName
     }
 
+    String[] getLoadedAliases() {
+        return ( configurationState.get().tools.keySet() as String[] ).sort()
+    }
+
     private File getDefaultExtractDir(Project project) {
         def propertyValue = project.properties["extools.extractDir"]
-        if ( propertyValue != null )
+        if (propertyValue != null)
             return new File(propertyValue)
         else
             return new File(System.properties["user.home"], ".gradle/extools/extractDir")
@@ -104,7 +108,7 @@ class ExtoolsPluginExtension {
 
     private File getDefaultLocalCache(Project project) {
         def propertyValue = project.properties["extools.localCache"]
-        if ( propertyValue != null )
+        if (propertyValue != null)
             return new File(propertyValue)
         else
             return new File(System.properties["user.home"], ".gradle/extools/localCache")
@@ -112,7 +116,7 @@ class ExtoolsPluginExtension {
 
     private URL getDefaultRepositoryUrl(Project project) {
         def propertyValue = project.properties["extools.repositoryUrl"]
-        if ( propertyValue != null )
+        if (propertyValue != null)
             return new URL(propertyValue)
         else
             null // It must be set in the build script then
