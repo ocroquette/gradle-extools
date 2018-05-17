@@ -67,8 +67,11 @@ class ExtoolsPluginExtension {
 
     String getValue(String toolAlias, String variableName) {
         String value = getValueWithDefault(toolAlias, variableName, null)
-        if (value == null)
+        if (value == null) {
+            String realName = resolveAlias(toolAlias)
+            ExtoolConfiguration tc = configurationState.get().configurationOfTool[realName]
             throw new RuntimeException("Undefined variable ${variableName} for tool alias ${toolAlias}, known variables: " + tc.variables.keySet().join(","))
+        }
         return value
     }
 
