@@ -96,20 +96,11 @@ task getLoadedAliases {
 }
 
 
-
-
-task generateEnvironmentScriptCmd {
+task generateEnvironmentScript {
     dependsOn "extoolsLoad"
 
     doLast {
-        println "generatedScript=" + project.extensions.extools.generateEnvironmentScriptCmd("alias_3") + "\n/generatedScript"
+        println "generatedScript=" + project.extensions.extools.generateEnvironmentScript("alias_3") + "\n/generatedScript"
     }
 }
 
-task generateEnvironmentScriptShell {
-    dependsOn "extoolsLoad"
-
-    doLast {
-        println "generatedScript=" + project.extensions.extools.generateEnvironmentScriptShell("alias_3") + "\n/generatedScript"
-    }
-}

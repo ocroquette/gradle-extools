@@ -62,7 +62,7 @@ class ExtoolsPluginExToolsExecAliasesTest extends Specification {
 
         then:
         result.task(":$taskName").outcome == SUCCESS
-        result.output.find("(?m)^Value of PATH for alias_1: .*bin2" + File.pathSeparator + ".*bin\$" )
+        result.output.find("(?m)^Value of PATH for alias_1: .*bin2" + File.pathSeparator + ".*bin\$")
     }
 
     def "Access undefined variable with getValue"() {
@@ -95,7 +95,7 @@ class ExtoolsPluginExToolsExecAliasesTest extends Specification {
 
         then:
         result.task(":$taskName").outcome == SUCCESS
-        result.output.find("(?m)^Value of PATH for alias_1: .*bin2" + File.pathSeparator + ".*bin\$" )
+        result.output.find("(?m)^Value of PATH for alias_1: .*bin2" + File.pathSeparator + ".*bin\$")
     }
 
     def "Access undefined variable with getValueWithDefault"() {
@@ -112,7 +112,7 @@ class ExtoolsPluginExToolsExecAliasesTest extends Specification {
 
         then:
         result.task(":$taskName").outcome == SUCCESS
-        result.output.find("(?m)^Value of DUMMY1_VAR_MISSING for alias_1: Default value for DUMMY1_VAR_MISSING\$" )
+        result.output.find("(?m)^Value of DUMMY1_VAR_MISSING for alias_1: Default value for DUMMY1_VAR_MISSING\$")
     }
 
     def "Access home dir"() {
@@ -132,7 +132,7 @@ class ExtoolsPluginExToolsExecAliasesTest extends Specification {
 
         then:
         result.task(":$taskName").outcome == SUCCESS
-        result.output.contains("alias_1_home=" + ( new File(extractDir, "dummy_1").canonicalPath) )
+        result.output.contains("alias_1_home=" + (new File(extractDir, "dummy_1").canonicalPath))
     }
 
     def "Resolve alias"() {
@@ -228,9 +228,9 @@ tools:
 .*""".normalize())
     }
 
-    def "Generate CMD environment script"() {
+    def "Generate environment script"() {
         when:
-        def taskName = "generateEnvironmentScriptCmd"
+        def taskName = "generateEnvironmentScript"
         def extractDir = temporaryFolder.newFolder()
         def result = new GradleRunnerHelper(
                 temporaryRoot: temporaryFolder.newFolder(),
@@ -239,38 +239,22 @@ tools:
                 repositoryUrl: REPO_URL,
                 taskName: taskName,
         ).build()
-        def expected = "set DUMMY2_STRING=Value of DUMMY2_STRING\n" +
-                "set DUMMY_STRING=Value of DUMMY_STRING from dummy_2\n" +
-                "set CMAKE_PREFIX_PATH=" + new File(extractDir, "dummy_2/cmake2").canonicalPath + ";%CMAKE_PREFIX_PATH%\n" +
-                "set PATH="+ new File(extractDir, "dummy_2/bin").canonicalPath + ";%PATH%\n"
-
+        String expected
+        if (System.properties['os.name'].toLowerCase().contains('windows')) {
+            expected = "set DUMMY2_STRING=Value of DUMMY2_STRING\n" +
+                    "set DUMMY_STRING=Value of DUMMY_STRING from dummy_2\n" +
+                    "set CMAKE_PREFIX_PATH=" + new File(extractDir, "dummy_2/cmake2").canonicalPath + ";%CMAKE_PREFIX_PATH%\n" +
+                    "set PATH=" + new File(extractDir, "dummy_2/bin").canonicalPath + ";%PATH%\n"
+        } else {
+            expected = "export DUMMY2_STRING=Value of DUMMY2_STRING\n" +
+                    "export DUMMY_STRING=Value of DUMMY_STRING from dummy_2\n" +
+                    "export CMAKE_PREFIX_PATH=" + new File(extractDir, "dummy_2/cmake2").canonicalPath + ":\$CMAKE_PREFIX_PATH\n" +
+                    "export PATH=" + new File(extractDir, "dummy_2/bin").canonicalPath + ":\$PATH\n"
+        }
         then:
         result.task(":" + taskName).outcome == SUCCESS
         result.output.contains("generatedScript=" + expected + "\n" + "/generatedScript")
     }
-
-    def "Generate shell environment script"() {
-        when:
-        def taskName = "generateEnvironmentScriptShell"
-        def extractDir = temporaryFolder.newFolder()
-        def result = new GradleRunnerHelper(
-                temporaryRoot: temporaryFolder.newFolder(),
-                extractDir: extractDir,
-                buildScript: generateBuildScript(),
-                repositoryUrl: REPO_URL,
-                taskName: taskName,
-        ).build()
-        def expected = "export DUMMY2_STRING=Value of DUMMY2_STRING\n" +
-                "export DUMMY_STRING=Value of DUMMY_STRING from dummy_2\n" +
-                "export CMAKE_PREFIX_PATH=" + new File(extractDir, "dummy_2/cmake2").canonicalPath + ":\$CMAKE_PREFIX_PATH\n" +
-                "export PATH="+ new File(extractDir, "dummy_2/bin").canonicalPath + ":\$PATH\n"
-
-        then:
-        result.task(":" + taskName).outcome == SUCCESS
-        result.output.contains("generatedScript=" + expected + "\n" + "/generatedScript")
-    }
-
-
 
     private String generateBuildScript() {
         this.getClass().getResource('/build.gradle.extoolsaliases').text

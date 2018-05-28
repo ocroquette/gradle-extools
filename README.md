@@ -349,9 +349,6 @@ set VAR1=value1
 set PATH=...;%PATH%
 ```
 
-The ```generateEnvironmentScript()``` will generate CMD scripts when running on Windows and shell scripts on other
-platforms, but you can force a syntax by using ```generateEnvironmentScriptCmd()``` or ```generateEnvironmentScriptShell()```
-
 ### Interactive use
 
 It is possible to run commands using extools without modifying the build script. The task called "extoolsExec" can be used for that:

@@ -109,7 +109,7 @@ class ExtoolsPluginExtension {
             sb.append("set $it=" + tc.variables[it] + "\n")
         }
         tc.variablesToPrependInEnv.sort().each {
-            sb.append("set $it=" + tc.variables[it].replace(":", ";")+ ";%$it%\n")
+            sb.append("set $it=" + tc.variables[it] + ";%$it%\n")
         }
         return sb.toString()
     }
@@ -122,7 +122,7 @@ class ExtoolsPluginExtension {
             sb.append("export $it=" + tc.variables[it] + "\n")
         }
         tc.variablesToPrependInEnv.sort().each {
-            sb.append("export $it=" + tc.variables[it].replace(";", ":")+ ":\$$it\n")
+            sb.append("export $it=" + tc.variables[it] + ":\$$it\n")
         }
         return sb.toString()
     }
