@@ -101,6 +101,40 @@ class ExtoolsPluginExtension {
         return ( configurationState.get().tools.keySet() as String[] ).sort()
     }
 
+    String generateEnvironmentScriptCmd(String toolAlias) {
+        String realName = resolveAlias(toolAlias)
+        ExtoolConfiguration tc = configurationState.get().configurationOfTool[realName]
+        def sb = new StringBuilder()
+        tc.variablesToSetInEnv.sort().each {
+            sb.append("set $it=" + tc.variables[it] + "\n")
+        }
+        tc.variablesToPrependInEnv.sort().each {
+            sb.append("set $it=" + tc.variables[it].replace(":", ";")+ ";%$it%\n")
+        }
+        return sb.toString()
+    }
+
+    String generateEnvironmentScriptShell(String toolAlias) {
+        String realName = resolveAlias(toolAlias)
+        ExtoolConfiguration tc = configurationState.get().configurationOfTool[realName]
+        def sb = new StringBuilder()
+        tc.variablesToSetInEnv.sort().each {
+            sb.append("export $it=" + tc.variables[it] + "\n")
+        }
+        tc.variablesToPrependInEnv.sort().each {
+            sb.append("export $it=" + tc.variables[it].replace(";", ":")+ ":\$$it\n")
+        }
+        return sb.toString()
+    }
+
+    String generateEnvironmentScript(String toolAlias) {
+        if (System.properties['os.name'].toLowerCase().contains('windows')) {
+            return generateEnvironmentScriptCmd(toolAlias)
+        } else {
+            return generateEnvironmentScriptShell(toolAlias)
+        }
+    }
+
     private File getDefaultExtractDir(Project project) {
         def propertyValue = project.properties["extools.extractDir"]
         if (propertyValue != null)

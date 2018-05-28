@@ -13,7 +13,8 @@ import com.github.ocroquette.extools.tasks.ExtoolExec
 
 extools {
     tools "alias_1": "dummy_1",
-          "alias_2": "dummy_1"
+          "alias_2": "dummy_1",
+          "alias_3": "dummy_2"
 }
 
 def isWindows = ( System.getProperty("os.name").toLowerCase().contains("windows") ? true : false )
@@ -91,5 +92,24 @@ task getLoadedAliases {
 
     doLast {
         println "aliases=" + project.extensions.extools.getLoadedAliases().join(",")
+    }
+}
+
+
+
+
+task generateEnvironmentScriptCmd {
+    dependsOn "extoolsLoad"
+
+    doLast {
+        println "generatedScript=" + project.extensions.extools.generateEnvironmentScriptCmd("alias_3") + "\n/generatedScript"
+    }
+}
+
+task generateEnvironmentScriptShell {
+    dependsOn "extoolsLoad"
+
+    doLast {
+        println "generatedScript=" + project.extensions.extools.generateEnvironmentScriptShell("alias_3") + "\n/generatedScript"
     }
 }

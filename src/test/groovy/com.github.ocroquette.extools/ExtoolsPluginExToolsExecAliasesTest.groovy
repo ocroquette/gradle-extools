@@ -166,7 +166,7 @@ class ExtoolsPluginExToolsExecAliasesTest extends Specification {
 
         then:
         result.task(":$taskName").outcome == SUCCESS
-        result.output.find("(?m)^aliases=alias_1,alias_2\$")
+        result.output.find("(?m)^aliases=alias_1,alias_2,alias_3\$")
     }
 
 
@@ -181,7 +181,6 @@ class ExtoolsPluginExToolsExecAliasesTest extends Specification {
                 repositoryUrl: REPO_URL,
                 taskName: taskName,
         ).build()
-        println result.output
 
         then:
         result.task(":$taskName").outcome == SUCCESS
@@ -228,6 +227,49 @@ tools:
       - PATH
 .*""".normalize())
     }
+
+    def "Generate CMD environment script"() {
+        when:
+        def taskName = "generateEnvironmentScriptCmd"
+        def extractDir = temporaryFolder.newFolder()
+        def result = new GradleRunnerHelper(
+                temporaryRoot: temporaryFolder.newFolder(),
+                extractDir: extractDir,
+                buildScript: generateBuildScript(),
+                repositoryUrl: REPO_URL,
+                taskName: taskName,
+        ).build()
+        def expected = "set DUMMY2_STRING=Value of DUMMY2_STRING\n" +
+                "set DUMMY_STRING=Value of DUMMY_STRING from dummy_2\n" +
+                "set CMAKE_PREFIX_PATH=" + new File(extractDir, "dummy_2/cmake2").canonicalPath + ";%CMAKE_PREFIX_PATH%\n" +
+                "set PATH="+ new File(extractDir, "dummy_2/bin").canonicalPath + ";%PATH%\n"
+
+        then:
+        result.task(":" + taskName).outcome == SUCCESS
+        result.output.contains("generatedScript=" + expected + "\n" + "/generatedScript")
+    }
+
+    def "Generate shell environment script"() {
+        when:
+        def taskName = "generateEnvironmentScriptShell"
+        def extractDir = temporaryFolder.newFolder()
+        def result = new GradleRunnerHelper(
+                temporaryRoot: temporaryFolder.newFolder(),
+                extractDir: extractDir,
+                buildScript: generateBuildScript(),
+                repositoryUrl: REPO_URL,
+                taskName: taskName,
+        ).build()
+        def expected = "export DUMMY2_STRING=Value of DUMMY2_STRING\n" +
+                "export DUMMY_STRING=Value of DUMMY_STRING from dummy_2\n" +
+                "export CMAKE_PREFIX_PATH=" + new File(extractDir, "dummy_2/cmake2").canonicalPath + ":\$CMAKE_PREFIX_PATH\n" +
+                "export PATH="+ new File(extractDir, "dummy_2/bin").canonicalPath + ":\$PATH\n"
+
+        then:
+        result.task(":" + taskName).outcome == SUCCESS
+        result.output.contains("generatedScript=" + expected + "\n" + "/generatedScript")
+    }
+
 
 
     private String generateBuildScript() {
