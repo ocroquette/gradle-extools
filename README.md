@@ -32,7 +32,6 @@ extools {
 // Define a task similar to Gradle's standard "Exec" task, but that one uses some external tools
 import com.github.ocroquette.extools.tasks.ExtoolExec
 task execMyCliTool(type:ExtoolExec) {
-    usingExtools "mytoolkit"
     commandLine "myclitool"
 }
 
@@ -43,11 +42,9 @@ task doStuff {
     dependsOn "extoolsLoad"
     dolast {
         extoolexec {
-            usingExtools "mytoolkit"
             commandLine "myclitool", "CLI parameter for first run"
         }
         extoolexec {
-            usingExtools "mytoolkit"
             commandLine "myclitool", "CLI parameter for the second run"
         }
     }
@@ -124,24 +121,37 @@ Options common to Gradle's standard ```exec``` mechanism:
 
 Additional options:
 
-* ```usingExtools```: the list of aliases of the extools to use for the execution
+* ```usingExtools```: the exact list of aliases of the extools to use for the execution
+* ```usingAdditionalExtools```: additional list of aliases to use for the execution (see below)
 * ```runInBackground```: a boolean to indicate if the tool should be run synchronously (false, default) or asynchronously in the background (true)
 
-### Using tools implicitly
+### Specifying which tools to make available for execution
 
-In case you need some tools to be available implicitly in all executions, use the ```usingExtools``` statement in the global configuration:
+By default, all tools will be used for all tasks and ```extoolsexec``` executions.
+
+If you need more control, you can reduce the list of extools available globally in the main configuration:
 
 ```
 extools {
-    tools "mytoolkit"
-    usingExtools "mytoolkit" // "mytoolkit" will be available in all extools executions
+    tools "tool1", "tool2", "tool3"
+    usingExtools "tool1" // "tool1" will be available in all extools executions by default, but not "tool2" nor "tool3"
 }
 
-task execMyCliTool(type:ExtoolExec) {
-    // No need to specify a dependency to "mytoolkit"
-    commandLine "myclitool"
+task exec1(type:ExtoolExec) {
+    // Here only "tool1" is available
 }
-```
+
+task exec2(type:ExtoolExec) {
+    usingAdditionalExtools "tool2"  // additional list
+    /// Here both "tool1" and "tool2" are available
+}
+
+task exec3(type:ExtoolExec) {
+    usingExtools "tool3" // explicit list
+    /// Here only "tool3" is available
+}
+
+The options "usingAdditionalExtools" and "usingExtools" are available for the tasks and for ```extoolsexec```.
 
 ### Tool aliases
 Usually, the real name of the extools will have a version number in it. When you update the tool, you will have to update the name everywhere it is used, in the global ```extools {}``` block and in the task definitions. To avoid this, you can define aliases in the main configuration:

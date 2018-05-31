@@ -351,7 +351,7 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
         then:
         result.task(":$taskName").outcome == SUCCESS
         result.output.contains("DUMMY1_STRING=Value of DUMMY1_STRING")
-        result.output.contains("DUMMY2_STRING=Value of DUMMY2_STRING")
+        ! result.output.contains("DUMMY2_STRING=Value of DUMMY2_STRING")
     }
 
     def "extoolsExec with unexisting working dir"() {

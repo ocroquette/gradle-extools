@@ -28,6 +28,11 @@ class ExtoolsPluginConfiguration {
     final configurationOfTool = [:]
 
     /**
+     * Tells if we should use all extools
+     */
+    boolean usingAllExtools = true
+
+    /**
      * Aliases to add implicitly when executing
      */
     final List<String> aliasesUsedGlobally = []

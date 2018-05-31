@@ -1,6 +1,7 @@
 package com.github.ocroquette.extools.internal.exec
 
 import com.github.ocroquette.extools.ExtoolsPlugin
+import com.github.ocroquette.extools.internal.config.ExtoolsPluginConfiguration
 import com.github.ocroquette.extools.internal.utils.PathResolver
 import com.github.ocroquette.extools.internal.utils.PathVarUtils
 import org.gradle.api.Project
@@ -76,9 +77,28 @@ class Executor {
     private getAliasesUsed(ExecutionConfiguration conf) {
         List<String> aliasesUsed = []
 
+        println "Here1 aliasesUsed=" + aliasesUsed.join(",")
+        if (!conf.usingExtoolsAppends) {
+            aliasesUsed.addAll(conf.usingExtools)
+            return aliasesUsed
+        }
+
+        println "Here2 aliasesUsed=" + aliasesUsed.join(",")
+
+        ExtoolsPluginConfiguration pluginConfiguration = project.extensions.extools.configurationState.get()
+
+        if (pluginConfiguration.usingAllExtools) {
+            aliasesUsed.addAll(pluginConfiguration.tools.keySet())
+            return aliasesUsed
+        }
+
+        println "Here3 aliasesUsed=" + aliasesUsed.join(",")
+
         aliasesUsed.addAll(conf.usingExtools)
-        aliasesUsed.addAll(project.extensions.extools.configurationState.get().aliasesUsedGlobally)
+        aliasesUsed.addAll(pluginConfiguration.aliasesUsedGlobally)
         aliasesUsed.unique(true)
+
+        println "Here4 aliasesUsed=" + aliasesUsed.join(",")
 
         return aliasesUsed
     }

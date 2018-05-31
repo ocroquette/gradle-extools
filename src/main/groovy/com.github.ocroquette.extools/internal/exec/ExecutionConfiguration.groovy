@@ -17,6 +17,7 @@ class ExecutionConfiguration {
     Map<String, String> prependEnvPath = [:]
     boolean runInBackground = false
 
+    boolean usingExtoolsAppends = true
     List<String> usingExtools = []
 
     static ExecutionConfiguration fromClosure(Closure c) {
@@ -100,7 +101,13 @@ class ExecutionConfiguration {
     }
 
     void usingExtools(String... aliases) {
+        usingExtools = aliases as List<String>
+        usingExtoolsAppends = false
+    }
+
+    void usingAdditionalExtools(String... aliases) {
         usingExtools.addAll(aliases)
+        usingExtoolsAppends = true
     }
 
     void runInBackground(boolean b) {

@@ -48,6 +48,7 @@ class ExtoolsPluginExtension {
     void usingExtools(String alias) {
         // Check we got only valid aliases (will throw exception otherwise):
         resolveAlias(alias)
+        configurationState.get().usingAllExtools = false
         configurationState.get().aliasesUsedGlobally.add(alias)
     }
 

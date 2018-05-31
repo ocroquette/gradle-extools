@@ -34,7 +34,7 @@ task execDummy1ThenDummy2 {
     dependsOn "extoolsLoad"
     doLast {
         extoolexec {
-            usingExtools "dummy_1"
+            usingAdditionalExtools "dummy_1"
             executable "dummy_1.$scriptExtension"
         }
         extoolexec {
@@ -48,7 +48,7 @@ task execMissingDependency {
     // dependsOn "extoolsLoad"
     doLast {
         extoolexec {
-            usingExtools "dummy_1"
+            usingAdditionalExtools "dummy_1"
             executable "dummy_1.$scriptExtension"
         }
     }
@@ -66,51 +66,51 @@ task execBackground(type:ExtoolExec) {
 }
 
 task prependEnvPath(type:ExtoolExec) {
-    usingExtools "printenvvars"
+    usingAdditionalExtools "printenvvars"
     prependEnvPaths "PATH": new File("."), // Test with file
         "NEW_PATH": ["new_path", "new_path2"] // Test with strings
     commandLine "printenvvars.$scriptExtension", "%dumpFile%"
 }
 
 task execPrintEnvVarsWithInvalidPath(type:ExtoolExec) {
-    usingExtools "dummy_1"
+    usingAdditionalExtools "dummy_1"
 
     commandLine "printenvvars.$scriptExtension", "%dumpFile%"
 }
 
 task execPrintEnvVarsWithImplicitPath(type:ExtoolExec) {
-    usingExtools "printenvvars"
+    usingAdditionalExtools "printenvvars"
 
     commandLine "printenvvars.$scriptExtension", "%dumpFile%"
 }
 
 task execToolInSubdir(type:ExtoolExec) {
-    usingExtools "subdir/dummy_3"
+    usingAdditionalExtools "subdir/dummy_3"
 
     commandLine "dummy_3.$scriptExtension"
 }
 
 task execPrintEnvVarsWithEnvironmentVariableSingle(type:ExtoolExec) {
-    usingExtools "printenvvars"
+    usingAdditionalExtools "printenvvars"
 
     commandLine "printenvvars.$scriptExtension", "%dumpFile%"
 }
 
 task execUseAll(type:ExtoolExec) {
     // Unorder the list, we check if the variables are set in the right order in the test
-    usingExtools "dummy_1", "printenvvars", "printargs", "subdir/dummy_3"
+    usingAdditionalExtools "dummy_1", "printenvvars", "printargs", "subdir/dummy_3"
     commandLine "printenvvars.$scriptExtension", "%dumpFile%"
 }
 
 
 task passFileAsArgument(type:ExtoolExec) {
-    usingExtools "printargs"
+    usingAdditionalExtools "printargs"
     commandLine "printargs.$scriptExtension", new File("a_file")
 }
 
 task unexistingWorkingDir(type: ExtoolExec) {
     workingDir "non-existing-dir"
-    usingExtools "dummy_1"
+    usingAdditionalExtools "dummy_1"
     commandLine "dummy_1.$scriptExtension"
 }
 
