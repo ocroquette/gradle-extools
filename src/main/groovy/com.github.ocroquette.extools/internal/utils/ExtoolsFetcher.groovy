@@ -31,7 +31,7 @@ class ExtoolsFetcher {
         if (toolId.startsWith("/") || toolId.startsWith("\\")  )
             throw new RuntimeException("Invalid tool id: " + toolId)
 
-        String relativeFilePath = toolId + ".ext"
+        String relativeFilePath = toolId + ".zip"
 
         File targetFile = new File(targetDir, relativeFilePath)
 

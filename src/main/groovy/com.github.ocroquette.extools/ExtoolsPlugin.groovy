@@ -62,7 +62,7 @@ class ExtoolsPlugin implements Plugin<Project> {
                         logger.info("${dest} is already available")
                     } else {
                         dest.mkdirs()
-                        File src = new File(configuration.localCache, "${realName}.ext")
+                        File src = new File(configuration.localCache, "${realName}.zip")
                         // ant.unzip is already logging to "lifecycle"
                         logger.info("Extracting ${src} to ${dest}")
                         ant.unzip(src: src,

@@ -11,7 +11,7 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMoc
 class ExtoolsFetcherTest extends Specification {
 
     static final EXTOOL_NAME = "some-tools-2.0"
-    static final EXTOOL_FILENAME = EXTOOL_NAME + ".ext"
+    static final EXTOOL_FILENAME = EXTOOL_NAME + ".zip"
     static final EXTOOL_FILE_CONTENT = "Content of " + EXTOOL_FILENAME
 
     static final EXTOOL_SUBDIR = "subdir"
