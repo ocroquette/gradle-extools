@@ -3,6 +3,8 @@ package com.github.ocroquette.extools.internal.utils
 import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
 
+import java.lang.management.ManagementFactory
+
 /**
  * Fetches extools archives from the repository into the provided local directory
  */
@@ -45,7 +47,9 @@ class ExtoolsFetcher {
         // See https://stackoverflow.com/a/26787332/1448767
         URL finalUrl = new URL(remoteRepoUrl.getProtocol(), remoteRepoUrl.getHost(), remoteRepoUrl.getPort(), remoteRepoUrl.getFile() + "/" + relativeFilePath, null)
 
-        File tmpFile = new File(targetDir, relativeFilePath + ".part")
+        String pid = ManagementFactory.getRuntimeMXBean().getName().replaceAll("[^a-zA-Z0-9]+", "_")
+        long threadId = Thread.currentThread().getId()
+        File tmpFile = new File(targetDir, relativeFilePath + ".${pid}.${threadId}.part")
 
         logger.lifecycle "Fetching ${toolId} from ${finalUrl} to ${targetFile}"
 
