@@ -77,13 +77,10 @@ class Executor {
     private getAliasesUsed(ExecutionConfiguration conf) {
         List<String> aliasesUsed = []
 
-        println "Here1 aliasesUsed=" + aliasesUsed.join(",")
         if (!conf.usingExtoolsAppends) {
             aliasesUsed.addAll(conf.usingExtools)
             return aliasesUsed
         }
-
-        println "Here2 aliasesUsed=" + aliasesUsed.join(",")
 
         ExtoolsPluginConfiguration pluginConfiguration = project.extensions.extools.configurationState.get()
 
@@ -92,13 +89,9 @@ class Executor {
             return aliasesUsed
         }
 
-        println "Here3 aliasesUsed=" + aliasesUsed.join(",")
-
         aliasesUsed.addAll(conf.usingExtools)
         aliasesUsed.addAll(pluginConfiguration.aliasesUsedGlobally)
         aliasesUsed.unique(true)
-
-        println "Here4 aliasesUsed=" + aliasesUsed.join(",")
 
         return aliasesUsed
     }
