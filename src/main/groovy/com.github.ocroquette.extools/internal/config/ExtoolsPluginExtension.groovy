@@ -141,7 +141,7 @@ class ExtoolsPluginExtension {
         if (propertyValue != null)
             return new File(propertyValue)
         else
-            return new File(System.properties["user.home"], ".gradle/extools/extractDir")
+            return new File(System.properties["user.home"], ".extools/extractDir")
     }
 
     private File getDefaultLocalCache(Project project) {
@@ -149,7 +149,7 @@ class ExtoolsPluginExtension {
         if (propertyValue != null)
             return new File(propertyValue)
         else
-            return new File(System.properties["user.home"], ".gradle/extools/localCache")
+            return new File(System.properties["user.home"], ".extools/localCache")
     }
 
     private URL getDefaultRepositoryUrl(Project project) {

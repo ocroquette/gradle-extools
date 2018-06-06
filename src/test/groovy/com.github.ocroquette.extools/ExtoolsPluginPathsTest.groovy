@@ -36,7 +36,7 @@ class ExtoolsPluginPathsTest extends Specification {
                 taskName: 'printLocalCache',
         ).build()
 
-        def expected = new File(System.properties["user.home"], ".gradle/extools/localCache").canonicalPath
+        def expected = new File(System.properties["user.home"], ".extools/localCache").canonicalPath
 
         then:
         result.task(":printLocalCache").outcome == SUCCESS
@@ -67,7 +67,7 @@ class ExtoolsPluginPathsTest extends Specification {
                 useDefaultExtractDir: true,
                 taskName: 'printExtractDir',
         ).build()
-        def expected = new File(System.properties["user.home"], ".gradle/extools/extractDir").canonicalPath
+        def expected = new File(System.properties["user.home"], ".extools/extractDir").canonicalPath
 
         then:
         result.task(":printExtractDir").outcome == SUCCESS
