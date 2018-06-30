@@ -101,6 +101,10 @@ task doRelease {
         }
 
         exec {
+            commandLine "git", "push"
+        }
+
+        exec {
             commandLine "git", "push", "--tags"
         }
     }
