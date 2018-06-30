@@ -54,6 +54,18 @@ task execMissingDependency {
     }
 }
 
+task execWithAdditionalEnvVariable {
+    dependsOn "extoolsLoad"
+    doLast {
+        extoolexec {
+            usingExtools "printenvvars"
+            commandLine "printenvvars.$scriptExtension", "%dumpFile%"
+            environment "MYVAR1": new File("."), // Test with file
+                "MYVAR2": "Value of MYVAR2" // Test with string
+        }
+    }
+}
+
 task execDummy2(type:ExtoolExec) {
     String myString = "string"
     def myGString = "$myString" // Make sure the plugin can cope with GString's

@@ -95,6 +95,34 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
         ex.getBuildResult().getOutput().contains("The extools are not loaded yet. Missing dependency on extoolsLoad?")
     }
 
+    def "Set additional environment variables"() {
+        given:
+        def taskName = 'execWithAdditionalEnvVariable'
+        def extractDir = temporaryFolder.newFolder()
+        def expectedEnv = getSysEnv()
+        expectedEnv["PRINTENVVARS_BIN"] = new File(extractDir, "printenvvars/bin").canonicalPath
+        expectedEnv["MYVAR1"] = new File(".").canonicalPath
+        expectedEnv["MYVAR2"] = "Value of MYVAR2"
+        expectedEnv["PATH"] =
+                new File(extractDir, "printenvvars/bin").canonicalPath + File.pathSeparator +
+                        getSystemPath()
+
+        when:
+        def result = new GradleRunnerHelper(
+                temporaryRoot: temporaryFolder.newFolder(),
+                buildScript: generateBuildScript(),
+                repositoryUrl: REPO_URL,
+                extractDir: extractDir.canonicalPath,
+                taskName: taskName,
+        ).build()
+        def actualEnv = parseEnvVariablesFromStdout(dumpFile.text)
+
+        then:
+        result.task(":$taskName").outcome == SUCCESS
+        compareEnv(expectedEnv, actualEnv) == ""
+
+    }
+
     def "Can execute in the background"() {
         given:
         def taskName = 'execBackground'

@@ -72,8 +72,10 @@ class ExecutionConfiguration {
         }
     }
 
-    def environment(def e) {
-        this.environment = e
+    def environment(def map) {
+        map.each { name,  value ->
+            this.environment.put(name, stringify(value, "Value for $name"))
+        }
     }
 
     def errorOutput(OutputStream s) {

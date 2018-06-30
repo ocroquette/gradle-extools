@@ -112,7 +112,7 @@ Options common to Gradle's standard ```exec``` mechanism:
 * ```commandLine```: the full command line with parameters, as a list
 * ```executable```: the name of the executable
 * ```args```: a list of arguments to provide to the executable 
-* ```environment```: a map containing the environment variables to set in the child process
+* ```environment```: a map containing the environment variables to set in the child process in addition to System.getenv() and the variables set by the extools
 * ```standardOutput```: the output stream to use for the error stream of the child process
 * ```errorOutput```: the output stream to use for the error stream
 * ```standardInput```: the input stream to use for the input stream of the child process
