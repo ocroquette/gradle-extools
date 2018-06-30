@@ -150,6 +150,7 @@ task exec3(type:ExtoolExec) {
     usingExtools "tool3" // explicit list
     /// Here only "tool3" is available
 }
+```
 
 The options "usingAdditionalExtools" and "usingExtools" are available for the tasks and for ```extoolsexec```.
 
