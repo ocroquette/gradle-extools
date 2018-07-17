@@ -104,3 +104,12 @@ task generateEnvironmentScript {
     }
 }
 
+task execWithOverride(type:ExtoolExec) {
+    dependsOn "extoolsLoad"
+
+    // Since EXTOOL_ALIAS_2_OVERRIDE is set to the path of "dummy_1", this is actually using "dummy_1"
+    usingExtools "alias_2"
+
+    commandLine "dummy_1.$scriptExtension"
+}
+

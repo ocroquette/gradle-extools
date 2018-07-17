@@ -31,10 +31,9 @@ class Executor {
 
     void executeConfiguration(ExecutionConfiguration conf) {
         Closure c = getExecClosure(conf)
-        if ( conf.runInBackground() ) {
+        if (conf.runInBackground()) {
             Executors.newSingleThreadExecutor().submit(c)
-        }
-        else {
+        } else {
             c()
         }
     }
@@ -65,7 +64,7 @@ class Executor {
                     standardOutput conf.standardOutput
                 if (conf.workingDir != null) {
                     if (!conf.workingDir.isDirectory()) {
-                        throw new RuntimeException("Invalid working directory: \"" + conf.workingDir +"\" for: \"" + conf.executable + "\"")
+                        throw new RuntimeException("Invalid working directory: \"" + conf.workingDir + "\" for: \"" + conf.executable + "\"")
                     }
                     workingDir conf.workingDir
                 }
@@ -100,15 +99,20 @@ class Executor {
     private extendEnvironment(ExecutionConfiguration conf) {
         def pluginConfiguration = project.extensions.extools.configurationState.get()
 
-        if ( ! pluginConfiguration.areToolsLoaded)
+        if (!pluginConfiguration.areToolsLoaded)
             throw new RuntimeException("The extools are not loaded yet. Missing dependency on ${ExtoolsPlugin.EXTOOLS_LOAD}?")
 
         def realNamesUsed = []
 
         getAliasesUsed(conf).each { alias ->
             def realName = pluginConfiguration.tools[alias]
-            if (realName == null)
-                throw new RuntimeException("Invalid tool or alias: \"$alias\"")
+            if (realName == null) {
+                def actualAlias = pluginConfiguration.tools.find { it.value == alias }?.key
+                def errorMessage = (actualAlias == null
+                        ? "Invalid extool name or alias: \"$alias\""
+                        : "Use alias \"$actualAlias\" instead of real name \"$alias\"" );
+                throw new RuntimeException(errorMessage)
+            }
             realNamesUsed.add(realName)
         }
 
@@ -122,7 +126,7 @@ class Executor {
         variablesToPrependInEnv.each { variableName ->
             def paths = []
 
-            if ( conf.prependEnvPath[variableName] != null ) {
+            if (conf.prependEnvPath[variableName] != null) {
                 paths.addAll(conf.prependEnvPath[variableName].split(File.pathSeparator))
             }
 
