@@ -12,6 +12,7 @@ import org.gradle.api.provider.PropertyState
  */
 class ExtoolsPluginExtension {
     final PropertyState<ExtoolsPluginConfiguration> configurationState
+    Project project
 
     ExtoolsPluginExtension(Project project) {
         configurationState = project.property(ExtoolsPluginConfiguration)
@@ -20,6 +21,8 @@ class ExtoolsPluginExtension {
         configurationState.get().extractDir = getDefaultExtractDir(project)
         configurationState.get().localCache = getDefaultLocalCache(project)
         configurationState.get().remoteRepositoryUrl = getDefaultRepositoryUrl(project)
+
+        this.project = project
     }
 
     void remoteRepositoryUrl(String s) {
@@ -85,9 +88,33 @@ class ExtoolsPluginExtension {
         return value
     }
 
+    private String getOverridenPath(String toolAlias) {
+        String canonicalName = toolAlias.toUpperCase().replaceAll(/[^A-Z0-9\-_]+/, "_")
+        String overrideName = "EXTOOL_${canonicalName}_OVERRIDE"
+        String overrideValue
+
+        project.logger.debug("Extools: Checking if the location of \"$toolAlias\" is overriden with \"$overrideName\"")
+        if (System.getenv(overrideName) != null) {
+            overrideValue = System.getenv(overrideName)
+            project.logger.warn("Extools: Location of \"$toolAlias\" overriden by environment variable \"$overrideName\" to \"$overrideValue\"")
+        }
+        else {
+            overrideValue = project.getProperties().get(overrideName)
+            if (overrideValue != null)
+                project.logger.warn("Extools: Location of \"$toolAlias\" overriden by project property \"$overrideName\" to \"$overrideValue\"")
+        }
+        return overrideValue
+    }
+
     File getHomeDir(String toolAlias) {
-        String realName = resolveAlias(toolAlias)
-        return new File(configurationState.get().extractDir, realName)
+        String overridenPath = getOverridenPath(toolAlias)
+        if (overridenPath == null) {
+            String realName = resolveAlias(toolAlias)
+            return new File(configurationState.get().extractDir, realName)
+        }
+        else {
+            return new File(overridenPath)
+        }
     }
 
     String resolveAlias(String toolAlias) {

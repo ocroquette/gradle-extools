@@ -350,6 +350,27 @@ task resolveAlias {
 }
 ```
 
+### Overriding location of tools
+
+For troubleshooting or development purposes, you might want to use your own copy of an extool instead of the normal one. For that, you can set a project property or an environment variable called "EXTOOL_<name>_OVERRIDE" to the corresponding local path. The name is the name of the extool or its alias in uppercase, with special characters replaced by underscores "_". For instance, to override the location of "tool1", set:
+
+```
+EXTOOL_TOOL1_OVERRIDE=/some/local/path
+```
+
+If you are unsure of the variable to use, run Gradle with debug output enabled ("-d"), and search for the following line:
+
+```
+Extools: Checking if the location of "..." is overriden with "EXTOOL_..._OVERRIDE"
+```
+
+Overrides defeat the purpose of configuration management, therefore using them will always cause a Gradle warning to avoid them to be overlooked:
+
+```
+Extools: Location of "alias_3" overriden by project property "EXTOOL_ALIAS_3_OVERRIDE" to "/some/local/path"
+
+```
+
 ### Generating scripts
 
 You can generate scripts containing the environment variables of tool by using the ``generateEnvironmentScript()```

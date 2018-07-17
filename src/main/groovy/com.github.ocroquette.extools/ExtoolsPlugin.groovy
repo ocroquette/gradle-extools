@@ -87,7 +87,7 @@ class ExtoolsPlugin implements Plugin<Project> {
                 ExtoolConfigurationReader reader = new ExtoolConfigurationReader()
 
                 configuration.tools.each { alias, realName ->
-                    File dir = new File(configuration.extractDir, realName)
+                    File dir = project.extensions.extools.getHomeDir(alias)
                     if (!dir.isDirectory()) {
                         throw new RuntimeException("External tool directory doesn't exist: ${dir.absolutePath}")
                     }

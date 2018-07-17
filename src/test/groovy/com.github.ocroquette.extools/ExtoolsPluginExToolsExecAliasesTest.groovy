@@ -262,6 +262,31 @@ tools:
 .*""".normalize())
     }
 
+    def "Override location of extools"() {
+        given:
+        def taskName = 'execAlias3WithOverride'
+        def extractDir = temporaryFolder.newFolder()
+
+        when:
+        def result = new GradleRunnerHelper(
+                temporaryRoot: temporaryFolder.newFolder(),
+                buildScript: generateBuildScript(),
+                extractDir: extractDir,
+                repositoryUrl: REPO_URL,
+                taskName: taskName,
+                additionalArguments: [
+                        "-PEXTOOL_ALIAS_3_OVERRIDE=" + new File(extractDir, "dummy_1").canonicalPath,
+                        "-d"
+                ]
+        ).build()
+
+        then:
+        result.task(":$taskName").outcome == SUCCESS
+        result.output.contains("alias_3_home=" + (new File(extractDir, "dummy_1").canonicalPath))
+        result.output.contains("Output from dummy 1")
+    }
+
+
     def "Generate environment script"() {
         when:
         def taskName = "generateEnvironmentScript"

@@ -110,12 +110,17 @@ task generateEnvironmentScript {
     }
 }
 
-task execWithOverride(type:ExtoolExec) {
+task execAlias3WithOverride {
     dependsOn "extoolsLoad"
 
-    // Since EXTOOL_ALIAS_2_OVERRIDE is set to the path of "dummy_1", this is actually using "dummy_1"
-    usingExtools "alias_2"
+    doLast {
+        // Since EXTOOL_ALIAS_3_OVERRIDE is set to the path of "dummy_1", this is actually using "dummy_1"
+        println "alias_3_home=" + project.extensions.extools.getHomeDir("alias_3").canonicalPath
+        extoolexec {
+            usingExtools "alias_3"
+            commandLine "dummy_1.$scriptExtension"
+        }
+    }
 
-    commandLine "dummy_1.$scriptExtension"
 }
 
