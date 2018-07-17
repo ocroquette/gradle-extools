@@ -26,6 +26,12 @@ task execDummy1(type:ExtoolExec) {
     commandLine "dummy_1.$scriptExtension"
 }
 
+task execUsingInvalid(type:ExtoolExec) {
+    usingExtools "invalid_alias"
+
+    commandLine "dummy_1.$scriptExtension"
+}
+
 task execAlias1(type:ExtoolExec) {
     usingExtools "alias_1"
 

@@ -31,6 +31,23 @@ class ExtoolsPluginExToolsExecAliasesTest extends Specification {
         result.output.contains("Use alias \"alias_1\" instead of real name \"dummy_1\"")
     }
 
+    def "Using invalid alias must not work"() {
+        given:
+        def taskName = 'execUsingInvalid'
+
+        when:
+        def result = new GradleRunnerHelper(
+                temporaryRoot: temporaryFolder.newFolder(),
+                buildScript: generateBuildScript(),
+                repositoryUrl: REPO_URL,
+                taskName: taskName,
+        ).buildAndFail()
+
+        then:
+        result.task(":$taskName").outcome == FAILED
+        result.output.contains("Invalid extool name or alias: \"invalid_alias\"")
+    }
+
     def "External tool dummy_1 is usable as alias_1"() {
         given:
         def taskName = 'execAlias1'
