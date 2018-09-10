@@ -47,9 +47,8 @@ class ExtoolsFetcher {
         // See https://stackoverflow.com/a/26787332/1448767
         URL finalUrl = new URL(remoteRepoUrl.getProtocol(), remoteRepoUrl.getHost(), remoteRepoUrl.getPort(), remoteRepoUrl.getFile() + "/" + relativeFilePath, null)
 
-        String pid = ManagementFactory.getRuntimeMXBean().getName().replaceAll("[^a-zA-Z0-9]+", "_")
-        long threadId = Thread.currentThread().getId()
-        File tmpFile = new File(targetDir, relativeFilePath + ".${pid}.${threadId}.part")
+        File tmpFile = TemporaryFileUtils.newTemporaryFileFor(targetDir)
+        tmpFile.deleteOnExit() // In case we are interrupted, delete the incomplete data
 
         logger.lifecycle "Fetching ${toolId} from ${finalUrl} to ${targetFile}"
 

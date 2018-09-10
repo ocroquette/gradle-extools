@@ -6,6 +6,7 @@ import com.github.ocroquette.extools.internal.config.ExtoolsPluginConfiguration
 import com.github.ocroquette.extools.internal.config.ExtoolsPluginExtension
 import com.github.ocroquette.extools.internal.exec.Executor
 import com.github.ocroquette.extools.internal.utils.ExtoolsFetcher
+import com.github.ocroquette.extools.internal.utils.TemporaryFileUtils
 import com.github.ocroquette.extools.tasks.ExtoolExec
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -61,13 +62,22 @@ class ExtoolsPlugin implements Plugin<Project> {
                     if (dest.exists()) {
                         logger.info("${dest} is already available")
                     } else {
-                        dest.mkdirs()
+                        File tmpDir = TemporaryFileUtils.newTemporaryFileFor(dest)
+
+                        // the temporary location is thread specific, so this is safe:
+                        tmpDir.deleteDir()
+                        tmpDir.parentFile.mkdirs()
+                        tmpDir.deleteOnExit() // In case we are interrupted, delete the incomplete data
+
                         File src = new File(configuration.localCache, "${realName}.zip")
                         // ant.unzip is already logging to "lifecycle"
-                        logger.info("Extracting ${src} to ${dest}")
+                        logger.info("Extracting ${src} to ${tmpDir}")
                         ant.unzip(src: src,
                                 dest: dest,
                                 overwrite: "false")
+
+                        tmpDir.renameTo(dest)
+
                         // Unfortunately, ant.unzip doesn't restore the file permissions, so programs and scripts will
                         // fail to start on OSes like macOS and Linux.
                         // As a workaround, set all files as executables
