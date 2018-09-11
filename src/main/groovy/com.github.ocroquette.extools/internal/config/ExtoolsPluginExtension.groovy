@@ -147,10 +147,10 @@ class ExtoolsPluginExtension {
         ExtoolConfiguration tc = configurationState.get().configurationOfTool[realName]
         def sb = new StringBuilder()
         tc.variablesToSetInEnv.sort().each {
-            sb.append("export $it=" + tc.variables[it] + "\n")
+            sb.append("export $it=\"" + tc.variables[it] + "\"\n")
         }
         tc.variablesToPrependInEnv.sort().each {
-            sb.append("export $it=" + tc.variables[it] + ":\$$it\n")
+            sb.append("export $it=\"" + tc.variables[it] + ":\$$it\"\n")
         }
         return sb.toString()
     }

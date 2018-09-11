@@ -305,10 +305,10 @@ tools:
                     "set CMAKE_PREFIX_PATH=" + new File(extractDir, "dummy_2/cmake2").canonicalPath + ";%CMAKE_PREFIX_PATH%\n" +
                     "set PATH=" + new File(extractDir, "dummy_2/bin").canonicalPath + ";%PATH%\n"
         } else {
-            expected = "export DUMMY2_STRING=Value of DUMMY2_STRING\n" +
-                    "export DUMMY_STRING=Value of DUMMY_STRING from dummy_2\n" +
-                    "export CMAKE_PREFIX_PATH=" + new File(extractDir, "dummy_2/cmake2").canonicalPath + ":\$CMAKE_PREFIX_PATH\n" +
-                    "export PATH=" + new File(extractDir, "dummy_2/bin").canonicalPath + ":\$PATH\n"
+            expected = "export DUMMY2_STRING=\"Value of DUMMY2_STRING\"\n" +
+                    "export DUMMY_STRING=\"Value of DUMMY_STRING from dummy_2\"\n" +
+                    "export CMAKE_PREFIX_PATH=\"" + new File(extractDir, "dummy_2/cmake2").canonicalPath + ":\$CMAKE_PREFIX_PATH\"\n" +
+                    "export PATH=\"" + new File(extractDir, "dummy_2/bin").canonicalPath + ":\$PATH\"\n"
         }
         then:
         result.task(":" + taskName).outcome == SUCCESS
