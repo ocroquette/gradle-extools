@@ -10,6 +10,7 @@ import com.github.ocroquette.extools.internal.utils.TemporaryFileUtils
 import com.github.ocroquette.extools.tasks.ExtoolExec
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import com.github.ocroquette.extools.tasks.ExtoolExecCli
 
 
 class ExtoolsPlugin implements Plugin<Project> {
@@ -20,12 +21,14 @@ class ExtoolsPlugin implements Plugin<Project> {
     public static final String EXTOOLS_INFO = 'extoolsInfo'
     public static final String EXTOOLS_EXEC = 'extoolsExec'
 
+    public static final String EXTOOLS_GROUP = 'Extools'
+
     void apply(Project project) {
         addExtension(project)
 
         project.task(EXTOOLS_FETCH) {
             description "Fetches all referenced extools from the remote repository"
-            group "Extools"
+            group EXTOOLS_GROUP
             doLast {
                 ExtoolsPluginConfiguration configuration = project.extensions.extools.configurationState.get()
 
@@ -50,7 +53,7 @@ class ExtoolsPlugin implements Plugin<Project> {
 
         project.task(EXTOOLS_EXTRACT) {
             description "Extracts all referenced extools that have been fetched previously into the local extraction directory"
-            group "Extools"
+            group EXTOOLS_GROUP
             dependsOn EXTOOLS_FETCH
             doLast {
                 ExtoolsPluginConfiguration configuration = project.extensions.extools.configurationState.get()
@@ -90,7 +93,7 @@ class ExtoolsPlugin implements Plugin<Project> {
         }
         project.task(EXTOOLS_LOAD) {
             description "Loads the meta-information of all referenced extools from the local extraction directory"
-            group "Extools"
+            group EXTOOLS_GROUP
             dependsOn EXTOOLS_EXTRACT
             doLast {
                 ExtoolsPluginConfiguration configuration = project.extensions.extools.configurationState.get()
@@ -115,7 +118,7 @@ class ExtoolsPlugin implements Plugin<Project> {
 
         project.task(EXTOOLS_INFO) {
             description "Shows the meta-information of all referenced extools"
-            group "Extools"
+            group EXTOOLS_GROUP
             dependsOn EXTOOLS_LOAD
             doLast {
                 ExtoolsPluginConfiguration configuration = project.extensions.extools.configurationState.get()
@@ -148,17 +151,10 @@ class ExtoolsPlugin implements Plugin<Project> {
             }
         }
 
-        project.task(EXTOOLS_EXEC) {
-            description "Executes the command line specified with -PcommandLine=..."
-            group "Extools"
+        project.task(EXTOOLS_EXEC, type: ExtoolExecCli) {
+            description "Executes the command line specified"
+            group EXTOOLS_GROUP
             dependsOn EXTOOLS_LOAD
-            doLast {
-                project.extoolexec {
-                    if ( project.hasProperty("usingExtools"))
-                        usingExtools project.property("usingExtools").split(",")
-                    commandLine project.property("commandLine").split(/\s+/)
-                }
-            }
         }
 
         // Add an implicit dependency to 'extoolsLoad' for all ExtoolExec tasks

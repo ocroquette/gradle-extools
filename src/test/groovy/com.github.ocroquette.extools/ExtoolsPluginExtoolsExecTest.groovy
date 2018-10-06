@@ -354,7 +354,7 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
                 buildScript: generateBuildScript(),
                 repositoryUrl: REPO_URL,
                 taskName: taskName,
-                additionalArguments: ["-PcommandLine=${commandLine}"]
+                additionalArguments: ["--commandLine", commandLine]
         ).build()
 
         then:
@@ -373,7 +373,7 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
                 buildScript: generateBuildScript(),
                 repositoryUrl: REPO_URL,
                 taskName: taskName,
-                additionalArguments: ["-PcommandLine=${commandLine}", "-PusingExtools=dummy_1"]
+                additionalArguments: ["--commandLine", commandLine, "--usingExtools", "dummy_1"]
         ).build()
 
         then:

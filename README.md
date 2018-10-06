@@ -8,7 +8,7 @@ The "extools" plugin for Gradle provides a convenient way to do so. It is basica
 
 The extools plugin has no special dependencies apart from:
 
-* Gradle 4
+* Gradle 4.6 or later (because of the [CLI options](https://docs.gradle.org/4.6/release-notes.html#tasks-api-allows-custom-command-line-options))
 * Any Java runtime supported by Gradle. The Java 9 is not recommended because it displays warnings with Groovy code.
 
 You also need a basic understanding of Gradle. More precisely, you need to be able to start a new Gradle project. The recommended way is to use the wrapper, which provides two major benefits to your users: automatic download of Gradle itself (no local installation required), and consistency of the Gradle version used.
@@ -386,10 +386,10 @@ set PATH=...;%PATH%
 It is possible to run commands using extools without modifying the build script. The task called "extoolsExec" can be used for that:
 
 ```
-gradlew extoolsExec "-PcommandLine=..." "-PusingExtools=..."
+gradlew extoolsExec --commandLine=... --usingExtools=...
 ```
 
-The command line parameters are separated by spaces. If you need spaces within the arguments, use a file based script.
+The command line parameters are separated by spaces. If you need spaces within the arguments, I can put the command line in a script and call the script.
 
 The list of extools is comma separated.
 
@@ -401,6 +401,3 @@ task someTaskName(type:ExtoolExec) {
     commandLine ...
 }
 ```
-
-
-
