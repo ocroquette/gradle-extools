@@ -138,21 +138,44 @@ extools {
 }
 
 task exec1(type:ExtoolExec) {
-    // Here only "tool1" is available
+    // Here, only "tool1" is available, from the global configuration
 }
 
 task exec2(type:ExtoolExec) {
     usingAdditionalExtools "tool2"  // additional list
-    /// Here both "tool1" and "tool2" are available
+    // Here, both "tool1" and "tool2" are available
 }
 
 task exec3(type:ExtoolExec) {
     usingExtools "tool3" // explicit list
-    /// Here only "tool3" is available
+    // Here, only "tool3" is available
 }
 ```
 
 The options "usingAdditionalExtools" and "usingExtools" are available for the tasks and for ```extoolsexec```.
+
+This also to control the order in which the tools will be used. For example, if two extools provide the same command in
+their PATH, and you can specify which one will be found first at runtime using "usingExtools" or
+"usingAdditionalExtools":
+
+```
+task execTool1(type:ExtoolExec) {
+    usingAdditionalExtools "tool1", "tool2"
+    // Here "tool1" will have priority
+}
+
+task execTool2(type:ExtoolExec) {
+    usingAdditionalExtools "tool2", "tool1"
+    // Here "tool2" will have priority
+}
+```
+
+Any "usingAdditionalExtools" or "usingExtools" have precedence over the global plugin configuration. The tools specified
+with "usingAdditionalExtools" can overlap with the global configuration, but the order will supersede the global one, so
+you can use "usingAdditionalExtools" just to control the priorities.
+
+Within a given list, the tools at the left will have priority over the next tools (just like in the PATH environment
+variable).
 
 ### Tool aliases
 Usually, the real name of the extools will have a version number in it. When you update the tool, you will have to update the name everywhere it is used, in the global ```extools {}``` block and in the task definitions. To avoid this, you can define aliases in the main configuration:

@@ -17,11 +17,15 @@ class GradleRunnerHelper {
     List<Object> additionalArguments = []
 
     def build() {
-        return createRunner().build()
+        def result = createRunner().build()
+        println result.output
+        return result
     }
 
     def buildAndFail() {
-        return createRunner().buildAndFail()
+        def result = createRunner().buildAndFail()
+        println result.output
+        return result
     }
 
     GradleRunner createRunner() {

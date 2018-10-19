@@ -73,26 +73,28 @@ class Executor {
     }
 
 
-    private getAliasesUsed(ExecutionConfiguration conf) {
-        List<String> aliasesUsed = []
+    private getAliasesUsed(ExecutionConfiguration executionConfiguration) {
+        // LinkedHashSet removes duplicates but keeps the insertion order
+        LinkedHashSet<String> aliasesUsed = []
 
-        if (!conf.usingExtoolsAppends) {
-            aliasesUsed.addAll(conf.usingExtools)
-            return aliasesUsed
+        if ( ! executionConfiguration.usingExtoolsAppends) {
+            // Don't append, use given explicit list
+            aliasesUsed.addAll(executionConfiguration.usingExtools)
+        } else {
+            // First, add additional tools from exec configuration, if any:
+            aliasesUsed.addAll(executionConfiguration.usingExtools)
+
+            // Then add tools required from the global plugin configuration
+            ExtoolsPluginConfiguration pluginConfiguration = project.extensions.extools.configurationState.get()
+
+            aliasesUsed.addAll(pluginConfiguration.aliasesUsedGlobally)
+
+            if (pluginConfiguration.usingAllExtools) {
+                aliasesUsed.addAll(pluginConfiguration.tools.keySet())
+            }
         }
 
-        ExtoolsPluginConfiguration pluginConfiguration = project.extensions.extools.configurationState.get()
-
-        if (pluginConfiguration.usingAllExtools) {
-            aliasesUsed.addAll(pluginConfiguration.tools.keySet())
-            return aliasesUsed
-        }
-
-        aliasesUsed.addAll(conf.usingExtools)
-        aliasesUsed.addAll(pluginConfiguration.aliasesUsedGlobally)
-        aliasesUsed.unique(true)
-
-        return aliasesUsed
+        return aliasesUsed as List<String>
     }
 
 
@@ -102,7 +104,7 @@ class Executor {
         if (!pluginConfiguration.areToolsLoaded)
             throw new RuntimeException("The extools are not loaded yet. Missing dependency on ${ExtoolsPlugin.EXTOOLS_LOAD}?")
 
-        def realNamesUsed = []
+        LinkedHashSet<String> realNamesUsedTmp = []
 
         getAliasesUsed(conf).each { alias ->
             def realName = pluginConfiguration.tools[alias]
@@ -110,13 +112,17 @@ class Executor {
                 def actualAlias = pluginConfiguration.tools.find { it.value == alias }?.key
                 def errorMessage = (actualAlias == null
                         ? "Invalid extool name or alias: \"$alias\""
-                        : "Use alias \"$actualAlias\" instead of real name \"$alias\"" );
+                        : "Use alias \"$actualAlias\" instead of real name \"$alias\"");
                 throw new RuntimeException(errorMessage)
             }
-            realNamesUsed.add(realName)
+            realNamesUsedTmp.add(realName)
         }
 
-        Set<String> variablesToPrependInEnv = []
+        def realNamesUsed = []
+        realNamesUsed.addAll(realNamesUsedTmp)
+        // realNamesUsed = realNamesUsed.reverse()
+
+        LinkedHashSet<String> variablesToPrependInEnv = []
 
         variablesToPrependInEnv.addAll(conf.prependEnvPath.keySet())
         realNamesUsed.each { realName ->
@@ -149,14 +155,14 @@ class Executor {
             conf.environment[systemCase] = paths.join(File.pathSeparator)
         }
 
-        Set variablesToSetInEnv = []
+        def variablesToSetInEnv = []
 
-        realNamesUsed.each { realName ->
+        realNamesUsed.reverse().each { realName ->
             variablesToSetInEnv.addAll(pluginConfiguration.configurationOfTool[realName].variablesToSetInEnv)
         }
 
         variablesToSetInEnv.each { variableName ->
-            realNamesUsed.each { realName ->
+            realNamesUsed.reverse().each { realName ->
                 def value = pluginConfiguration.configurationOfTool[realName].variables[variableName]
                 if (value != null) {
                     String systemCase = getSystemCase(variableName)
