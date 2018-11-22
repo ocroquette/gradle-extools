@@ -14,6 +14,7 @@ import com.github.ocroquette.extools.tasks.ExtoolExec
 extools {
     tool "dummy_1"
     tool "dummy_2"
+    tool "dummy_4"
     tool "printenvvars"
     tool "printargs"
     tool "subdir/dummy_3"
@@ -145,4 +146,18 @@ task checkActivationOrder2(type:ExtoolExec) {
     usingExtools "dummy_2", "dummy_1", "printenvvars"
 
     commandLine "printenvvars.$scriptExtension", "%dumpFile%"
+}
+
+task checkPathAsVar() {
+    dependsOn "extoolsLoad", "extoolsInfo"
+    doLast {
+        extoolexec {
+            usingExtools "dummy_4", "printenvvars"
+            commandLine "printenvvars.$scriptExtension", "%dumpFile%"
+        }
+        extoolexec {
+            usingExtools "dummy_4", "printenvvars"
+            executable "dummy_4.$scriptExtension"
+        }
+    }
 }

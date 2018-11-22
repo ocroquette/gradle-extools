@@ -16,7 +16,6 @@ class ExecutionConfiguration {
     File workingDir = null
     Map<String, String> prependEnvPath = [:]
     boolean runInBackground = false
-
     boolean usingExtoolsAppends = true
     List<String> usingExtools = []
 

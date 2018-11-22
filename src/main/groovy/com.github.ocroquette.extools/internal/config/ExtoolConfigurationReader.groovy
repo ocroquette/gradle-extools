@@ -50,7 +50,7 @@ class ExtoolConfigurationReader {
         }
     }
 
-    private checkArgument(def value, def supportedValues, def description) {
+    private assertValue(def value, def supportedValues, def description) {
         if (!supportedValues.contains(value)) {
             throw new RuntimeException("Unsupported ${description} \"${value}\" at ${confFile.absolutePath}:$lineNumber. Supported are: " + supportedValues.join(","))
         }
@@ -65,17 +65,17 @@ class ExtoolConfigurationReader {
         def ACTION_SET = "set"
         def ACTION_PREPEND = "prepend"
         def action = fields[0]
-        checkArgument(action, [ACTION_SET, ACTION_PREPEND],"action")
+        assertValue(action, [ACTION_SET, ACTION_PREPEND],"action")
 
         def TYPE_VAR = "var"
         def TYPE_ENV = "env"
         def varType = fields[1]
-        checkArgument(varType, [TYPE_VAR, TYPE_ENV],"variable type")
+        assertValue(varType, [TYPE_VAR, TYPE_ENV],"variable type")
 
         def VALUETYPE_PATH = "path"
         def VALUETYPE_STRING = "string"
         def valueType = fields[2]
-        checkArgument(valueType, [VALUETYPE_PATH, VALUETYPE_STRING],"value type")
+        assertValue(valueType, [VALUETYPE_PATH, VALUETYPE_STRING],"value type")
 
         def varName = fields[3]
 
@@ -98,10 +98,12 @@ class ExtoolConfigurationReader {
         else if ( action == ACTION_PREPEND) {
             String separator = ( valueType == VALUETYPE_PATH ? File.pathSeparator : "")
             result.variables.put(varName, prependString(result.variables[varName], value, separator))
-            if ( result.variablesToSetInEnv.contains(varName)) {
-                throw new RuntimeException("Cannot prepend value for ${varName} at ${confFile.absolutePath}:$lineNumber, it is already used in a ${ACTION_SET} statement")
+            if (varType == TYPE_ENV) {
+                if (result.variablesToSetInEnv.contains(varName)) {
+                    throw new RuntimeException("Cannot prepend value for ${varName} at ${confFile.absolutePath}:$lineNumber, it is already used in a ${ACTION_SET} statement")
+                }
+                result.variablesToPrependInEnv.add(varName)
             }
-            result.variablesToPrependInEnv.add(varName)
         }
     }
 

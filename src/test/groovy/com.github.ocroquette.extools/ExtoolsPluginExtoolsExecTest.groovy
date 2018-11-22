@@ -379,7 +379,7 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
         then:
         result.task(":$taskName").outcome == SUCCESS
         result.output.contains("DUMMY1_STRING=Value of DUMMY1_STRING")
-        ! result.output.contains("DUMMY2_STRING=Value of DUMMY2_STRING")
+        !result.output.contains("DUMMY2_STRING=Value of DUMMY2_STRING")
     }
 
     def "extoolsExec with unexisting working dir"() {
@@ -437,6 +437,32 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
         // DUMMY_STRING is set by dummy1 and dummy2 with different values, but dummy2 should come first
         // because of the order of usingExtools:
         actualEnv["DUMMY_STRING"] == "Value of DUMMY_STRING from dummy_2"
+    }
+
+    def "prepending PATH var should allow to find a tool, but not modify the environment variable"() {
+        given:
+        def taskName = 'checkPathAsVar'
+
+        when:
+        def extractDir = temporaryFolder.newFolder()
+        def result = new GradleRunnerHelper(
+                temporaryRoot: temporaryFolder.newFolder(),
+                buildScript: generateBuildScript(),
+                repositoryUrl: REPO_URL,
+                extractDir: extractDir,
+                taskName: taskName,
+        ).build()
+        def expectedEnv = getSysEnv()
+        expectedEnv["PATH"] =
+                new File(extractDir, "printenvvars/bin").canonicalPath + File.pathSeparator +
+                        getSystemPath()
+        expectedEnv["PRINTENVVARS_BIN"] = new File(extractDir, "printenvvars/bin").canonicalPath
+        def actualEnv = parseEnvVariablesFromStdout(dumpFile.text)
+
+        then:
+        result.task(":$taskName").outcome == SUCCESS
+        compareEnv(expectedEnv, actualEnv) == ""
+        result.output.contains("Output from dummy 4")
     }
 
 

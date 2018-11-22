@@ -82,6 +82,8 @@ prepend;env;path;PATH;bin
 
 When this extool will be used, the ```bin``` subdirectory will be added at the beginning of the ```PATH``` variable, allowing to find "myclitools".
 
+Warning: on Windows, you should be particularly careful when expanding the PATH, see " Best practice" below.
+
 We now need to package the extool. It is very easy, since the ZIP format is used. Just make sure that ```extools.conf``` is at the root of the content of the ZIP file, and that the level "dir" is not used. For instance, when using zip on the command line on a Unix like system:
 ```
 cd dir
@@ -357,7 +359,6 @@ task getLoadedAliases {
 }
 ```
 
-getLoadedAliases
 
 ### Resolving aliases
 
@@ -424,3 +425,22 @@ task someTaskName(type:ExtoolExec) {
     commandLine ...
 }
 ```
+# Best practice
+
+## PATH and Windows
+
+On Windows, you should be particularly careful when expanding the environment variable PATH, since the operating system uses it also to resolve the the dynamic libraries (DLL).  It can have unwanted side-effects on other applications. If you need only Gradle to find the executables, and not its subprocesses, then use a simple variable instead:
+
+```
+prepend;var;path;PATH;...
+```
+
+It will be used only internally to find the executables and will not affect the other tools or subprocesses.
+
+Another option is to define the path under another name:
+
+```
+set;env;path;MYTOOL_PATH;bin
+```
+
+and adapt the subprocesses to use this environment variable, instead of the PATH.

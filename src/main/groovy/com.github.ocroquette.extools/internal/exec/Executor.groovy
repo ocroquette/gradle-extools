@@ -1,6 +1,7 @@
 package com.github.ocroquette.extools.internal.exec
 
 import com.github.ocroquette.extools.ExtoolsPlugin
+import com.github.ocroquette.extools.internal.config.ExtoolConfiguration
 import com.github.ocroquette.extools.internal.config.ExtoolsPluginConfiguration
 import com.github.ocroquette.extools.internal.utils.PathResolver
 import com.github.ocroquette.extools.internal.utils.PathVarUtils
@@ -19,6 +20,8 @@ class Executor {
     final private Project project
 
     private Logger logger = Logging.getLogger(this.getClass().getName())
+
+    private List<String> searchPaths = [] // Used internally
 
     Executor(Project p) {
         this.project = p
@@ -77,7 +80,7 @@ class Executor {
         // LinkedHashSet removes duplicates but keeps the insertion order
         LinkedHashSet<String> aliasesUsed = []
 
-        if ( ! executionConfiguration.usingExtoolsAppends) {
+        if (!executionConfiguration.usingExtoolsAppends) {
             // Don't append, use given explicit list
             aliasesUsed.addAll(executionConfiguration.usingExtools)
         } else {
@@ -104,23 +107,7 @@ class Executor {
         if (!pluginConfiguration.areToolsLoaded)
             throw new RuntimeException("The extools are not loaded yet. Missing dependency on ${ExtoolsPlugin.EXTOOLS_LOAD}?")
 
-        LinkedHashSet<String> realNamesUsedTmp = []
-
-        getAliasesUsed(conf).each { alias ->
-            def realName = pluginConfiguration.tools[alias]
-            if (realName == null) {
-                def actualAlias = pluginConfiguration.tools.find { it.value == alias }?.key
-                def errorMessage = (actualAlias == null
-                        ? "Invalid extool name or alias: \"$alias\""
-                        : "Use alias \"$actualAlias\" instead of real name \"$alias\"");
-                throw new RuntimeException(errorMessage)
-            }
-            realNamesUsedTmp.add(realName)
-        }
-
-        def realNamesUsed = []
-        realNamesUsed.addAll(realNamesUsedTmp)
-        // realNamesUsed = realNamesUsed.reverse()
+        def realNamesUsed = getUsedTools(conf)
 
         LinkedHashSet<String> variablesToPrependInEnv = []
 
@@ -128,6 +115,8 @@ class Executor {
         realNamesUsed.each { realName ->
             variablesToPrependInEnv.addAll(pluginConfiguration.configurationOfTool[realName].variablesToPrependInEnv)
         }
+
+        searchPaths = []
 
         variablesToPrependInEnv.each { variableName ->
             def paths = []
@@ -137,12 +126,11 @@ class Executor {
             }
 
             realNamesUsed.each { realName ->
-                pluginConfiguration.configurationOfTool[realName].variables.each { k, v ->
-                    if (k == variableName)
-                        paths.addAll(v.split(File.pathSeparator))
+                def toolConfiguration = pluginConfiguration.configurationOfTool[realName]
+                if (toolConfiguration.variablesToPrependInEnv.contains(variableName)) {
+                    paths.addAll(toolConfiguration.variables[variableName].split(File.pathSeparator))
                 }
             }
-
             String systemCase = getSystemCase(variableName)
 
             def systemValue = System.getenv(systemCase)
@@ -153,6 +141,10 @@ class Executor {
             }
 
             conf.environment[systemCase] = paths.join(File.pathSeparator)
+
+            if(PathVarUtils.isPathVariableName(variableName)) {
+                searchPaths.addAll(paths)
+            }
         }
 
         def variablesToSetInEnv = []
@@ -186,9 +178,12 @@ class Executor {
 
         boolean explicitPathProvided = conf.executable.contains("\\") || conf.executable.contains("/")
         if (!explicitPathProvided) {
+            /*
             def systemPathVariableName = PathVarUtils.getSystemPathVariableName()
             def pathsToSearchForExec = conf.environment[systemPathVariableName].split(File.pathSeparator)
             def searchPaths = pathsToSearchForExec.collect { new File(it) }
+            */
+            def searchPaths = getSearchPaths(conf)
             PathResolver resolver = new PathResolver(searchPaths)
             logger.info("Looking for ${conf.executable} in $searchPaths")
             def match = resolver.find(conf.executable)
@@ -197,6 +192,44 @@ class Executor {
             logger.info("Found ${conf.executable} at ${match.absolutePath}")
             conf.executable = match.absolutePath
         }
+    }
+
+    List<File> getSearchPaths(ExecutionConfiguration conf) {
+        def pluginConfiguration = project.extensions.extools.configurationState.get()
+        def searchPaths = []
+        getUsedTools(conf).each { realName ->
+            println realName
+            ExtoolConfiguration toolConfiguration = pluginConfiguration.configurationOfTool[realName]
+            toolConfiguration.variables.each { k, v ->
+                if(k == "PATH" || k == PathVarUtils.getSystemPathVariableName())
+                    searchPaths.add(v)
+            }
+        }
+        def systemPathVariableName = PathVarUtils.getSystemPathVariableName()
+        searchPaths.addAll(conf.environment[systemPathVariableName].split(File.pathSeparator))
+        return searchPaths.collect { it -> new File(it) }
+    }
+
+    List<String> getUsedTools(ExecutionConfiguration conf) {
+        def pluginConfiguration = project.extensions.extools.configurationState.get()
+
+        LinkedHashSet<String> realNamesUsedTmp = []
+
+        getAliasesUsed(conf).each { alias ->
+            def realName = pluginConfiguration.tools[alias]
+            if (realName == null) {
+                def actualAlias = pluginConfiguration.tools.find { it.value == alias }?.key
+                def errorMessage = (actualAlias == null
+                        ? "Invalid extool name or alias: \"$alias\""
+                        : "Use alias \"$actualAlias\" instead of real name \"$alias\"");
+                throw new RuntimeException(errorMessage)
+            }
+            realNamesUsedTmp.add(realName)
+        }
+
+        List<String> realNamesUsed = [] // Convert to List to use reverse()
+        realNamesUsed.addAll(realNamesUsedTmp)
+        return realNamesUsed
     }
 
 }

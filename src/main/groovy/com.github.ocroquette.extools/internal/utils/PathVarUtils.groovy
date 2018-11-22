@@ -12,4 +12,8 @@ class PathVarUtils {
             return "PATH"
         }
     }
+
+    static isPathVariableName(String name) {
+        return name.toUpperCase() == getSystemPathVariableName().toUpperCase()
+    }
 }
