@@ -198,7 +198,6 @@ class Executor {
         def pluginConfiguration = project.extensions.extools.configurationState.get()
         def searchPaths = []
         getUsedTools(conf).each { realName ->
-            println realName
             ExtoolConfiguration toolConfiguration = pluginConfiguration.configurationOfTool[realName]
             toolConfiguration.variables.each { k, v ->
                 if(k == "PATH" || k == PathVarUtils.getSystemPathVariableName())
