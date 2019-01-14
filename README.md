@@ -395,6 +395,16 @@ Extools: Location of "alias_3" overriden by project property "EXTOOL_ALIAS_3_OVE
 
 ```
 
+### Getting the local location of a tool
+
+You can get the home directory of a specific tool based on its alias using getHomeDir(). It returns a standard Java File object.
+
+Example:
+
+```
+println project.extensions.extools.getHomeDir("alias").canonicalPath
+```
+
 ### Generating scripts
 
 You can generate scripts containing the environment variables of tool by using the ``generateEnvironmentScript()```
