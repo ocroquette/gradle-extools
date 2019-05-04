@@ -205,7 +205,9 @@ class Executor {
             }
         }
         def systemPathVariableName = PathVarUtils.getSystemPathVariableName()
-        searchPaths.addAll(conf.environment[systemPathVariableName].split(File.pathSeparator))
+        def value = conf.environment[systemPathVariableName]
+        if(value != null)
+            searchPaths.addAll(value.split(File.pathSeparator))
         return searchPaths.collect { it -> new File(it) }
     }
 
