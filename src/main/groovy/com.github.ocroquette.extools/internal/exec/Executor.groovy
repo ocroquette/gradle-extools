@@ -178,11 +178,6 @@ class Executor {
 
         boolean explicitPathProvided = conf.executable.contains("\\") || conf.executable.contains("/")
         if (!explicitPathProvided) {
-            /*
-            def systemPathVariableName = PathVarUtils.getSystemPathVariableName()
-            def pathsToSearchForExec = conf.environment[systemPathVariableName].split(File.pathSeparator)
-            def searchPaths = pathsToSearchForExec.collect { new File(it) }
-            */
             def searchPaths = getSearchPaths(conf)
             PathResolver resolver = new PathResolver(searchPaths)
             logger.info("Looking for ${conf.executable} in $searchPaths")

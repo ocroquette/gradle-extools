@@ -454,3 +454,15 @@ set;env;path;MYTOOL_PATH;bin
 ```
 
 and adapt the subprocesses to use this environment variable, instead of the PATH.
+
+## Symbolic links
+
+If symbolic links are required within an Extool ZIP file on macOS, which is the case for
+instance when using frameworks, create it with:
+```
+/usr/bin/zip --symlinks
+```
+
+It will be extracted with "/usr/bin/unzip", which retains links (and permissions).
+
+(since v1.30)

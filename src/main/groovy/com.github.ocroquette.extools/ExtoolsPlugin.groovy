@@ -7,6 +7,7 @@ import com.github.ocroquette.extools.internal.config.ExtoolsPluginExtension
 import com.github.ocroquette.extools.internal.exec.Executor
 import com.github.ocroquette.extools.internal.utils.ExtoolsFetcher
 import com.github.ocroquette.extools.internal.utils.TemporaryFileUtils
+import com.github.ocroquette.extools.internal.utils.UnzipUtils
 import com.github.ocroquette.extools.tasks.ExtoolExec
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -75,18 +76,10 @@ class ExtoolsPlugin implements Plugin<Project> {
                         File src = new File(configuration.localCache, "${realName}.zip")
                         // ant.unzip is already logging to "lifecycle"
                         logger.info("Extracting ${src} to ${tmpDir}")
-                        ant.unzip(src: src,
-                                dest: dest,
-                                overwrite: "false")
+
+                        UnzipUtils.unzip(project, src, tmpDir)
 
                         tmpDir.renameTo(dest)
-
-                        // Unfortunately, ant.unzip doesn't restore the file permissions, so programs and scripts will
-                        // fail to start on OSes like macOS and Linux.
-                        // As a workaround, set all files as executables
-                        dest.eachFileRecurse(groovy.io.FileType.FILES) {
-                            it.setExecutable(true)
-                        }
                     }
                 }
             }
