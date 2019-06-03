@@ -479,20 +479,20 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
         Set<String> excludedKeys = []
         excludedKeys.addAll(
                 [
-                        // Special Unix variables
+                        // Special Unix/macOS variables
                         "SHLVL",
                         "_",
                         "PWD",
                         "OLDPWD",
                         "XPC_SERVICE_NAME", // Not sure what this one is about, sample value: "com.jetbrains.intellij.ce.13020"
-                        // Special Windows variables
+                        // Special Windows variables, not sure where they come from, but they can cause the tests to fail
                         "PROMPT",
-                        "=::"
+                        "=::",
+                        "=C:"
                 ]
         )
         return Comparator.compareEnvs(reference, actual, excludedKeys)
     }
-
     private String generateBuildScript() {
         String template = this.getClass().getResource('/build.gradle.extoolsexec').text
         return template.
