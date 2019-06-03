@@ -33,17 +33,31 @@ class Comparator {
         allKeys.addAll(reference.keySet())
         allKeys.addAll(actual.keySet())
 
+
+
+        def isWindows = System.getProperty("os.name").toLowerCase().contains("windows")
+
         allKeys.each { key ->
             if (excludedKeys.contains(key))
                 return
+
+            if (isWindows && key.startsWith("=")) {
+                // Windows add special variables starting with a "=". They are hidden by the standard Windows tools,
+                // but not by Java. In any case, they are not relevant for us, and can cause the tests to fail, so
+                // just ignore them
+                return
+            }
+
             String referenceValueAsString = (reference[key] == null ? "(null)" : "\"${reference[key]}\"")
             String actualValueAsString = (actual[key] == null ? "(null)" : "\"${actual[key]}\"")
+
             if (referenceValueAsString != actualValueAsString) {
                 differences += "For variable \"$key\":\n"
                 differences += "  Reference: $referenceValueAsString\n"
                 differences += "  Actual:    $actualValueAsString\n"
             }
         }
+
         return differences
     }
 

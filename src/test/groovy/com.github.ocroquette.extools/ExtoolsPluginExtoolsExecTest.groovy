@@ -485,10 +485,9 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
                         "PWD",
                         "OLDPWD",
                         "XPC_SERVICE_NAME", // Not sure what this one is about, sample value: "com.jetbrains.intellij.ce.13020"
-                        // Special Windows variables, not sure where they come from, but they can cause the tests to fail
+                        // Special Windows variables
                         "PROMPT",
-                        "=::",
-                        "=C:"
+                        "COMSPEC"
                 ]
         )
         return Comparator.compareEnvs(reference, actual, excludedKeys)
