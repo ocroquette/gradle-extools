@@ -67,7 +67,10 @@ class UnzipUtils {
         destDir.mkdirs()
 
         project.exec {
-            commandLine "/usr/bin/unzip", zipFile.absolutePath, "-d", destDir.absolutePath
+            commandLine "/usr/bin/unzip",
+                    "-q",                       // Quiet, otherwise every file path is printed out
+                    zipFile.absolutePath,       // Path of ZIP file
+                    "-d", destDir.absolutePath  // Extract dir
         }
     }
 }
