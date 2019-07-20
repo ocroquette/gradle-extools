@@ -38,7 +38,6 @@ class ExtoolsPluginExtension {
     }
 
     void tool(String alias, String realName) {
-        println "$alias -> $realName"
         if(isOverriden(alias)) {
             // For overriden extools, replace irrelevant realname by path
             realName = getOverridenPath(alias)
