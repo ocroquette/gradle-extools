@@ -6,7 +6,7 @@ plugins {
 }
 
 rootProject.group='com.github.ocroquette'
-rootProject.version='1.34-SNAPSHOT'
+rootProject.version='1.34'
 
 pluginBundle {
     website = 'https://github.com/ocroquette/gradle-extools'
