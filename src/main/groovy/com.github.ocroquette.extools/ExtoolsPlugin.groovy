@@ -46,8 +46,10 @@ class ExtoolsPlugin implements Plugin<Project> {
                 logger.info("Fetching extools, localCache=${configuration.localCache} remoteRepositoryUrl=${remoteRepositoryUrl}")
 
                 def fetcher = new ExtoolsFetcher(remoteRepositoryUrl, configuration.localCache)
-                configuration.tools.values().each { realName ->
-                    fetcher.fetch(realName)
+                configuration.tools.each { alias, realName ->
+                    if(!project.extensions.extools.isOverriden(alias)) {
+                        fetcher.fetch(realName)
+                    }
                 }
             }
         }
@@ -62,6 +64,8 @@ class ExtoolsPlugin implements Plugin<Project> {
                 def ant = new AntBuilder()
 
                 configuration.tools.each { alias, realName ->
+                    if(project.extensions.extools.isOverriden(alias))
+                        return
                     File dest = new File(configuration.extractDir, realName)
                     if (dest.exists()) {
                         logger.info("${dest} is already available")

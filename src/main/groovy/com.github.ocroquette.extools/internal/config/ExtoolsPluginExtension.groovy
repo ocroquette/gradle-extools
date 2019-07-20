@@ -13,6 +13,7 @@ import org.gradle.api.provider.PropertyState
 class ExtoolsPluginExtension {
     final PropertyState<ExtoolsPluginConfiguration> configurationState
     Project project
+    private overrideWarnings = []
 
     ExtoolsPluginExtension(Project project) {
         configurationState = project.property(ExtoolsPluginConfiguration)
@@ -88,20 +89,35 @@ class ExtoolsPluginExtension {
         return value
     }
 
-    private String getOverridenPath(String toolAlias) {
+    private String getOverridenVarName(String toolAlias) {
         String canonicalName = toolAlias.toUpperCase().replaceAll(/[^A-Z0-9\-_]+/, "_")
-        String overrideName = "EXTOOL_${canonicalName}_OVERRIDE"
-        String overrideValue
+        return "EXTOOL_${canonicalName}_OVERRIDE"
+    }
+
+    boolean isOverriden(String toolAlias) {
+        return getOverridenPath(toolAlias) != null
+    }
+
+    private String getOverridenPath(String toolAlias) {
+        String overrideName = getOverridenVarName(toolAlias)
+        String overrideValue = null
+        String overridenBy = null
 
         project.logger.debug("Extools: Checking if the location of \"$toolAlias\" is overriden with \"$overrideName\"")
         if (System.getenv(overrideName) != null) {
             overrideValue = System.getenv(overrideName)
-            project.logger.warn("Extools: Location of \"$toolAlias\" overriden by environment variable \"$overrideName\" to \"$overrideValue\"")
-        }
-        else {
+            if (overrideValue != null) {
+                overridenBy = "environment variable"
+            }
+        } else {
             overrideValue = project.getProperties().get(overrideName)
-            if (overrideValue != null)
-                project.logger.warn("Extools: Location of \"$toolAlias\" overriden by project property \"$overrideName\" to \"$overrideValue\"")
+            if (overrideValue != null) {
+                overridenBy = "project property"
+            }
+        }
+        if (overrideValue != null && !overrideWarnings.contains(toolAlias)) {
+            project.logger.warn("Extools: Location of \"$toolAlias\" overriden by $overridenBy \"$overrideName\" to \"$overrideValue\"")
+            overrideWarnings.add(toolAlias) // Warn only once
         }
         return overrideValue
     }
@@ -111,8 +127,7 @@ class ExtoolsPluginExtension {
         if (overridenPath == null) {
             String realName = resolveAlias(toolAlias)
             return new File(configurationState.get().extractDir, realName)
-        }
-        else {
+        } else {
             return new File(overridenPath)
         }
     }
@@ -126,7 +141,7 @@ class ExtoolsPluginExtension {
     }
 
     String[] getLoadedAliases() {
-        return ( configurationState.get().tools.keySet() as String[] ).sort()
+        return (configurationState.get().tools.keySet() as String[]).sort()
     }
 
     String generateEnvironmentScriptCmd(String toolAlias) {
