@@ -37,12 +37,23 @@ class ExtoolsPluginExtension {
         }
     }
 
+    void tool(String alias, String realName) {
+        println "$alias -> $realName"
+        if(isOverriden(alias)) {
+            // For overriden extools, replace irrelevant realname by path
+            realName = getOverridenPath(alias)
+        }
+        configurationState.get().tools.put(alias, realName)
+    }
+
     void tool(String s) {
-        configurationState.get().tools.put(s, s)
+        tool(s, s)
     }
 
     void tool(Map<String, String> map) {
-        configurationState.get().tools.putAll(map)
+        map.each { k, v ->
+            tool(k, v)
+        }
     }
 
     void tools(Map<String, String> map) {
