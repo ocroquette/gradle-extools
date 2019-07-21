@@ -439,7 +439,7 @@ task someTaskName(type:ExtoolExec) {
 
 ## PATH and Windows
 
-On Windows, you should be particularly careful when expanding the environment variable PATH, since the operating system uses it also to resolve the the dynamic libraries (DLL).  It can have unwanted side-effects on other applications. If you need only Gradle to find the executables, and not its subprocesses, then use a simple variable instead:
+On Windows, you should be particularly careful when expanding the environment variable PATH, since the operating system uses it also to resolve the dynamic libraries (DLL).  It can have unwanted side-effects on other applications. If you need only Gradle to find the executables, and not its subprocesses, then use a simple variable instead:
 
 ```
 prepend;var;path;PATH;...
