@@ -12,6 +12,7 @@ import com.github.ocroquette.extools.tasks.ExtoolExec
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import com.github.ocroquette.extools.tasks.ExtoolExecCli
+import java.nio.file.Files;
 
 
 class ExtoolsPlugin implements Plugin<Project> {
@@ -83,7 +84,7 @@ class ExtoolsPlugin implements Plugin<Project> {
 
                         UnzipUtils.unzip(project, src, tmpDir)
 
-                        tmpDir.renameTo(dest)
+                        Files.move(tmpDir.toPath(), dest.toPath())
                     }
                 }
             }
