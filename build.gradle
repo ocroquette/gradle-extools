@@ -2,11 +2,11 @@ plugins {
     id 'groovy'
     id 'maven'
     id 'java-gradle-plugin'
-    id 'com.gradle.plugin-publish' version '0.9.9'
+    id 'com.gradle.plugin-publish' version '0.11.0'
 }
 
 rootProject.group='com.github.ocroquette'
-rootProject.version='1.36'
+rootProject.version='1.37-SNAPSHOT'
 
 pluginBundle {
     website = 'https://github.com/ocroquette/gradle-extools'
