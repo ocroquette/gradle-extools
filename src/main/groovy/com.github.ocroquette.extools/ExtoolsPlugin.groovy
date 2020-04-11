@@ -84,7 +84,23 @@ class ExtoolsPlugin implements Plugin<Project> {
 
                         UnzipUtils.unzip(project, src, tmpDir)
 
-                        Files.move(tmpDir.toPath(), dest.toPath())
+                        final int max_tries = 3
+                        for(int t = 1 ; t <= max_tries ; t ++) {
+                            try {
+                                // On Windows, this can fail on the first try, maybe because of the antivirus?
+                                // Try again a few times.
+                                Files.move(tmpDir.toPath(), dest.toPath())
+                                break
+                            }
+                            catch(Exception e) {
+                                if(t  == max_tries) {
+                                    throw e; // give up
+                                }
+                                else {
+                                    sleep(500)
+                                }
+                            }
+                        }
                     }
                 }
             }
