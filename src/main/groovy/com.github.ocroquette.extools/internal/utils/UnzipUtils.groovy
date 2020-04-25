@@ -1,8 +1,6 @@
 package com.github.ocroquette.extools.internal.utils
 
 import org.gradle.api.Project
-import java.nio.file.Files
-import java.nio.file.attribute.BasicFileAttributeView
 
 class UnzipUtils {
 
@@ -46,18 +44,11 @@ class UnzipUtils {
         project.ant.unzip(src: zipFile,
                 dest: destDir)
 
+        // Unfortunately, ant.unzip doesn't restore the file permissions, so programs and scripts will
+        // fail to start on OSes Linux.
+        // As a workaround, set all files as executables.
         destDir.eachFileRecurse(groovy.io.FileType.FILES) {
-            // Unfortunately, ant.unzip doesn't restore the file permissions, so programs and scripts will
-            // fail to start on OSes like Linux.
-            // As a workaround, set all files as executables.
             it.setExecutable(true)
-        }
-
-        // ant.unzip() does not set the last access time, which can cause problem with some tools
-        // later on. So set it explicitly for every file.
-        def now = java.time.Instant.now()
-        destDir.eachFileRecurse {
-            Files.getFileAttributeView(it.toPath(), BasicFileAttributeView.class).setTimes(null, now, null)
         }
     }
 
