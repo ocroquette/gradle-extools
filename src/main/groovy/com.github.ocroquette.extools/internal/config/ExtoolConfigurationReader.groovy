@@ -72,17 +72,19 @@ class ExtoolConfigurationReader {
         def varType = fields[1]
         assertValue(varType, [TYPE_VAR, TYPE_ENV],"variable type")
 
-        def VALUETYPE_PATH = "path"
+        def VALUETYPE_RELPATH = "relpath"
+        def VALUETYPE_RELPATH_DEPRECATED = "path"
+        def VALUETYPE_ABSPATH = "abspath"
         def VALUETYPE_STRING = "string"
         def valueType = fields[2]
-        assertValue(valueType, [VALUETYPE_PATH, VALUETYPE_STRING],"value type")
+        assertValue(valueType, [VALUETYPE_RELPATH, VALUETYPE_RELPATH_DEPRECATED, VALUETYPE_ABSPATH, VALUETYPE_STRING],"value type")
 
         def varName = fields[3]
 
         def value = fields[4]
 
 
-        if (valueType == VALUETYPE_PATH) {
+        if ( valueType == VALUETYPE_RELPATH || valueType == VALUETYPE_RELPATH_DEPRECATED ) {
             value = computeCanonicalPath(value)
         }
 
@@ -96,7 +98,10 @@ class ExtoolConfigurationReader {
             }
         }
         else if ( action == ACTION_PREPEND) {
-            String separator = ( valueType == VALUETYPE_PATH ? File.pathSeparator : "")
+            boolean isPath = ( valueType == VALUETYPE_RELPATH ||
+                            valueType == VALUETYPE_RELPATH_DEPRECATED ||
+                            valueType == VALUETYPE_ABSPATH )
+            String separator = ( isPath ? File.pathSeparator : "")
             result.variables.put(varName, prependString(result.variables[varName], value, separator))
             if (varType == TYPE_ENV) {
                 if (result.variablesToSetInEnv.contains(varName)) {

@@ -285,6 +285,7 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
         expectedEnv["DUMMY1_STRING"] = "Value of DUMMY1_STRING"
         expectedEnv["DUMMY2_STRING"] = "Value of DUMMY2_STRING"
         expectedEnv["PATH"] = // Order must match the one used in the usingExtools statement:
+                "absolute_path" + File.pathSeparator +
                 new File(extractDir, "dummy_1/bin2").canonicalPath + File.pathSeparator +
                         new File(extractDir, "dummy_1/bin").canonicalPath + File.pathSeparator +
                         new File(extractDir, "printenvvars/bin").canonicalPath + File.pathSeparator +

@@ -22,7 +22,9 @@ class ExtoolsConfigurationReaderTest extends Specification {
                 DUMMY1_VAR: "Value of DUMMY1_VAR",
                 CMAKE_PREFIX_PATH: (new File(relativePath, "cmake_").canonicalPath
                         + File.pathSeparator + new File(relativePath, "cmake").canonicalPath),
-                PATH: ( new File(relativePath, "bin2").canonicalPath + File.pathSeparator + new File(relativePath, "bin").canonicalPath )
+                PATH: ( "absolute_path" + File.pathSeparator +
+                        new File(relativePath, "bin2").canonicalPath + File.pathSeparator +
+                        new File(relativePath, "bin").canonicalPath )
         ], result.variables, []) == ""
         Comparator.compareAsSets(["DUMMY1_STRING", "DUMMY_STRING", "DUMMY1_DIR"], result.variablesToSetInEnv) == ""
         Comparator.compareAsSets(["CMAKE_PREFIX_PATH", "PATH"], result.variablesToPrependInEnv)  == ""

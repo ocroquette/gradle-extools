@@ -77,7 +77,7 @@ dir/extools.conf
 The file ```extools.conf``` allows to extend the environment of the host when the extool is used. In this simple case, ```extools.conf``` should contain the following line:
 
 ```
-prepend;env;path;PATH;bin
+prepend;env;relpath;PATH;bin
 ```
 
 When this extool will be used, the ```bin``` subdirectory will be added at the beginning of the ```PATH``` variable, allowing to find "myclitools".
@@ -244,23 +244,42 @@ task execMyCliTool(type:Exec) {
 
 ### Setting and extending environment variables
 
-So far, we only extended the PATH variable in ```extools.conf```, but it is possible to extend any environment variable with a path:
+So far, we only extended the PATH variable in ```extools.conf```, but it is possible to extend any environment variable
+with a path relative to the root directory of the extracted extool:
 
 ```
 # Extend the PATH environment variable with the bin/ sub-directory
-prepend;env;path;PATH;bin
+prepend;env;relpath;PATH;bin
 
 # Extend the CMAKE_PREFIX_PATH environment variable with the lib/cmake sub-directory
-prepend;env;path;CMAKE_PREFIX_PATH;lib/cmake
+prepend;env;relpath;CMAKE_PREFIX_PATH;lib/cmake
 ```
 
-The separator inserted between the different paths in the variable value is the standard separator used by the operating system for the PATH variable, e.g. ';' on Windows and ':' on Linux, macOS and Unix.
+The separator inserted between the different paths in the variable value is the standard separator used by the operating
+system for the PATH variable, e.g. ';' on Windows and ':' on Linux, macOS and Unix.
+
+Note: "path" is a deprecated synonym of "relpath".
+
+You can also specify an absolute path:
+```
+# Extend the PATH environment variable with an absolute path
+# on Windows:
+prepend;env;abspath;PATH;C:\...
+# on Unix like:
+prepend;env;abspath;PATH;/dir/...
+```
 
 To set an environment variable to a fixed string:
 
 ```
 # Set the environment variable called SOME_VAR to "Value of SOME_VAR"
 set;env;string;SOME_VAR;Value of SOME_VAR
+```
+
+You can also prepend a string. The difference with prepending a path is that the standard separator will not be
+inserted:
+```
+prepend;env;string;VARNAME;prefix to add
 ```
 
 
@@ -442,7 +461,7 @@ task someTaskName(type:ExtoolExec) {
 On Windows, you should be particularly careful when expanding the environment variable PATH, since the operating system uses it also to resolve the dynamic libraries (DLL).  It can have unwanted side-effects on other applications. If you need only Gradle to find the executables, and not its subprocesses, then use a simple variable instead:
 
 ```
-prepend;var;path;PATH;...
+prepend;var;relpath;PATH;...
 ```
 
 It will be used only internally to find the executables and will not affect the other tools or subprocesses.
@@ -450,7 +469,7 @@ It will be used only internally to find the executables and will not affect the 
 Another option is to define the path under another name:
 
 ```
-set;env;path;MYTOOL_PATH;bin
+set;env;relpath;MYTOOL_PATH;bin
 ```
 
 and adapt the subprocesses to use this environment variable, instead of the PATH.
