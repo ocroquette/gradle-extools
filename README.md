@@ -82,15 +82,13 @@ prepend;env;relpath;PATH;bin
 
 When this extool will be used, the ```bin``` subdirectory will be added at the beginning of the ```PATH``` variable, allowing to find "myclitools".
 
-Warning: on Windows, you should be particularly careful when expanding the PATH, see " Best practice" below.
+Warning: on Windows, you should be particularly careful when expanding the PATH, see "Best practice" below.
 
 We now need to package the extool. It is very easy, since the ZIP format is used. Just make sure that ```extools.conf``` is at the root of the content of the ZIP file, and that the level "dir" is not used. For instance, when using zip on the command line on a Unix like system:
 ```
 cd dir
-zip -r ../mytoolkit.ext .
+zip -r ../mytoolkit.zip .
 ```
-
-As you can see, the extension ```.ext``` is used for extools packages.
 
 Whithin the ZIP file, the file structure should like this:
 
@@ -99,7 +97,7 @@ bin/myclitool
 extools.conf
 ```
 
-Creating a repository is very easy, just put the file ```mytoolkit.ext``` in a directory in the local file system or on an HTTP server, and set ```extools.repositoryUrl``` accordingly.
+Creating a repository is very easy, just put the file ```mytoolkit.zip``` in a directory in the local file system or on an HTTP server, and set ```extools.repositoryUrl``` accordingly.
 
 It is recommended to automate the generation of the packages. Gradle itself is the perfect tool since it provides all the required features like unzipping, zipping, file manipulation... See [gradle-extools-recipes](https://github.com/ocroquette/gradle-extools-recipes) for sample recipes.
 
@@ -242,7 +240,16 @@ task execMyCliTool(type:Exec) {
 ```
 
 
-### Setting and extending environment variables
+### extools.conf: Comments
+
+You can add comments by starting lines with the "#" sign:
+
+```
+# Comment
+prepend;env;relpath;PATH;bin
+```
+
+### extools.conf: Setting and extending environment variables
 
 So far, we only extended the PATH variable in ```extools.conf```, but it is possible to extend any environment variable
 with a path relative to the root directory of the extracted extool:
@@ -283,7 +290,7 @@ prepend;env;string;VARNAME;prefix to add
 ```
 
 
-### Using internal variables, not exported to the environment
+### extools.conf: Using internal variables, not exported to the environment
 
 If you need the variable value only within Gradle and not as an environment variables in the child processes, use ```var``` instead of ```env``` in the ```extools.conf``` file:
 
