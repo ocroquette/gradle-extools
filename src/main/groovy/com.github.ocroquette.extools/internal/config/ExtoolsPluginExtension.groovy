@@ -1,5 +1,6 @@
 package com.github.ocroquette.extools.internal.config
 
+import com.github.ocroquette.extools.ExtoolsPlugin
 import com.github.ocroquette.extools.internal.config.ExtoolConfiguration
 import com.github.ocroquette.extools.internal.config.ExtoolsPluginConfiguration
 import org.gradle.api.Project
@@ -154,7 +155,13 @@ class ExtoolsPluginExtension {
         return (configurationState.get().tools.keySet() as String[]).sort()
     }
 
+    def assertExtoolsAreLoaded() {
+        if ( ! configurationState.get().areToolsLoaded )
+            throw new RuntimeException("The extools are not loaded yet. Missing dependency on ${ExtoolsPlugin.EXTOOLS_LOAD}?")
+    }
+
     String generateEnvironmentScript(String toolAlias) {
+        assertExtoolsAreLoaded()
         String realName = resolveAlias(toolAlias)
         ExtoolConfiguration tc = configurationState.get().configurationOfTool[realName]
         def sb = new StringBuilder()
