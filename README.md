@@ -433,7 +433,7 @@ println project.extensions.extools.getHomeDir("alias").canonicalPath
 
 ### Generating scripts
 
-You can generate scripts containing the environment variables of tool by using the ``generateEnvironmentScript()```
+You can generate scripts containing the environment variables of tool by using the ```generateEnvironmentScript()```
 function. On Windows, it might return a string like:
 
 ```
@@ -461,6 +461,29 @@ task someTaskName(type:ExtoolExec) {
     commandLine ...
 }
 ```
+
+## Creating launchers
+
+If you don't want to start the tools directly from Gradle but rather interactively, you can generate launcher scripts:
+```
+task generateLauncher1 {
+    dependsOn "extoolsLoad"
+    doLast {
+        extoollauncher {
+            launcherFile "$buildDir/myscript"
+        }
+    }
+}
+```
+
+This will generate a file called "myscript" which contains the commands to set up the environment for the extools.
+The extoollauncher command supports following parameters:
+- launcherFile: the launcher file to create
+- usingExtools (optional): the list of extools to use
+- additionalEnvironment (optional): additional environment variables, for instance "NAME": "VALUE"
+- textBefore (optional): Text to add before the generated part
+- textAfter (optional): Text to add after the generated part
+
 # Best practice
 
 ## PATH and Windows

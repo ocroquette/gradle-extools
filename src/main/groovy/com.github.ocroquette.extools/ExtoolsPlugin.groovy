@@ -5,6 +5,7 @@ import com.github.ocroquette.extools.internal.config.ExtoolConfigurationReader
 import com.github.ocroquette.extools.internal.config.ExtoolsPluginConfiguration
 import com.github.ocroquette.extools.internal.config.ExtoolsPluginExtension
 import com.github.ocroquette.extools.internal.exec.Executor
+import com.github.ocroquette.extools.internal.launcher.LauncherGenerator
 import com.github.ocroquette.extools.internal.utils.ExtoolsFetcher
 import com.github.ocroquette.extools.internal.utils.TemporaryFileUtils
 import com.github.ocroquette.extools.internal.utils.UnzipUtils
@@ -182,6 +183,10 @@ class ExtoolsPlugin implements Plugin<Project> {
 
         project.extensions.extraProperties.set("extoolexec", { Closure c ->
             new Executor(project).executeConfiguration(c)
+        })
+
+        project.extensions.extraProperties.set("extoollauncher", { Closure c ->
+            new LauncherGenerator(project).generate(c)
         })
     }
 

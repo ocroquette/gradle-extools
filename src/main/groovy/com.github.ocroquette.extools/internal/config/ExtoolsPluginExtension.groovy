@@ -154,38 +154,38 @@ class ExtoolsPluginExtension {
         return (configurationState.get().tools.keySet() as String[]).sort()
     }
 
-    String generateEnvironmentScriptCmd(String toolAlias) {
-        String realName = resolveAlias(toolAlias)
-        ExtoolConfiguration tc = configurationState.get().configurationOfTool[realName]
-        def sb = new StringBuilder()
-        tc.variablesToSetInEnv.sort().each {
-            sb.append("set $it=" + tc.variables[it] + "\n")
-        }
-        tc.variablesToPrependInEnv.sort().each {
-            sb.append("set $it=" + tc.variables[it] + ";%$it%\n")
-        }
-        return sb.toString()
-    }
-
-    String generateEnvironmentScriptShell(String toolAlias) {
-        String realName = resolveAlias(toolAlias)
-        ExtoolConfiguration tc = configurationState.get().configurationOfTool[realName]
-        def sb = new StringBuilder()
-        tc.variablesToSetInEnv.sort().each {
-            sb.append("export $it=\"" + tc.variables[it] + "\"\n")
-        }
-        tc.variablesToPrependInEnv.sort().each {
-            sb.append("export $it=\"" + tc.variables[it] + ":\$$it\"\n")
-        }
-        return sb.toString()
-    }
-
     String generateEnvironmentScript(String toolAlias) {
-        if (System.properties['os.name'].toLowerCase().contains('windows')) {
-            return generateEnvironmentScriptCmd(toolAlias)
-        } else {
-            return generateEnvironmentScriptShell(toolAlias)
+        String realName = resolveAlias(toolAlias)
+        ExtoolConfiguration tc = configurationState.get().configurationOfTool[realName]
+        def sb = new StringBuilder()
+        tc.variablesToSetInEnv.sort().each {
+            sb.append(generateEnvironmentLine(it, tc.variables[it], false))
+            sb.append("\n")
         }
+        tc.variablesToPrependInEnv.sort().each {
+            sb.append(generateEnvironmentLine(it, tc.variables[it], true))
+            sb.append("\n")
+        }
+        return sb.toString()
+    }
+
+    String generateEnvironmentLine(String varName, String varValue, boolean append) {
+        def sb = new StringBuilder()
+        if (System.properties['os.name'].toLowerCase().contains('windows')) {
+            sb.append("set $varName=" + varValue)
+            if(append) {
+                sb.append(";")
+                sb.append("%$varName%")
+            }
+        } else {
+            sb.append("export $varName=\"" + varValue)
+            if(append) {
+                sb.append(":")
+                sb.append('$' + varName)
+            }
+            sb.append("\"")
+        }
+        return sb.toString()
     }
 
     private File getDefaultExtractDir(Project project) {
