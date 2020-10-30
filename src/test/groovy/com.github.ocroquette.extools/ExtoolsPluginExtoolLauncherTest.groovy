@@ -23,11 +23,15 @@ class ExtoolsPluginExtoolLauncherTest extends Specification {
     def tempFile2
 
     boolean isWindows = System.getProperty("os.name").toLowerCase().contains("windows");
+    def scriptExtension = ( isWindows ? ".bat" : ".sh" )
 
     def setup() {
         dumpFile = temporaryFolder.newFile()
         tempFile1 = temporaryFolder.newFile()
-        tempFile2 = new File(temporaryFolder.newFolder(), "non_existing_folder/tempFile2")
+        // tempFile2 has already the extension and is in a non existing folder
+        // - the extension must not be added automatically by extoollauncher
+        // - the directory must be created automatically
+        tempFile2 = new File(temporaryFolder.newFolder(), "non_existing_folder/tempFile2" + scriptExtension)
     }
 
     def "Simple launcher 1"() {
@@ -43,7 +47,7 @@ class ExtoolsPluginExtoolLauncherTest extends Specification {
                 repositoryUrl: REPO_URL,
                 taskName: taskName,
         ).build()
-        def actual_lines = tempFile1.text.split("\n")
+        def actual_lines = new File(tempFile1.path + scriptExtension).text.split("\n")
         def expected_lines
         def dummy_2_dir = new File(extractDir, "dummy_2").canonicalPath
         if(isWindows) {
@@ -100,7 +104,7 @@ class ExtoolsPluginExtoolLauncherTest extends Specification {
                 repositoryUrl: REPO_URL,
                 taskName: taskName,
         ).build()
-        def actual_lines = tempFile1.text.split(/\r?\n/)
+        def actual_lines = new File(tempFile1.path + scriptExtension).text.split(/\r?\n/)
         def dummy_3_dir = new File(extractDir, "subdir/dummy_3").canonicalPath
         def expected_lines
         if(isWindows) {

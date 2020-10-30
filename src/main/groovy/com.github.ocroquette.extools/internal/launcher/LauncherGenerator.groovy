@@ -48,10 +48,24 @@ class LauncherGenerator {
             sb.append(project.extensions.extools.generateEnvironmentLine(k, v, false))
         }
         sb.append(conf.textAfter)
-        conf.launcherFile.parentFile.mkdirs()
-        conf.launcherFile.text = sb.toString()
+
+        def launcherFile = getLauncherFile(conf)
+        launcherFile.parentFile.mkdirs()
+        launcherFile.text = sb.toString()
         // Set executable permission if possible, ignore any error
-        conf.launcherFile.setExecutable(true, false)
+        launcherFile.setExecutable(true, false)
+    }
+
+    private getLauncherFile(LauncherConfiguration conf) {
+        def isWindows = ( System.getProperty("os.name").toLowerCase().contains("windows") ? true : false )
+        def scriptExtension = ( isWindows ? ".bat" : ".sh" )
+
+        def launcherFile = conf.launcherFile
+
+        if ( ! launcherFile.name.toLowerCase().endsWith(scriptExtension) ) {
+            launcherFile = new File(launcherFile.path + scriptExtension)
+        }
+        return launcherFile
     }
 
     private getAliasesUsed(LauncherConfiguration conf) {

@@ -17,9 +17,6 @@ extools {
     usingExtools "dummy_2"
 }
 
-def isWindows = ( System.getProperty("os.name").toLowerCase().contains("windows") ? true : false )
-def scriptExtension = ( isWindows ? "bat" : "sh" )
-
 task generateLauncher1 {
     dependsOn "extoolsLoad"
     doLast {

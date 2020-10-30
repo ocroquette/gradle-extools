@@ -478,7 +478,9 @@ task generateLauncher1 {
 
 This will generate a file called "myscript" which contains the commands to set up the environment for the extools.
 The extoollauncher command supports following parameters:
-- launcherFile: the launcher file to create
+- launcherFile: the launcher file to create.
+The usual extension will be added automatically if required (.bat on Windows, .sh on other platforms), and
+directories will be created automatically.
 - usingExtools (optional): the list of extools to use
 - additionalEnvironment (optional): additional environment variables, for instance "NAME": "VALUE"
 - textBefore (optional): Text to add before the generated part
