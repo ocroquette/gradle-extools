@@ -27,7 +27,7 @@ class ExtoolsPluginExtoolLauncherTest extends Specification {
     def setup() {
         dumpFile = temporaryFolder.newFile()
         tempFile1 = temporaryFolder.newFile()
-        tempFile2 = temporaryFolder.newFile()
+        tempFile2 = new File(temporaryFolder.newFolder(), "non_existing_folder/tempFile2")
     }
 
     def "Simple launcher 1"() {

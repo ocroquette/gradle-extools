@@ -48,6 +48,7 @@ class LauncherGenerator {
             sb.append(project.extensions.extools.generateEnvironmentLine(k, v, false))
         }
         sb.append(conf.textAfter)
+        conf.launcherFile.parentFile.mkdirs()
         conf.launcherFile.text = sb.toString()
         // Set executable permission if possible, ignore any error
         conf.launcherFile.setExecutable(true, false)
