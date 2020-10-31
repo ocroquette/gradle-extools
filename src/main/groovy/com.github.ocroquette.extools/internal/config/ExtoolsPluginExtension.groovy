@@ -67,7 +67,7 @@ class ExtoolsPluginExtension {
         configurationState.get().aliasesUsedGlobally.add(alias)
     }
 
-    void usingExtools(List<String> aliases) {
+    void usingExtools(String... aliases) {
         aliases.each {
             usingExtools(it)
         }

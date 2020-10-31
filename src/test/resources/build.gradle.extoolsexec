@@ -19,7 +19,9 @@ extools {
     tool "printargs"
     tool "subdir/dummy_3"
 
+    // Make sure both forms are working (the second call will superseed the first one)
     usingExtools "dummy_2"
+    usingExtools "dummy_2", "dummy_4"
 }
 
 def isWindows = ( System.getProperty("os.name").toLowerCase().contains("windows") ? true : false )
