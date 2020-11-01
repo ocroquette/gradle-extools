@@ -109,14 +109,16 @@ class ExtoolsPluginExtoolLauncherTest extends Specification {
         def expected_lines
         if(isWindows) {
             expected_lines = ['set PATH=' + dummy_3_dir + '\\bin;%PATH%',
-                              "set BLA=BLABLA",
+                              "set VAR1=VALUE1",
+                              "set VAR2=VALUE2",
                               "Hello",
                               "world"
             ]
         }
         else {
             expected_lines = ['export PATH="' + dummy_3_dir + '/bin:$PATH"',
-                              "export BLA=\"BLABLA\"",
+                              "export VAR1=\"VALUE1\"",
+                              "export VAR2=\"VALUE2\"",
                               "Hello",
                               "world"
             ]

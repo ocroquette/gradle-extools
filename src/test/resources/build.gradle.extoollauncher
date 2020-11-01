@@ -44,7 +44,7 @@ task generateLauncherWithAdditionalEnvironment {
         extoollauncher {
             launcherFile "%tempFile1%"
             usingExtools "subdir/dummy_3"
-            additionalEnvironment "BLA": "BLABLA"
+            additionalEnvironment "VAR1": "VALUE1", "VAR2": "VALUE2"
             textBefore '''Hello
 world
 '''

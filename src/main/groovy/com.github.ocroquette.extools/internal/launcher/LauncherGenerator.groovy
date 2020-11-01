@@ -45,7 +45,7 @@ class LauncherGenerator {
             sb.append(project.extensions.extools.generateEnvironmentScript(toolAlias))
         }
         conf.additionalEnvironment.each {k,v ->
-            sb.append(project.extensions.extools.generateEnvironmentLine(k, v, false))
+            sb.append(project.extensions.extools.generateEnvironmentLine(k, v, false) + "\n")
         }
         sb.append(conf.textAfter)
 
