@@ -386,16 +386,19 @@ task getLoadedAliases {
 ```
 
 
-### Resolving aliases
+### Checking and resolving aliases
 
-You can resolve an alias by using the ```resolvealias()``` function:
+You can check if an alias is available by using the ```hasAlias()``` function, and
+resolve it using the ```resolvealias()``` function:
 
 ```
-task resolveAlias {
+task demonstrateResolveAlias {
     dependsOn "extoolsLoad"
 
     doLast {
-        println project.extensions.extools.resolveAlias("toolalias")
+        if ( project.extensions.extools.hasAlias("toolalias") ) {
+            println project.extensions.extools.resolveAlias("toolalias")
+        }
     }
 }
 ```

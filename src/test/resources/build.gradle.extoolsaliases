@@ -121,6 +121,19 @@ task execAlias3WithOverride {
             commandLine "dummy_1.$scriptExtension"
         }
     }
-
 }
+
+task verifyHasAlias {
+    dependsOn "extoolsLoad"
+
+    doLast {
+        if ( ! project.extensions.extools.hasAlias("alias_1") ) {
+            throw new RuntimeException('hasAlias("alias_1") should return true')
+        }
+        if ( project.extensions.extools.hasAlias("alias_invalid") ) {
+            throw new RuntimeException('hasAlias("alias_invalid") should return false')
+        }
+    }
+}
+
 

@@ -143,6 +143,11 @@ class ExtoolsPluginExtension {
         }
     }
 
+    boolean hasAlias(String toolAlias) {
+        ExtoolsPluginConfiguration conf = configurationState.get()
+        return conf.tools[toolAlias] != null
+    }
+
     String resolveAlias(String toolAlias) {
         ExtoolsPluginConfiguration conf = configurationState.get()
         String realName = conf.tools[toolAlias]

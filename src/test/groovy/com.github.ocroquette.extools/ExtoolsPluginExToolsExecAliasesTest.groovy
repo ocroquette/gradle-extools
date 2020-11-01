@@ -286,6 +286,23 @@ tools:
         result.output.contains("Output from dummy 1")
     }
 
+    def "Verify hasAlias"() {
+        given:
+        def taskName = 'verifyHasAlias'
+        def extractDir = temporaryFolder.newFolder()
+
+        when:
+        def result = new GradleRunnerHelper(
+                temporaryRoot: temporaryFolder.newFolder(),
+                buildScript: generateBuildScript(),
+                extractDir: extractDir,
+                repositoryUrl: REPO_URL,
+                taskName: taskName,
+        ).build()
+
+        then:
+        result.task(":$taskName").outcome == SUCCESS
+    }
 
     def "Generate environment script"() {
         when:
