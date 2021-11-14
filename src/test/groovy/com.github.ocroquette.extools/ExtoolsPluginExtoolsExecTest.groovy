@@ -101,7 +101,7 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
         def extractDir = temporaryFolder.newFolder()
         def expectedEnv = getSysEnv()
         expectedEnv["PRINTENVVARS_BIN"] = new File(extractDir, "printenvvars/bin").canonicalPath
-        expectedEnv["MYVAR1"] = new File(".").canonicalPath
+        expectedEnv["MYVAR1"] = "Value of MYVAR1"
         expectedEnv["MYVAR2"] = "Value of MYVAR2"
         expectedEnv["PATH"] =
                 new File(extractDir, "printenvvars/bin").canonicalPath + File.pathSeparator +
@@ -159,7 +159,7 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
         def taskName = 'prependEnvPath'
         def extractDir = temporaryFolder.newFolder()
         def expectedEnv = getSysEnv()
-        expectedEnv["PATH"] = new File(".").canonicalPath + File.pathSeparator +
+        expectedEnv["PATH"] = "/tmp/new_path" + File.pathSeparator +
                 new File(extractDir, "printenvvars/bin").canonicalPath + File.pathSeparator +
                 new File(extractDir, "dummy_2/bin").canonicalPath + File.pathSeparator +
                 getSystemPath()
@@ -333,7 +333,7 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
     def "Pass Files as arguments"() {
         given:
         def taskName = 'passFileAsArgument'
-        def expected = new File("a_file").canonicalPath
+        def expected = new File("/tmp/a_file").canonicalPath
 
         when:
         def result = new GradleRunnerHelper(

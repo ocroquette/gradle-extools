@@ -63,7 +63,7 @@ task execWithAdditionalEnvVariable {
         extoolexec {
             usingExtools "printenvvars"
             commandLine "printenvvars.$scriptExtension", "%dumpFile%"
-            environment "MYVAR1": new File("."), // Test with file
+            environment "MYVAR1": "Value of MYVAR1", // Test with file
                 "MYVAR2": "Value of MYVAR2" // Test with string
         }
     }
@@ -82,7 +82,7 @@ task execBackground(type:ExtoolExec) {
 
 task prependEnvPath(type:ExtoolExec) {
     usingAdditionalExtools "printenvvars"
-    prependEnvPaths "PATH": new File("."), // Test with file
+    prependEnvPaths "PATH": new File("/tmp/new_path"), // Test with file
         "NEW_PATH": ["new_path", "new_path2"] // Test with strings
     commandLine "printenvvars.$scriptExtension", "%dumpFile%"
 }
@@ -120,7 +120,7 @@ task execUseAll(type:ExtoolExec) {
 
 task passFileAsArgument(type:ExtoolExec) {
     usingAdditionalExtools "printargs"
-    commandLine "printargs.$scriptExtension", new File("a_file")
+    commandLine "printargs.$scriptExtension", new File("/tmp/a_file")
 }
 
 task unexistingWorkingDir(type: ExtoolExec) {
