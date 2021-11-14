@@ -1,9 +1,11 @@
 plugins {
     id 'groovy'
-    id 'maven'
+    id 'maven-publish'
     id 'java-gradle-plugin'
     id 'com.gradle.plugin-publish' version '0.11.0'
 }
+
+apply plugin: 'java-gradle-plugin'
 
 rootProject.group='com.github.ocroquette'
 rootProject.version='1.44-SNAPSHOT'
@@ -24,33 +26,29 @@ pluginBundle {
 }
 
 dependencies {
-    compile gradleApi()
+    implementation gradleApi()
 
-    testCompile gradleTestKit()
-    testCompile "org.spockframework:spock-core:1.1-groovy-2.4"
-    testCompile "com.github.tomakehurst:wiremock:2.10.1"
-    testCompile "org.apache.commons:commons-text:1.1"
+    testImplementation gradleTestKit()
+    testImplementation platform("org.spockframework:spock-bom:2.0-groovy-3.0")
+    testImplementation "org.spockframework:spock-core"
+    testImplementation "org.spockframework:spock-junit4"  // for old JUnit 4 rules
+    testImplementation "com.github.tomakehurst:wiremock:2.10.1"
+    testImplementation "org.apache.commons:commons-text:1.1"
 }
 
 repositories {
     mavenCentral()
 }
 
-configurations.all {
-    resolutionStrategy {
-      // Workaround for version conflict because of Spock:
-      // groovy.lang.GroovyRuntimeException: Conflicting module versions. Module [groovy-all is loaded in version 2.4.12 and you are trying to load version 2.4.9
-      // See https://stackoverflow.com/questions/31099214/tomcat-conflicting-module-versions-module-groovy-all-is-loaded-in-version-2-3/33262366#33262366
-      force 'org.codehaus.groovy:groovy-all:2.4.12'
-    }
+test {
+    useJUnitPlatform()
 }
-
 
 task(zipDummyTools) {
     description "Creates the ZIP files for the dummy tools used in the unit tests"
     final resourceDir = new File(projectDir, "src/test/resources/extools")
     final targetDir = new File(buildDir, "test/repo")
-    final toolIds = []
+    def toolIds = []
     resourceDir.eachFileRecurse {
         if ( it.name == "extools.conf" ) {
             toolIds += resourceDir.toPath().relativize( it.toPath() ).toFile().parentFile.toString()

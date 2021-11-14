@@ -139,7 +139,9 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
         ).build()
         def endTime = System.currentTimeMillis()
         boolean file2ExistsBefore = tempFile2.exists()
+        boolean file1ExistsBefore = tempFile1.exists()
         tempFile1.text = ""
+        boolean file1ExistsAfter = tempFile1.exists()
         for (int n = 0; n < 10 && !tempFile2.exists(); n++) {
             Thread.sleep(1000)
         }
@@ -147,6 +149,8 @@ class ExtoolsPluginExtoolsExecTest extends Specification {
 
         then:
         result.task(":$taskName").outcome == SUCCESS
+        !file1ExistsBefore
+        file1ExistsAfter
         !file2ExistsBefore
         file2ExistsAfter
     }

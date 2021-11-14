@@ -4,7 +4,7 @@ import com.github.ocroquette.extools.internal.exec.ExecutionConfiguration
 import com.github.ocroquette.extools.internal.exec.Executor
 import org.gradle.api.DefaultTask
 import org.gradle.api.Task
-import org.gradle.api.internal.tasks.options.Option
+import org.gradle.api.tasks.options.Option
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 

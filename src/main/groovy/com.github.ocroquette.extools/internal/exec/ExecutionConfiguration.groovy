@@ -67,7 +67,7 @@ class ExecutionConfiguration {
         this.args = []
         for (int i = 0 ; i < l.length ; i++) {
             Object o = l.getAt(i)
-            this.args.push(stringify(o, "argument $i"))
+            this.args.add(stringify(o, "argument $i"))
         }
     }
 

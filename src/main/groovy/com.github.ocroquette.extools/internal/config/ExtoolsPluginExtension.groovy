@@ -4,7 +4,7 @@ import com.github.ocroquette.extools.ExtoolsPlugin
 import com.github.ocroquette.extools.internal.config.ExtoolConfiguration
 import com.github.ocroquette.extools.internal.config.ExtoolsPluginConfiguration
 import org.gradle.api.Project
-import org.gradle.api.provider.PropertyState
+import org.gradle.api.provider.Property
 
 /**
  * Provides the DSL to configure the plugin itself, e.g. repo URL, tools used...
@@ -12,12 +12,12 @@ import org.gradle.api.provider.PropertyState
  * The configuration is stored as PropertyState<ExtoolsPluginConfiguration> in the project
  */
 class ExtoolsPluginExtension {
-    final PropertyState<ExtoolsPluginConfiguration> configurationState
+    final Property<ExtoolsPluginConfiguration> configurationState
     Project project
     private overrideWarnings = []
 
     ExtoolsPluginExtension(Project project) {
-        configurationState = project.property(ExtoolsPluginConfiguration)
+        configurationState = project.getObjects().property(ExtoolsPluginConfiguration)
         configurationState.set(new ExtoolsPluginConfiguration())
 
         configurationState.get().extractDir = getDefaultExtractDir(project)
