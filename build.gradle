@@ -84,6 +84,11 @@ test.dependsOn zipDummyTools
 
 task doRelease {
     doLast {
+        if( JavaVersion.current() != JavaVersion.VERSION_1_8 ) {
+            throw new GradleException(
+                "Releases must be performed with Java 8 to maximize compatibility, this is " +
+                    JavaVersion.current() )
+        }
         def buildGradle = new File("build.gradle")
         def matcher = (buildGradle.text =~ /.*rootProject.version='([\d]+)\.([\d]+)-SNAPSHOT'/)
         def major = Integer.parseInt(matcher[0][1])
