@@ -86,6 +86,9 @@ modules.xml
 # Sonarlint plugin
 .idea/sonarlint
 
+# lib is filled automatically by IDEA, for instance with the Gradle SDK
+lib/
+
 # End of https://www.gitignore.io/api/intellij
 
 # Custom additions:

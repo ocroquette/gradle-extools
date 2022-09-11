@@ -51,7 +51,13 @@ task doStuff {
 }
 ```
 
-For this to work, you will need to set the URL of the extools repository a property, typically in gradle.properties:
+For this to work, you will need to set the URL of the extools repository. You can do this either by setting an
+environment variable:
+```
+EXTOOLS_REPOSITORY_URL
+```
+
+or by setting a property, typically in ```gradle.properties```:
 
 ```
 extools.repositoryUrl=file:/...
@@ -62,6 +68,8 @@ or
 ```
 extools.repositoryUrl=http://
 ```
+
+The URL can either be local (```file:/local_path```) or remote (```http://```, ```https://```).
 
 ## Creating extools packages and repositories
 

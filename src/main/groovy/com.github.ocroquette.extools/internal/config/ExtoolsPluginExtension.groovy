@@ -217,10 +217,15 @@ class ExtoolsPluginExtension {
     }
 
     private URL getDefaultRepositoryUrl(Project project) {
-        def propertyValue = project.properties["extools.repositoryUrl"]
-        if (propertyValue != null)
-            return new URL(propertyValue)
-        else
-            null // It must be set in the build script then
+        for(def potentialValue: [ project.properties["extools.repositoryUrl"],
+                System.getenv("EXTOOLS_REPOSITORY_URL") ]) {
+
+            if (potentialValue != null) {
+                project.logger.debug("Extools: default repository URL set to \"$potentialValue\"")
+                return new URL(potentialValue)
+            }
+        }
+        project.logger.debug("Extools: no default repository URL found")
+        return null // It must be set in the build script then
     }
 }
