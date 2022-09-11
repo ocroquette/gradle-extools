@@ -41,10 +41,6 @@ class ExtoolsPlugin implements Plugin<Project> {
                 URL remoteRepositoryUrl = configuration.remoteRepositoryUrl
                 logger.debug "remoteRepositoryUrl=" + remoteRepositoryUrl
 
-                if ( remoteRepositoryUrl == null ) {
-                    throw new RuntimeException("extools: no repository URL has been provided")
-                }
-
                 logger.info("Fetching extools, localCache=${configuration.localCache} remoteRepositoryUrl=${remoteRepositoryUrl}")
 
                 def fetcher = new ExtoolsFetcher(remoteRepositoryUrl, configuration.localCache)

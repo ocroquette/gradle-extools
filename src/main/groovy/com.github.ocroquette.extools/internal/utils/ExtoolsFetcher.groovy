@@ -16,8 +16,10 @@ class ExtoolsFetcher {
 
     /**
      * Creates a fetcher for the given URL
-     * @param remoteRepoUrl the URL of the repository, typically with a "file" or "http/s" protocol
+     * @param remoteRepoUrl the URL of the repository, typically with a "file" or "http/s" protocol, maybe null
      * @param targetDir the local directory where to store the files
+     *
+     * @throws RuntimeException if remoteRepoUrl if null and an Extool needs to be fetched
      */
     ExtoolsFetcher(URL remoteRepoUrl, File targetDir) {
         this.targetDir = targetDir
@@ -42,7 +44,9 @@ class ExtoolsFetcher {
             return
         }
 
-        targetFile.parentFile.mkdirs()
+        if ( remoteRepoUrl == null ) {
+            throw new RuntimeException("extools: no repository URL has been provided")
+        }
 
         // See https://stackoverflow.com/a/26787332/1448767
         URL finalUrl = new URL(remoteRepoUrl.getProtocol(), remoteRepoUrl.getHost(), remoteRepoUrl.getPort(), remoteRepoUrl.getFile() + "/" + relativeFilePath, null)
@@ -57,6 +61,7 @@ class ExtoolsFetcher {
             out << stream
         }
 
+        targetFile.parentFile.mkdirs()
         tmpFile.renameTo(targetFile)
     }
 }
