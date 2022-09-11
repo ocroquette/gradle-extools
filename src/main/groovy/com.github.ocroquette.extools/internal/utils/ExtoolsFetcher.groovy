@@ -29,18 +29,26 @@ class ExtoolsFetcher {
     /**
      * Fetch the given remote file if not available in the target directory
      *
-     * @param toolId the identifier of the tool, for instance "gcc-7.1" or "compilers/gcc-7.1"
+     * @param extoolName the name of the tool, for instance "compilers/gcc-7.1"
+     * @throws RuntimeException in case of error (invalid toolID, no URL available...)
      */
-    void fetch(String toolId) {
-        if (toolId.startsWith("/") || toolId.startsWith("\\")  )
-            throw new RuntimeException("Invalid tool id: " + toolId)
+    void fetch(String extoolName) {
+        if ( extoolName.startsWith("/") || extoolName.startsWith("\\") ) {
+            throw new RuntimeException("Invalid tool id: " + extoolName)
+        }
 
-        String relativeFilePath = toolId + ".zip"
+        String fileNameExtension = ".zip"
+
+        if ( extoolName.endsWith(fileNameExtension) ) {
+            throw new RuntimeException("extools: please remove extension ${fileNameExtension} from extool name ${extoolName}")
+        }
+
+        String relativeFilePath = extoolName + fileNameExtension
 
         File targetFile = new File(targetDir, relativeFilePath)
 
         if ( targetFile.exists() ) {
-            logger.info "Archive for tool ${toolId} is already available at ${targetFile}"
+            logger.info "Archive for tool ${extoolName} is already available at ${targetFile}"
             return
         }
 
@@ -54,7 +62,7 @@ class ExtoolsFetcher {
         File tmpFile = TemporaryFileUtils.newTemporaryFileFor(targetDir)
         tmpFile.deleteOnExit() // In case we are interrupted, delete the incomplete data
 
-        logger.lifecycle "Fetching ${toolId} from ${finalUrl} to ${targetFile}"
+        logger.lifecycle "Fetching ${extoolName} from ${finalUrl} to ${targetFile}"
 
         def stream = finalUrl.openStream()
         tmpFile.withOutputStream { out ->
