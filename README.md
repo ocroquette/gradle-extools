@@ -20,7 +20,7 @@ Let's assume that you have a Gradle project and you want to call the program ```
 ```
 // Apply the extools plugin (using the plugin syntax introduced in Gradle 2.1)
 plugins {
-    id 'com.github.ocroquette.extools' version '1.11'
+    id 'com.github.ocroquette.extools' version '2.3'
 }
 
 // Configure the plugin, assuming a repo URL has already been set as a property (see below)
