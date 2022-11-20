@@ -314,16 +314,24 @@ set;var;string;MY_VARIABLE;Value of MY_VARIABLE
 
 ### Local cache and extract directory
 
-By default, the plugin will store downloaded packages and extract them in the user directory ```.gradle/extools```, so that they can be reused, saving time and space. This also allows for offline work. You can specify other directories if required as properties on the command line or in a ```gradle.properties``` file.
+By default, the plugin will store downloaded packages and extract them in the user directory ```.gradle/extools```,
+so that they can be reused, saving time and space. This also allows for offline work. You can specify other directories
+if required as properties on the command line or in a ```gradle.properties``` file.
 
 ```
 extools.localCache=<localpath>
 extools.extractDir=<localpath>
 ```
 
+Alternatively, you can specify them using the following environment variables:
+```
+EXTOOLS_LOCAL_CACHE
+EXTOOLS_EXTRACT_DIR
+```
 ### Getting current configuration
 
-The plugin adds a task called ```extoolsInfo``` that will dump on the console all global settings like the paths used and all referenced extools, with their variables, in YAML format:
+The plugin adds a task called ```extoolsInfo``` that will dump on the console all global settings like the paths used
+and all referenced extools, with their variables, in YAML format:
 
 ```
 $ gradlew extoolsInfo

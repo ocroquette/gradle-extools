@@ -1,0 +1,13 @@
+// This sample Gradle project can be used to test the Extools plugin:
+// - delete all "gradle-extools-*.jar" files from ../build/libs
+// - run "./gradlew jar" in ".."
+// - run "./gradlew" here, for instance "./gradlew extoolsInfo"
+
+buildscript {
+    dependencies {
+        // Load plugin (JAR) directly from ../build/libs
+        classpath fileTree(include: ['gradle-extools-*.jar'], dir: '../build/libs')
+    }
+}
+
+apply plugin: 'com.github.ocroquette.extools'

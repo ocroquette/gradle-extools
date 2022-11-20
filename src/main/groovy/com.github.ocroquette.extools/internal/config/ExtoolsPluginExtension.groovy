@@ -201,30 +201,42 @@ class ExtoolsPluginExtension {
     }
 
     private File getDefaultExtractDir(Project project) {
-        def propertyValue = project.properties["extools.extractDir"]
-        if (propertyValue != null)
-            return new File(propertyValue)
-        else
-            return new File(System.properties["user.home"], ".extools/extractDir")
+        def candidates = [
+            project.properties["extools.extractDir"],
+            System.getenv("EXTOOLS_EXTRACT_DIR"),
+            new File(System.properties["user.home"], ".extools/extractDir").absolutePath
+        ]
+        for(def candidate: candidates) {
+            if (candidate != null)
+                return new File(candidate)
+        }
+        throw new RuntimeException("Unexpected error in getDefaultExtractDir()")
     }
 
     private File getDefaultLocalCache(Project project) {
-        def propertyValue = project.properties["extools.localCache"]
-        if (propertyValue != null)
-            return new File(propertyValue)
-        else
-            return new File(System.properties["user.home"], ".extools/localCache")
+        def candidates = [
+            project.properties["extools.localCache"],
+            System.getenv("EXTOOLS_LOCAL_CACHE"),
+            new File(System.properties["user.home"], ".extools/localCache").absolutePath
+        ]
+        for(def candidate: candidates) {
+            if (candidate != null)
+                return new File(candidate)
+        }
+        throw new RuntimeException("Unexpected error in getDefaultLocalCache()")
     }
 
     private URL getDefaultRepositoryUrl(Project project) {
-        for(def potentialValue: [ project.properties["extools.repositoryUrl"],
-                System.getenv("EXTOOLS_REPOSITORY_URL") ]) {
+        def candidates = [
+            project.properties["extools.repositoryUrl"],
+            System.getenv("EXTOOLS_REPOSITORY_URL")
+        ]
 
-            if (potentialValue != null) {
-                project.logger.debug("Extools: default repository URL set to \"$potentialValue\"")
-                return new URL(potentialValue)
-            }
+        for(def candidate: candidates) {
+            if (candidate != null)
+                return new URL(candidate)
         }
+
         project.logger.debug("Extools: no default repository URL found")
         return null // It must be set in the build script then
     }
