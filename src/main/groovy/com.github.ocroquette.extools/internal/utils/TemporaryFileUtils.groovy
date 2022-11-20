@@ -21,6 +21,7 @@ class TemporaryFileUtils {
     static File newTemporaryFileFor(File file) {
         String pid = ManagementFactory.getRuntimeMXBean().getName().replaceAll("[^a-zA-Z0-9]+", "_")
         long threadId = Thread.currentThread().getId()
+        file.getParentFile().mkdirs()
         return new File(file.getParentFile(), file.getName() + ".${pid}.${threadId}.part")
     }
 }
