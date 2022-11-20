@@ -10,6 +10,13 @@ apply plugin: 'java-gradle-plugin'
 rootProject.group='com.github.ocroquette'
 rootProject.version='2.5-SNAPSHOT'
 
+java {
+    toolchain {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+}
+
 pluginBundle {
     website = 'https://github.com/ocroquette/gradle-extools'
     vcsUrl = 'https://github.com/ocroquette/gradle-extools.git'
@@ -84,11 +91,6 @@ test.dependsOn zipDummyTools
 
 task doRelease {
     doLast {
-        if( JavaVersion.current() != JavaVersion.VERSION_1_8 ) {
-            throw new GradleException(
-                "Releases must be performed with Java 8 to maximize compatibility, this is " +
-                    JavaVersion.current() )
-        }
         def buildGradle = new File("build.gradle")
         def matcher = (buildGradle.text =~ /.*rootProject.version='([\d]+)\.([\d]+)-SNAPSHOT'/)
         def major = Integer.parseInt(matcher[0][1])
