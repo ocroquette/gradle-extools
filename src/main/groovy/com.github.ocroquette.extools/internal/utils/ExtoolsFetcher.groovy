@@ -59,7 +59,7 @@ class ExtoolsFetcher {
         // See https://stackoverflow.com/a/26787332/1448767
         URL finalUrl = new URL(remoteRepoUrl.getProtocol(), remoteRepoUrl.getHost(), remoteRepoUrl.getPort(), remoteRepoUrl.getFile() + "/" + relativeFilePath, null)
 
-        File tmpFile = TemporaryFileUtils.newTemporaryFileFor(targetDir)
+        File tmpFile = TemporaryFileUtils.newTemporaryFileFor(targetFile)
         tmpFile.deleteOnExit() // In case we are interrupted, delete the incomplete data
 
         logger.lifecycle "Fetching ${extoolName} from ${finalUrl} to ${targetFile}"
