@@ -8,7 +8,7 @@ plugins {
 apply plugin: 'java-gradle-plugin'
 
 rootProject.group='com.github.ocroquette'
-rootProject.version='2.4'
+rootProject.version='2.5-SNAPSHOT'
 
 pluginBundle {
     website = 'https://github.com/ocroquette/gradle-extools'
