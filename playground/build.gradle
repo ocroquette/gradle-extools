@@ -11,3 +11,9 @@ buildscript {
 }
 
 apply plugin: 'com.github.ocroquette.extools'
+
+/*
+extools {
+    tools "dummy_3": "subdir/dummy_3"
+}
+ */
