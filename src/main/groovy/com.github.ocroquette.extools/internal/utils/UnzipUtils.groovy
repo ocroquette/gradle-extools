@@ -8,9 +8,10 @@ class UnzipUtils {
     /**
      * Unzip the given file to the given directory
      *
-     * In general and on Windows, it uses the standard Gradle way (ant.unzip).
-     * On macOS, it uses /usr/bin/unzip, which is part of the standard OS and can deal with symbolic links and
-     * permissions, assuming the ZIP file has been generated in a compatible way (for instance, with /usr/bin/zip --symlinks)
+     * On Windows, it uses the standard Gradle way (ant.unzip).
+     * On other systems, it uses /usr/bin/unzip, and is supposed to deal with symbolic links and
+     * permissions, assuming the ZIP file has been generated in a compatible way
+     * (for instance, with /usr/bin/zip --symlinks).
      *
      * @param project
      * @param zipFile
@@ -18,15 +19,15 @@ class UnzipUtils {
      */
     static void unzip(Project project, File zipFile, File destDir) {
 
-        final String IMPL_MACOS = "macos"
         final String IMPL_ANT = "ant"
+        final String IMPL_UNZIP = "unzip"
 
         String implementation
         // May be we could add a way to override the default method using a project property here
-        if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-            implementation = IMPL_MACOS
-        } else {
+        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
             implementation = IMPL_ANT
+        } else {
+            implementation = IMPL_UNZIP
         }
 
         project.logger.debug("Unzipping \"${zipFile}\" to \"${destDir}\" with implementation: " + implementation)
@@ -35,7 +36,7 @@ class UnzipUtils {
             unzipWithAnt(project, zipFile, destDir)
         }
         else {
-            unzipOnMacOs(project, zipFile, destDir)
+            unzipWithUnzip(project, zipFile, destDir)
         }
     }
 
@@ -53,7 +54,7 @@ class UnzipUtils {
     }
 
     /**
-     * Unzip on macOS
+     * Unzip with the unzip executable
      *
      * Uses /usr/bin/unzip, which is part of the standard OS and can deal with symbolic links and
      * restore permissions, assuming the ZIP file has been generated in a compatible way.
@@ -62,12 +63,14 @@ class UnzipUtils {
      * @param zipFile
      * @param destDir
      */
-    static void unzipOnMacOs(Project project, File zipFile, File destDir) {
-
+    static void unzipWithUnzip(Project project, File zipFile, File destDir) {
+        def unzipExe = new File("/usr/bin/unzip")
+        if ( ! unzipExe.exists() ) {
+            throw new RuntimeException("Unzip executable not found: \"${unzipExe}\"")
+        }
         destDir.mkdirs()
-
         project.exec {
-            commandLine "/usr/bin/unzip",
+            commandLine unzipExe.absolutePath,
                     "-q",                       // Quiet, otherwise every file path is printed out
                     zipFile.absolutePath,       // Path of ZIP file
                     "-d", destDir.absolutePath  // Extract dir

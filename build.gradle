@@ -71,16 +71,16 @@ task(zipDummyTools) {
             def srcDir = new File(resourceDir, toolId)
             def destFile = new File(targetDir, "${toolId}.zip")
             destFile.parentFile.mkdirs()
-            if(System.getProperty("os.name").toLowerCase().contains("mac")) {
+            if(System.getProperty("os.name").toLowerCase().contains("windows")) {
+                ant.zip(destfile: destFile) {
+                    fileset(dir: srcDir)
+                }
+            }
+            else {
                 // Use system zip to preserve permissions
                 project.exec {
                     commandLine "/usr/bin/zip", "--recurse-paths", "--quiet", destFile.absolutePath, "."
                     workingDir srcDir
-                }
-            }
-            else {
-                ant.zip(destfile: destFile) {
-                    fileset(dir: srcDir)
                 }
             }
         }
